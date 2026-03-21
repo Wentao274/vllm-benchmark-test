@@ -104,6 +104,14 @@ def get_model_names(reports_dir):
     return sorted(model_names)
 
 
+def extract_timestamp_from_path(log_file_path):
+    parts = log_file_path.split(os.sep)
+    for part in parts:
+        if re.match(r'^\d{14}$', part):
+            return part
+    return None
+
+
 def process_model(model_name, reports_dir, config_dir):
     yaml_path = os.path.join(config_dir, "models_scenarios.yaml")
     yaml_config = load_yaml_config(yaml_path)
@@ -120,7 +128,7 @@ def process_model(model_name, reports_dir, config_dir):
     
     model_reports_dir = os.path.join(reports_dir, model_name)
     
-    results_by_config = defaultdict(dict)
+    results_by_timestamp_config = defaultdict(lambda: defaultdict(dict))
     
     log_files = glob.glob(os.path.join(model_reports_dir, "**", "bench-*.log"), recursive=True)
     
@@ -129,6 +137,7 @@ def process_model(model_name, reports_dir, config_dir):
         if not test_cfg:
             continue
         
+        timestamp = extract_timestamp_from_path(log_file)
         concurrency = test_cfg['concurrency']
         num_prompts = test_cfg['num_prompts']
         input_len = test_cfg['input_len']
@@ -137,38 +146,39 @@ def process_model(model_name, reports_dir, config_dir):
         config_key = (num_prompts, input_len, output_len)
         
         metrics, _ = parse_benchmark_log(log_file)
-        results_by_config[config_key][concurrency] = metrics
+        results_by_timestamp_config[timestamp][config_key][concurrency] = metrics
         
-        print(f"[{model_name}] Parsed {num_prompts}-i{input_len}-o{output_len} - concurrency {concurrency}")
+        print(f"[{model_name}] Parsed {timestamp}/{num_prompts}-i{input_len}-o{output_len} - concurrency {concurrency}")
     
-    for config_tuple, all_results in results_by_config.items():
-        num_prompts, input_len, output_len = config_tuple
-        
-        if config_tuple in yaml_configs:
-            dir_name = f"{num_prompts}-i{input_len}-o{output_len}"
-            concurrency_display = ', '.join(yaml_concurrency_list)
-        else:
-            dir_name = f"{num_prompts}-i{input_len}-o{output_len}"
-            all_concurrencies = sorted(all_results.keys(), key=lambda x: int(x))
-            concurrency_display = ', '.join(all_concurrencies)
-        
-        output_dir = os.path.join("analysis", model_name, dir_name)
-        Path(output_dir).mkdir(parents=True, exist_ok=True)
-        
-        sorted_concurrencies = sorted(all_results.keys(), key=lambda x: int(x))
-        
-        generate_csv_report(model_name, sorted_concurrencies, all_results, output_dir)
-        
-        if HAS_MATPLOTLIB:
-            generate_charts(model_name, sorted_concurrencies, all_results, output_dir)
-        
-        generate_markdown_report(
-            model_name, sorted_concurrencies, all_results, output_dir,
-            num_prompts=num_prompts,
-            input_len=input_len,
-            output_len=output_len,
-            concurrency_list=concurrency_display
-        )
+    for timestamp, configs_data in results_by_timestamp_config.items():
+        for config_tuple, all_results in configs_data.items():
+            num_prompts, input_len, output_len = config_tuple
+            
+            if config_tuple in yaml_configs:
+                dir_name = f"{num_prompts}-i{input_len}-o{output_len}"
+                concurrency_display = ', '.join(yaml_concurrency_list)
+            else:
+                dir_name = f"{num_prompts}-i{input_len}-o{output_len}"
+                all_concurrencies = sorted(all_results.keys(), key=lambda x: int(x))
+                concurrency_display = ', '.join(all_concurrencies)
+            
+            output_dir = os.path.join("analysis", model_name, timestamp, dir_name)
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            
+            sorted_concurrencies = sorted(all_results.keys(), key=lambda x: int(x))
+            
+            generate_csv_report(model_name, sorted_concurrencies, all_results, output_dir)
+            
+            if HAS_MATPLOTLIB:
+                generate_charts(model_name, sorted_concurrencies, all_results, output_dir)
+            
+            generate_markdown_report(
+                model_name, sorted_concurrencies, all_results, output_dir,
+                num_prompts=num_prompts,
+                input_len=input_len,
+                output_len=output_len,
+                concurrency_list=concurrency_display
+            )
 
 
 def generate_csv_report(model_name, sorted_concurrencies, all_results, output_dir):

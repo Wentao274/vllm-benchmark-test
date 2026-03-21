@@ -6,9 +6,11 @@ base_config:
     max-concurrency: [ 1, 2, 5, 10, 20, 30, 50]
     num-prompts: [ 1000 ]
 #    random-input-len: [ 256, 512, 1024, 2048 ]
-    random-input-len: [ 2048, 10240, 20480, 51200, 102400]
+#    random-input-len: [ 2048, 10240, 20480, 51200, 102400]
+    random-input-len: [ 20480]
 #    random-output-len: [ 64, 128, 256, 512 ]
-    random-output-len: [ 512, 1024, 2048 ]
+#    random-output-len: [ 512, 1024, 2048 ]
+    random-output-len: [ 1024]
   temperature: 0.7
   seed: 123
   ready-check-timeout-sec: 30
@@ -17,12 +19,12 @@ models:
 #  - name: "glm-5"
 #    served-model-name: "glm-5"
 #    model_path: "/userdata/dingofs/llms/ZhipuAI/GLM-5-FP8"
-  - name: "minimax-m2.1"
-    served-model-name: "minimax-m2.1"
-    model_path: "/userdata/dingofs/llms/MiniMax/MiniMax-M2.1"
-#  - name: "minimax-m2.5"
-#    served-model-name: "minimax-m2.5"
-#    model_path: "/userdata/dingofs/llms/MiniMax/MiniMax-M2.5"
+#  - name: "minimax-m2.1"
+#    served-model-name: "minimax-m2.1"
+#    model_path: "/userdata/dingofs/llms/MiniMax/MiniMax-M2.1"
+  - name: "minimax-m2.5"
+    served-model-name: "minimax-m2.5"
+    model_path: "/userdata/dingofs/llms/MiniMax/MiniMax-M2.5"
 #  - name: "qwen3.5-plus"
 #    served-model-name: "qwen3.5-plus"
 #    model_path: "/userdata/dingofs/llms/Qwen/Qwen3.5-397B-A17B-FP8"
