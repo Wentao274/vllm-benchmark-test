@@ -76,8 +76,29 @@ class GPUMonitor:
                                     parts = [p.strip() for p in line.split(',')]
                                     if len(parts) >= 7:
                                         f.write(f"{timestamp},{','.join(parts)}\n")
-                else:
-                    time.sleep(self.interval)
+                elif self.monitor_cmd == "rocm-smi":
+                    result = subprocess.run([
+                        "rocm-smi",
+                        "-i",
+                        "-u",
+                        "--showmemuse",
+                        "-t",
+                        "--csv"
+                    ], capture_output=True, text=True, timeout=5)
+
+                    if result.returncode == 0:
+                        with open(self.log_file, 'a') as f:
+                            for line in result.stdout.strip().split('\n'):
+                                if line.strip() and ',' in line:
+                                    parts = [p.strip() for p in line.split(',')]
+                                    if len(parts) >= 5 and parts[0].isdigit():
+                                        gpu_idx = parts[0]
+                                        mem_used = parts[2] if len(parts) > 2 else '0'
+                                        mem_total = parts[3] if len(parts) > 3 else '0'
+                                        gpu_util = parts[4] if len(parts) > 4 else '0'
+                                        mem_util = '0'
+                                        temp = parts[5] if len(parts) > 5 else '0'
+                                        f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
                     
             except Exception as e:
                 print(f"GPU monitoring error: {e}")
