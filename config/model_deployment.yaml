@@ -2,29 +2,11 @@
 # 用于生成模型对比报告中的部署详情
 
 models:
-  GLM-5-FP8:
+  MiniMax-M2.5-bf16:
     nodes: 1
     tp: 8
     dp: 1
     pp: 1
-    ep_enabled: false
-    kv_cache_offload: false
-    lmcache: false
-
-  MiniMax-M2.5:
-    nodes: 1
-    tp: 8
-    dp: 1
-    pp: 1
-    ep_enabled: false
-    kv_cache_offload: false
-    lmcache: false
-
-  Qwen3.5-397B-A17B-FP8:
-    nodes: 1
-    tp: 8
-    dp: 1
-    pp: 1
-    ep_enabled: false
+    ep_enabled: true
     kv_cache_offload: false
     lmcache: false
