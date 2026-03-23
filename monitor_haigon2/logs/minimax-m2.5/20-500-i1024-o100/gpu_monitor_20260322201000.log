@@ -1,0 +1,8 @@
+GPU Memory Monitor Started at 2026-03-22 20:10:00.779579
+Log file: monitor/logs/minimax-m2.5/20-500-i1024-o100/gpu_monitor_20260322201000.log
+Monitoring interval: 10s
+Using rocm-smi for GPU monitoring
+--------------------------------------------------
+Time,GPU,Used_MB,Total_MB,Utilization_%,Memory_%,Temperature_C
+--------------------------------------------------
+GPU Memory Monitor Stopped at 2026-03-22 20:18:47.704225
