@@ -44,7 +44,7 @@ def gen_output_dir(model_path):
     return ODIR
 
 def run_benchmark(base_config, model_config):
-    base_url = base_config.get("base_url", "http://localhost:8080")
+    base_url = base_config.get("base_url", "http://127.0.0.1:8080")
     
     model_name_yaml = model_config.get("served-model-name")
     model_path_yaml = model_config.get("model_path")
