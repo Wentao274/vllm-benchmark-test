@@ -1,0 +1,27 @@
+Metric,GLM-5-FP8,MiniMax-M2.5,Qwen3.5-397B-A17B-FP8
+[[Serving Benchmark Result]],,,,
+Successful requests,935,935,935
+Failed requests,0,0,0
+Benchmark duration (s),4047.19,2916.99,1676.25
+Total input tokens,6281330,6281330,6281330
+Total generated tokens,203830,203830,203830
+Request throughput (req/s),0.23,0.32,0.56
+Output token throughput (tok/s),50.36,69.88,121.60
+Peak output token throughput (tok/s),59.00,76.00,141.00
+Peak concurrent requests,2.00,2.00,2.00
+Total token throughput (tok/s),1602.39,2223.24,3868.84
+[[Time to First Token]],,,,
+Mean TTFT (ms),526.06,174.03,235.06
+Median TTFT (ms),523.89,175.39,233.81
+P95 TTFT (ms),548.52,179.19,248.74
+P99 TTFT (ms),551.03,182.26,260.59
+[[Time per Output Token]],,,,
+Mean TPOT (ms),17.52,13.57,7.18
+Median TPOT (ms),17.40,13.50,7.17
+P95 TPOT (ms),18.45,13.89,7.18
+P99 TPOT (ms),18.71,13.90,7.18
+[[Inter-token Latency]],,,,
+Mean ITL (ms),17.47,13.52,7.15
+Median ITL (ms),17.41,13.52,7.19
+P95 ITL (ms),18.44,13.93,7.23
+P99 ITL (ms),18.59,14.01,7.49

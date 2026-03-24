@@ -28,6 +28,13 @@ class GPUMonitor:
                 return True
         except:
             pass
+        try:
+            result = subprocess.run(["xpu-smi", "--version"], capture_output=True, text=True)
+            if result.returncode == 0:
+                self.monitor_cmd = "xpu-smi"
+                return True
+        except:
+            pass
         return False
     
     def start_monitoring(self, log_dir, model_name, param_dir):
@@ -99,6 +106,39 @@ class GPUMonitor:
                                         mem_util = '0'
                                         temp = parts[5] if len(parts) > 5 else '0'
                                         f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                elif self.monitor_cmd == "xpu-smi":
+                    result = subprocess.run([
+                        "xpu-smi", "stats", "-d", "all", "-j"
+                    ], capture_output=True, text=True, timeout=5)
+
+                    if result.returncode == 0:
+                        import json
+                        try:
+                            data = json.loads(result.stdout)
+                            with open(self.log_file, 'a') as f:
+                                if isinstance(data, dict):
+                                    devices = data.get("device_statistics", [])
+                                    if not devices:
+                                        devices = [data]
+                                    for dev in devices:
+                                        gpu_idx = str(dev.get("device_id", 0))
+                                        gpu_util = str(dev.get("GPU Utilization (%)", 0))
+                                        mem_util = str(dev.get("GPU Memory Utilization (%)", 0))
+                                        mem_used = str(dev.get("GPU Memory Used (MiB)", 0))
+                                        mem_total = str(dev.get("GPU Memory Physical Size (MiB)", 0))
+                                        temp = str(dev.get("GPU Core Temperature (C)", 0))
+                                        f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                                elif isinstance(data, list):
+                                    for dev in data:
+                                        gpu_idx = str(dev.get("device_id", 0))
+                                        gpu_util = str(dev.get("GPU Utilization (%)", 0))
+                                        mem_util = str(dev.get("GPU Memory Utilization (%)", 0))
+                                        mem_used = str(dev.get("GPU Memory Used (MiB)", 0))
+                                        mem_total = str(dev.get("GPU Memory Physical Size (MiB)", 0))
+                                        temp = str(dev.get("GPU Core Temperature (C)", 0))
+                                        f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                        except json.JSONDecodeError:
+                            pass
                     
             except Exception as e:
                 print(f"GPU monitoring error: {e}")

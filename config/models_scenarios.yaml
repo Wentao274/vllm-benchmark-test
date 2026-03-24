@@ -5,28 +5,25 @@ base_config:
     dataset-name: random
     max-concurrency: [ 1, 2, 4, 8, 10, 16, 32, 64, 80, 128 ]
     num-prompts: [ 320 ]
-    random-input-len: [ 10240]
+    random-input-len: [ 10240 ]
     random-output-len: [ 256 ]
   temperature: 0.7
   seed: 123
   ready-check-timeout-sec: 30
 
 models:
-#  - name: "glm-5"
-#    served-model-name: "glm-5"
-#    model_path: "/userdata/dingofs/llms/ZhipuAI/GLM-5-FP8"
-#  - name: "minimax-m2.1"
-#    served-model-name: "minimax-m2.1"
-#    model_path: "/userdata/dingofs/llms/MiniMax/MiniMax-M2.1"
+  hygon_bw1000:
   - name: "minimax-m2.5"
     served-model-name: "minimax-m2.5"
     model_path: "/data/models/MiniMax-M2.5-bf16"
-#  - name: "minimax-m2.5"
-#    served-model-name: "minimax-m2.5"
-#    model_path: "/userdata/llms/MiniMax/MiniMax-M2.5"
-#  - name: "qwen3.5-plus"
-#    served-model-name: "qwen3.5-plus"
-#    model_path: "/userdata/dingofs/llms/Qwen/Qwen3.5-397B-A17B-FP8"
+  kunlun_p800:
+  - name: "MiniMax2.5"
+    served-model-name: "MiniMax2.5"
+    model_path: "/data/MiniMax-M2.5-W8A8-INT8-Dynamic"
+  nvidia_h100:
+  - name: "minimax-m2.5"
+    served-model-name: "minimax-m2.5"
+    model_path: "/userdata/llms/MiniMax/MiniMax-M2.5"
 
 # vLLM 版本
 #vllm_version: "0.17.0"  # 如 "0.17.0"
