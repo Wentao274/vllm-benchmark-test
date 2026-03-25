@@ -35,15 +35,15 @@ def get_model_info_from_api(base_url, api_key):
         print(f"Failed to get model info from API: {e}")
     return None, None
 
-def gen_output_dir(model_path):
+def gen_output_dir(chip_name, model_path):
     M = Path(model_path).name if model_path else "unknown"
     print("get dir model_path: " + M)
     TS = datetime.now().strftime("%Y%m%d%H%M%S")
-    ODIR = f"reports/benchmark/{M}/{TS}"
+    ODIR = f"reports/{chip_name}/benchmark/{M}/{TS}"
     Path(ODIR).mkdir(parents=True, exist_ok=True)
     return ODIR
 
-def run_benchmark(base_config, model_config):
+def run_benchmark(chip_name, base_config, model_config):
     base_url = base_config.get("base_url", "http://127.0.0.1:8080")
     
     model_name_yaml = model_config.get("served-model-name")
@@ -69,7 +69,7 @@ def run_benchmark(base_config, model_config):
     seed = base_config.get("seed", 123)
     ready_timeout = base_config.get("ready-check-timeout-sec", 30)
     
-    output_base = gen_output_dir(model_path)
+    output_base = gen_output_dir(chip_name, model_path)
     
     gpu_monitor = GPUMonitor(interval=10) if HAS_GPU_MONITOR else None
     
@@ -124,18 +124,31 @@ def run_benchmark(base_config, model_config):
         time.sleep(30)
 
 def main():
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Run vLLM benchmark")
+    parser.add_argument("--chip", type=str, required=True, 
+                        help="Chip name to test (e.g., hygon_bw1000, kunlun_p800, nvidia_h100)")
+    args = parser.parse_args()
+    
     yaml_path = os.path.join(os.path.dirname(__file__), "config", "models_scenarios.yaml")
     
     with open(yaml_path, "r") as f:
         config = yaml.safe_load(f)
     
     base_config = config.get("base_config", {})
-    models = config.get("models", [])
+    models = config.get("models", {})
     
-    for model_config in models:
-        print(f"Processing model: {model_config.get('name')}")
-        run_benchmark(base_config, model_config)
-        print(f"Finished model: {model_config.get('name')}")
+    chip_name = args.chip.lower()
+    if chip_name not in models:
+        print(f"Error: Chip '{chip_name}' not found in config. Available chips: {', '.join(models.keys())}")
+        return
+    
+    model_configs = models[chip_name]
+    for model_config in model_configs:
+        print(f"Processing chip: {chip_name}, model: {model_config.get('name')}")
+        run_benchmark(chip_name, base_config, model_config)
+        print(f"Finished chip: {chip_name}, model: {model_config.get('name')}")
 
 if __name__ == "__main__":
     main()

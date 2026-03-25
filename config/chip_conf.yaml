@@ -1,0 +1,31 @@
+# 芯片配置信息
+# 用于生成芯片性能对比报告中的芯片详情
+
+chips:
+  Hygon_BW1000:
+    model_precision: BF16
+    vllm_version: 0.11.0+das.opt1.rc2.dtk2604.20260128.g0bf89b0c
+    python_version: 3.10.12
+    remark: 海光BW1000芯片
+    model_path: /data/models/MiniMax-M2.5-bf16
+    
+  Kunlun_P800:
+    model_precision: W8A8-INT8-Dynamic
+    vllm_version: 0.11.0
+    python_version: 3.10.15
+    remark: 昆仑芯P800芯片
+    model_path: /data/models/MiniMax-M2.5-W8A8-INT8-Dynamic
+    
+  NVIDIA_H100:
+    model_precision: FP16
+    vllm_version: 0.15.1
+    python_version: 3.12.3
+    remark: 英伟达H100芯片
+    model_path: /data/models/MiniMax-M2.5
+
+# 测试配置
+test_config:
+  dataset: random
+  total_requests: 320
+  input_context_length: 10240
+  output_context_length: 256

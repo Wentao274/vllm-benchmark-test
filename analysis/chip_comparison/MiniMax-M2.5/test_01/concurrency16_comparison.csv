@@ -1,0 +1,27 @@
+Metric,Hygon_BW1000,Kunlun_P800,NVIDIA_H100
+[[Serving Benchmark Result]],,,,
+Successful requests,320,320,320
+Failed requests,,,0
+Benchmark duration (s),1847.45,475.87,182.26
+Total input tokens,3276748,3276748,3276800
+Total generated tokens,80132,79221,81920
+Request throughput (req/s),0.17,0.67,1.76
+Output token throughput (tok/s),43.37,166.48,449.46
+Peak output token throughput (tok/s),71.00,311.00,760.00
+Peak concurrent requests,20.00,18.00,22.00
+Total token throughput (tok/s),1817.04,7052.24,18427.76
+[[Time to First Token]],,,,
+Mean TTFT (ms),36634.82,9584.38,3864.33
+Median TTFT (ms),35931.86,9886.81,5018.01
+P95 TTFT (ms),58125.31,11728.12,5362.36
+P99 TTFT (ms),63884.93,15927.16,6358.44
+[[Time per Output Token]],,,,
+Mean TPOT (ms),216.95,56.41,20.24
+Median TPOT (ms),219.89,56.34,20.22
+P95 TPOT (ms),228.33,59.38,21.28
+P99 TPOT (ms),246.10,63.60,21.35
+[[Inter-token Latency]],,,,
+Mean ITL (ms),216.16,56.28,20.19
+Median ITL (ms),157.71,32.98,13.38
+P95 ITL (ms),164.13,188.87,15.08
+P99 ITL (ms),1923.89,540.05,189.48

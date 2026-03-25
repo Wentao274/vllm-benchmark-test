@@ -1,12 +1,43 @@
 # 模型部署配置
-# 用于生成模型对比报告中的部署详情
+# 用于生成芯片性能对比报告中的vLLM启动配置信息
+# 按芯片类型分组
 
-models:
-  MiniMax-M2.5-bf16:
-    nodes: 1
-    tp: 8
+vllm_configs:
+  Hygon_BW1000:
+    max-model-len: 196608
+    max-num-seqs: 10
+    max-num-batched-tokens: 8192
+    gpu-memory-utilization: 0.95
     dp: 1
+    tp: 8
     pp: 1
-    ep_enabled: true
-    kv_cache_offload: false
-    lmcache: false
+    enable-export-parallel: true
+    tool-call-parser: minimax_m2
+    reasoning-parser: "minimax_m2 (不生效)"
+    remarks: 海光芯片专家并行配置
+  
+  Kunlun_P800:
+    max-model-len: 196608
+    max-num-seqs: 10
+    max-num-batched-tokens: 8192
+    gpu-memory-utilization: 0.95
+    dp: 1
+    tp: 8
+    pp: 1
+    enable-export-parallel: false
+    tool-call-parser: minimax_m2
+    reasoning-parser: "minimax_m2 (不生效)"
+    remarks: 昆仑芯不启用专家并行避免通信问题
+  
+  NVIDIA_H100:
+    max-model-len: 196608
+    max-num-seqs: 10
+    max-num-batched-tokens: 8192
+    gpu-memory-utilization: 0.85
+    dp: 1
+    tp: 8
+    pp: 1
+    enable-export-parallel: true
+    tool-call-parser: minimax_m2
+    reasoning-parser: minimax_m2
+    remarks: 英伟达H100标准配置
