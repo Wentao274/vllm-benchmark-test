@@ -5,7 +5,10 @@ vllm benchmark serve test for llm
 python run_benchmark.py --chip nvidia_h100
 
 # how to generate single models analysis based on diffierent concurrency
-python parse_benchmark.py
+python parse_single_chip_model.py
+
+# how to generate comparison report between chips
+python chip_comparison.py
 
 # how to generate comparison report between models
 python model_comparison.py

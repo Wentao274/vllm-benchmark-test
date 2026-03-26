@@ -19,7 +19,7 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_01", "test_02"]
+TEST_SUITES = ["test_04"]
 
 CHIP_BASE_PATHS = {
     "Hygon_BW1000": "reports/hygon_bw1000/benchmark/MiniMax-M2.5-bf16",

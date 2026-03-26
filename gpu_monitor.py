@@ -29,6 +29,13 @@ class GPUMonitor:
         except:
             pass
         try:
+            result = subprocess.run(["hy-smi", "--version"], capture_output=True, text=True)
+            if result.returncode == 0:
+                self.monitor_cmd = "hy-smi"
+                return True
+        except:
+            pass
+        try:
             result = subprocess.run(["xpu-smi", "--version"], capture_output=True, text=True)
             if result.returncode == 0:
                 self.monitor_cmd = "xpu-smi"
@@ -86,26 +93,73 @@ class GPUMonitor:
                 elif self.monitor_cmd == "rocm-smi":
                     result = subprocess.run([
                         "rocm-smi",
-                        "-i",
-                        "-u",
+                        "--showgpuuse",
                         "--showmemuse",
-                        "-t",
+                        "--showtemp",
                         "--csv"
                     ], capture_output=True, text=True, timeout=5)
 
-                    if result.returncode == 0:
-                        with open(self.log_file, 'a') as f:
-                            for line in result.stdout.strip().split('\n'):
-                                if line.strip() and ',' in line:
-                                    parts = [p.strip() for p in line.split(',')]
-                                    if len(parts) >= 5 and parts[0].isdigit():
-                                        gpu_idx = parts[0]
-                                        mem_used = parts[2] if len(parts) > 2 else '0'
-                                        mem_total = parts[3] if len(parts) > 3 else '0'
-                                        gpu_util = parts[4] if len(parts) > 4 else '0'
-                                        mem_util = '0'
-                                        temp = parts[5] if len(parts) > 5 else '0'
-                                        f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                    if result.returncode != 0:
+                        print(f"rocm-smi error: {result.stderr}")
+                        continue
+                    
+                    output_lines = result.stdout.strip().split('\n')
+                    data_written = False
+                    with open(self.log_file, 'a') as f:
+                        for line in output_lines:
+                            line = line.strip()
+                            if not line or line.startswith('GPU') or line.startswith('index'):
+                                continue
+                            parts = [p.strip() for p in line.split(',')]
+                            if len(parts) >= 5:
+                                try:
+                                    gpu_idx = parts[0]
+                                    gpu_util = parts[1] if parts[1] else '0'
+                                    mem_used = parts[2] if parts[2] else '0'
+                                    mem_total = parts[3] if parts[3] else '0'
+                                    temp = parts[4] if parts[4] else '0'
+                                    mem_util = '0'
+                                    f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                                    data_written = True
+                                except (IndexError, ValueError) as e:
+                                    continue
+                    if not data_written and output_lines:
+                        print(f"Warning: No data parsed from rocm-smi output. First few lines: {output_lines[:3]}")
+                elif self.monitor_cmd == "hy-smi":
+                    result = subprocess.run([
+                        "hy-smi",
+                        "--showuse",
+                        "--showmemuse",
+                        "--showtemp",
+                        "--csv"
+                    ], capture_output=True, text=True, timeout=5)
+
+                    if result.returncode != 0:
+                        print(f"hy-smi error: {result.stderr}")
+                        continue
+                    
+                    output_lines = result.stdout.strip().split('\n')
+                    data_written = False
+                    with open(self.log_file, 'a') as f:
+                        for line in output_lines:
+                            line = line.strip()
+                            if not line or line.startswith('GPU') or line.startswith('index') or 'Device ID' in line:
+                                continue
+                            parts = [p.strip() for p in line.split(',')]
+                            if len(parts) >= 4:
+                                try:
+                                    gpu_idx = parts[0]
+                                    gpu_util = parts[1] if parts[1] else '0'
+                                    mem_used = parts[2] if parts[2] else '0'
+                                    temp = parts[3] if parts[3] else '0'
+                                    mem_util = '0'
+                                    mem_total = '0'
+                                    f.write(f"{timestamp},{gpu_idx},{mem_used},{mem_total},{gpu_util},{mem_util},{temp}\n")
+                                    data_written = True
+                                except (IndexError, ValueError) as e:
+                                    continue
+                    if not data_written and output_lines:
+                        print(f"Warning: No data parsed from hy-smi output. First few lines: {output_lines[:5]}")
                 elif self.monitor_cmd == "xpu-smi":
                     result = subprocess.run([
                         "xpu-smi", "stats", "-d", "all", "-j"
