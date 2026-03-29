@@ -19,7 +19,9 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_04"]
+TEST_SUITES = ["test_01"]
+
+RUN_ID = "01"
 
 CHIP_BASE_PATHS = {
     "Kunlun_P800": "reports/kunlun_p800/benchmark/MiniMax-M2.5-W8A8-INT8-Dynamic",
@@ -28,11 +30,11 @@ CHIP_BASE_PATHS = {
 MODEL_NAME = "MiniMax-M2.5"
 
 
-def get_chip_configs(test_suite):
+def get_chip_configs(test_suite, run_id):
     return [
         {
             "name": "Kunlun_P800",
-            "base_path": f"{CHIP_BASE_PATHS['Kunlun_P800']}/{test_suite}"
+            "base_path": f"{CHIP_BASE_PATHS['Kunlun_P800']}/{test_suite}/{run_id}"
         }
     ]
 
@@ -761,11 +763,11 @@ def main():
         print(f"Processing test suite: {test_suite}")
         print(f"{'#'*60}\n")
         
-        chip_configs = get_chip_configs(test_suite)
+        chip_configs = get_chip_configs(test_suite, RUN_ID)
         
         for chip in chip_configs:
             chip_name = chip["name"]
-            output_base = f"analysis/single_chip/{chip_name}/{MODEL_NAME}/{test_suite}"
+            output_base = f"analysis/single_chip/{chip_name}/{MODEL_NAME}/{test_suite}/{RUN_ID}"
             Path(output_base).mkdir(parents=True, exist_ok=True)
             
             all_concurrencies = set()

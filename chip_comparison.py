@@ -19,7 +19,9 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_04"]
+TEST_SUITES = ["test_01"]
+
+RUN_ID = "01"
 
 CHIP_BASE_PATHS = {
     "Hygon_BW1000": "reports/hygon_bw1000/benchmark/MiniMax-M2.5-bf16",
@@ -30,19 +32,19 @@ CHIP_BASE_PATHS = {
 MODEL_NAME = "MiniMax-M2.5"
 
 
-def get_chip_configs(test_suite):
+def get_chip_configs(test_suite, run_id):
     return [
         {
             "name": "Hygon_BW1000",
-            "base_path": f"{CHIP_BASE_PATHS['Hygon_BW1000']}/{test_suite}"
+            "base_path": f"{CHIP_BASE_PATHS['Hygon_BW1000']}/{test_suite}/{run_id}"
         },
         {
             "name": "Kunlun_P800",
-            "base_path": f"{CHIP_BASE_PATHS['Kunlun_P800']}/{test_suite}"
+            "base_path": f"{CHIP_BASE_PATHS['Kunlun_P800']}/{test_suite}/{run_id}"
         },
         {
             "name": "NVIDIA_H100",
-            "base_path": f"{CHIP_BASE_PATHS['NVIDIA_H100']}/{test_suite}"
+            "base_path": f"{CHIP_BASE_PATHS['NVIDIA_H100']}/{test_suite}/{run_id}"
         }
     ]
 
@@ -59,6 +61,19 @@ def load_vllm_config(config_path="config/model_deployment.yaml"):
         with open(config_path, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
     return {}
+
+
+def load_models_scenarios(config_path="config/models_scenarios.yaml"):
+    if os.path.exists(config_path):
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+    return {}
+
+
+def get_test_suite_config(test_suite, scenarios_config):
+    base_config = scenarios_config.get("base_config", {})
+    params = base_config.get("params", {})
+    return params.get(test_suite, {})
 
 
 def parse_benchmark_log(log_file):
@@ -132,7 +147,7 @@ def get_chip_metrics(chip_config, concurrency):
     return metrics
 
 
-def generate_comparison_csv(chip_data, concurrencies, output_dir):
+def generate_comparison_csv(chip_data, concurrencies, output_dir, test_suite):
     metric_names = [
         ("[Serving Benchmark Result]", ""),
         ("Successful requests", "Successful requests"),
@@ -182,7 +197,7 @@ def generate_comparison_csv(chip_data, concurrencies, output_dir):
                 row.append(value)
             csv_lines.append(",".join(row))
         
-        csv_file = os.path.join(output_dir, f"concurrency{conc}_comparison.csv")
+        csv_file = os.path.join(output_dir, f"concurrency{conc}_comparison_{test_suite}.csv")
         with open(csv_file, 'w', encoding='utf-8') as f:
             f.write("\n".join(csv_lines))
         
@@ -192,7 +207,7 @@ def generate_comparison_csv(chip_data, concurrencies, output_dir):
     return generated_files
 
 
-def generate_comparison_charts(chip_data, concurrencies, output_dir):
+def generate_comparison_charts(chip_data, concurrencies, output_dir, test_suite):
     if not HAS_MATPLOTLIB:
         return None
     
@@ -277,7 +292,7 @@ def generate_comparison_charts(chip_data, concurrencies, output_dir):
         
         plt.tight_layout()
         
-        chart_file = os.path.join(output_dir, f'chip_comparison_c{conc}.png')
+        chart_file = os.path.join(output_dir, f'chip_comparison_c{conc}_{test_suite}.png')
         plt.savefig(chart_file, dpi=150, bbox_inches='tight')
         plt.close()
         
@@ -287,7 +302,7 @@ def generate_comparison_charts(chip_data, concurrencies, output_dir):
     return chart_files
 
 
-def generate_performance_trends(chip_data, concurrencies, output_dir):
+def generate_performance_trends(chip_data, concurrencies, output_dir, test_suite):
     if not HAS_MATPLOTLIB:
         return None
     
@@ -377,7 +392,7 @@ def generate_performance_trends(chip_data, concurrencies, output_dir):
     
     plt.tight_layout()
     
-    chart_file = os.path.join(output_dir, 'performance_trends.png')
+    chart_file = os.path.join(output_dir, f'performance_trends_{test_suite}.png')
     plt.savefig(chart_file, dpi=150, bbox_inches='tight')
     plt.close()
     
@@ -385,7 +400,7 @@ def generate_performance_trends(chip_data, concurrencies, output_dir):
     return chart_file
 
 
-def generate_performance_trends_csv(chip_data, concurrencies, output_dir):
+def generate_performance_trends_csv(chip_data, concurrencies, output_dir, test_suite):
     metric_names = [
         ("[Serving Benchmark Result]", ""),
         ("Successful requests", "Successful requests"),
@@ -433,7 +448,7 @@ def generate_performance_trends_csv(chip_data, concurrencies, output_dir):
                 row.append(value)
         csv_lines.append(",".join(row))
     
-    csv_file = os.path.join(output_dir, "performance_trends.csv")
+    csv_file = os.path.join(output_dir, f"performance_trends_{test_suite}.csv")
     with open(csv_file, 'w', encoding='utf-8') as f:
         f.write("\n".join(csv_lines))
     
@@ -578,7 +593,7 @@ def generate_analysis_content(chip_data, chip_names, concurrencies):
     return conclusion
 
 
-def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
+def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, scenarios_config):
     current_date = datetime.now().strftime("%Y-%m-%d")
     chip_names = list(CHIP_BASE_PATHS.keys())
     
@@ -586,8 +601,25 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
     vllm_config = load_vllm_config()
     
     chips_info = chip_config.get("chips", {})
-    test_cfg = chip_config.get("test_config", {})
     vllm_configs = vllm_config.get("vllm_configs", {})
+    
+    base_config = scenarios_config.get("base_config", {})
+    test_params = get_test_suite_config(test_suite, scenarios_config)
+    dataset_name = test_params.get("dataset-name", "random")
+    max_concurrency = test_params.get("max-concurrency", [])
+    num_prompts = test_params.get("num-prompts", [])
+    input_len = test_params.get("random-input-len", [])
+    output_len = test_params.get("random-output-len", [])
+    
+    def format_tokens(val):
+        try:
+            v = int(val)
+            if v >= 1024:
+                return f"{v // 1024}k"
+            else:
+                return f"{v / 1024:.2f}k"
+        except:
+            return str(val)
     
     def make_table_for_concurrency(conc, key_name, highlight_max=False, highlight_min=False):
         values = []
@@ -736,9 +768,9 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
     
     analysis_content = generate_analysis_content(chip_data, chip_names, concurrencies)
     
-    chart_images = "\n".join([f'<img src="./chip_comparison_c{conc}.png" width="800" />' for conc in concurrencies])
+    chart_images = "\n".join([f'<img src="./chip_comparison_c{conc}_{test_suite}.png" width="800" />' for conc in concurrencies])
     
-    performance_trends_img = '<img src="./performance_trends.png" width="1000" />'
+    performance_trends_img = f'<img src="./performance_trends_{test_suite}.png" width="1000" />'
     
     chip_table_rows = []
     for chip_name in chip_names:
@@ -765,6 +797,13 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
             remarks.append(f"- **{chip_name}**: {remark}")
     remarks_section = "\n".join(remarks) if remarks else ""
     
+    concurrency_str = ', '.join(str(c) for c in max_concurrency) if max_concurrency else ', '.join(concurrencies)
+    input_ctx = format_tokens(input_len[0]) if input_len else 'N/A'
+    output_ctx = format_tokens(output_len[0]) if output_len else 'N/A'
+    total_requests = num_prompts[0] * len(max_concurrency) if (num_prompts and max_concurrency) else 'N/A'
+    input_len_val = input_len[0] if input_len else 'N/A'
+    output_len_val = output_len[0] if output_len else 'N/A'
+    
     md_content = f"""# {MODEL_NAME}模型在不同芯片下的benchmark基准测试报告
 
 <div align="center">
@@ -786,17 +825,16 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
 | Throughput          | tokens/s   | 系统总吞吐                              |
 | QPS                 | requests/s | 请求吞吐                               |
 | P50/P95/P99 Latency | ms         | 延迟分位数                              |
-
-
+    
 ## 📊 测试概览
 
 | 项目            | 配置                                     | 备注  |
 |---------------|----------------------------------------|-----|
-| **数据集**       | {test_cfg.get('dataset', 'random')}                                 |     |
-| **并发数**       | {', '.join(concurrencies)}    |     |
-| **总请求数**      | {test_cfg.get('total_requests', 'N/A')}                                    |     |
-| **请求输入上下文长度** | {test_cfg.get('input_context_length', 'N/A')}（{test_cfg.get('input_context_length', 10240)//1024}k）                             |     |
-| **请求输出上下文长度** | {test_cfg.get('output_context_length', 'N/A')}（{test_cfg.get('output_context_length', 256)//1024}k）                             |     |
+| **数据集**       | {dataset_name}                                 |     |
+| **并发数**       | {concurrency_str}    |     |
+| **总请求数**      | {total_requests}                                    |     |
+| **请求输入上下文长度** | {input_len_val}（{input_ctx}）                             |     |
+| **请求输出上下文长度** | {output_len_val}（{output_ctx}）                             |     |
 | **模型**        | {MODEL_NAME}                           |     |
 | **被测芯片**      | {', '.join(chip_names)} |     |
 
@@ -871,7 +909,7 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
 </div>
 """
     
-    md_file = os.path.join(output_dir, f"{MODEL_NAME}_chip_comparison.md")
+    md_file = os.path.join(output_dir, f"{MODEL_NAME}_chip_comparison_{test_suite}.md")
     with open(md_file, 'w', encoding='utf-8') as f:
         f.write(md_content)
     
@@ -880,13 +918,15 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite):
 
 
 def main():
+    scenarios_config = load_models_scenarios()
+    
     for test_suite in TEST_SUITES:
         print(f"\n{'#'*60}")
         print(f"Processing test suite: {test_suite}")
         print(f"{'#'*60}\n")
         
-        chip_configs = get_chip_configs(test_suite)
-        output_base = f"analysis/chip_comparison/{MODEL_NAME}/{test_suite}"
+        chip_configs = get_chip_configs(test_suite, RUN_ID)
+        output_base = f"analysis/chip_comparison/{MODEL_NAME}/{test_suite}/{RUN_ID}"
         Path(output_base).mkdir(parents=True, exist_ok=True)
         
         all_concurrencies = set()
@@ -917,15 +957,15 @@ def main():
         
         print("\nGenerating comparison reports...")
         
-        generate_comparison_csv(chip_data, concurrencies, output_base)
+        generate_comparison_csv(chip_data, concurrencies, output_base, test_suite)
         
         if HAS_MATPLOTLIB:
-            generate_comparison_charts(chip_data, concurrencies, output_base)
-            generate_performance_trends(chip_data, concurrencies, output_base)
+            generate_comparison_charts(chip_data, concurrencies, output_base, test_suite)
+            generate_performance_trends(chip_data, concurrencies, output_base, test_suite)
         
-        generate_performance_trends_csv(chip_data, concurrencies, output_base)
+        generate_performance_trends_csv(chip_data, concurrencies, output_base, test_suite)
         
-        generate_markdown_report(chip_data, concurrencies, output_base, test_suite)
+        generate_markdown_report(chip_data, concurrencies, output_base, test_suite, scenarios_config)
         
         print(f"\n{'='*50}")
         print(f"Chip comparison for {test_suite} generated successfully!")
