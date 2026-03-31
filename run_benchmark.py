@@ -140,6 +140,8 @@ def main():
     parser = argparse.ArgumentParser(description="Run vLLM benchmark")
     parser.add_argument("--chip", type=str, required=True, 
                         help="Chip name to test (e.g., hygon_bw1000, kunlun_p800, nvidia_h100)")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Model name to test (e.g., minimax-m2.5, Qwen3.5). If not specified, uses the first model in config.")
     parser.add_argument("--test-suite", type=str, default=None,
                         help=f"Test suite to run (default: all). Available: {', '.join(TEST_SUITES)}")
     parser.add_argument("--run-id", type=str, default=RUN_ID,
@@ -160,6 +162,24 @@ def main():
         print(f"Error: Chip '{chip_name}' not found in config. Available chips: {', '.join(models.keys())}")
         return
     
+    available_models = models[chip_name]
+    
+    if args.model:
+        model_name_lower = args.model.lower()
+        selected_model = None
+        for m in available_models:
+            if m.get("name", "").lower() == model_name_lower or m.get("served-model-name", "").lower() == model_name_lower:
+                selected_model = m
+                break
+        if not selected_model:
+            print(f"Error: Model '{args.model}' not found for chip '{chip_name}'. Available models:")
+            for m in available_models:
+                print(f"  - {m.get('name')} (served: {m.get('served-model-name')})")
+            return
+        model_configs = [selected_model]
+    else:
+        model_configs = available_models
+    
     test_suites_to_run = [args.test_suite] if args.test_suite else TEST_SUITES
     
     if args.test_suite and args.test_suite not in TEST_SUITES:
@@ -168,7 +188,6 @@ def main():
     
     run_id = args.run_id
     
-    model_configs = models[chip_name]
     for model_config in model_configs:
         print(f"Processing chip: {chip_name}, model: {model_config.get('name')}")
         run_benchmark(chip_name, base_config, model_config, test_suites_to_run, run_id)
