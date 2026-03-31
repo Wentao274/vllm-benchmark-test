@@ -53,6 +53,13 @@ def load_vllm_config(config_path="config/model_deployment.yaml"):
     return {}
 
 
+def load_models_scenarios(config_path="config/models_scenarios.yaml"):
+    if os.path.exists(config_path):
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+    return {}
+
+
 def parse_benchmark_log(log_file):
     with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
         content = f.read()
@@ -533,15 +540,34 @@ def generate_analysis_content(chip_data, chip_name, concurrencies):
     return conclusion
 
 
-def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, chip_name):
+def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, chip_name,
+                              scenarios_config=None):
     current_date = datetime.now().strftime("%Y-%m-%d")
     
     chip_config = load_chip_config()
     vllm_config = load_vllm_config()
     
     chips_info = chip_config.get("chips", {})
-    test_cfg = chip_config.get("test_config", {})
     vllm_configs = vllm_config.get("vllm_configs", {})
+    
+    if scenarios_config is None:
+        scenarios_config = load_models_scenarios()
+    
+    base_config = scenarios_config.get("base_config", {})
+    params = base_config.get("params", {})
+    test_cfg = params.get(test_suite, {})
+    
+    models_config = scenarios_config.get("models", {})
+    
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    chip_key = chip_key_map.get(chip_name, chip_name.lower())
+    chip_models = models_config.get(chip_key, [])
+    model_info = chip_models[0] if chip_models else {}
+    model_path = model_info.get("model_path", "N/A")
     
     def make_table_for_metric(key_name):
         values = []
@@ -622,11 +648,16 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, c
         except:
             return str(val)
     
-    input_ctx = format_tokens(test_cfg.get('input_context_length', 10240))
-    output_ctx = format_tokens(test_cfg.get('output_context_length', 256))
+    dataset = test_cfg.get('dataset-name', 'random')
+    num_prompts = test_cfg.get('num-prompts', [])
+    input_len = test_cfg.get('random-input-len', [])
+    output_len = test_cfg.get('random-output-len', [])
+    
+    input_ctx = format_tokens(input_len[0]) if input_len else 'N/A'
+    output_ctx = format_tokens(output_len[0]) if output_len else 'N/A'
     
     chip_info = chips_info.get(chip_name, {})
-    chip_info_str = f"| **{chip_name}** | {chip_info.get('model_precision', 'N/A')} | {chip_info.get('vllm_version', 'N/A')} | {chip_info.get('python_version', 'N/A')} | {chip_info.get('remark', '')} |"
+    chip_info_str = f"| **{chip_name}** | {model_path} | {chip_info.get('vllm_version', 'N/A')} | {chip_info.get('python_version', 'N/A')} | {chip_info.get('remark', '')} |"
     
     vllm_cfg = vllm_configs.get(chip_name, {})
     param_names = ["max-model-len", "max-num-seqs", "max-num-batched-tokens", "gpu-memory-utilization", "dp", "tp", "pp", "enable-export-parallel", "tool-call-parser", "reasoning-parser"]
@@ -666,11 +697,11 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, c
 
 | 项目            | 配置                                     | 备注  |
 |---------------|----------------------------------------|-----|
-| **数据集**       | {test_cfg.get('dataset', 'random')}                                 |     |
+| **数据集**       | {dataset}                                 |     |
 | **并发数**       | {', '.join(concurrencies)}    |     |
-| **总请求数**      | {test_cfg.get('total_requests', 'N/A')}                                    |     |
-| **请求输入上下文长度** | {test_cfg.get('input_context_length', 'N/A')}（{input_ctx}）                             |     |
-| **请求输出上下文长度** | {test_cfg.get('output_context_length', 'N/A')}（{output_ctx}）                             |     |
+| **总请求数**      | {num_prompts[0] if num_prompts else 'N/A'}                                    |     |
+| **请求输入上下文长度** | {input_len[0] if input_len else 'N/A'}（{input_ctx}）                             |     |
+| **请求输出上下文长度** | {output_len[0] if output_len else 'N/A'}（{output_ctx}）                             |     |
 | **模型**        | {MODEL_NAME}                           |     |
 | **被测芯片**      | {chip_name} |     |
 
@@ -678,8 +709,8 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, c
 
 ## 🤖 芯片和模型配置信息
 
-| 芯片名称             | 模型精度              | vLLM版本                                         | Python版本 | 备注         |
-|------------------|-------------------|------------------------------------------------|----------|------------|
+| 芯片名称             | 模型路径                                           | vLLM版本 | Python版本 | 备注 |
+|------------------|------------------------------------------------|----------|----------|------|
 {chip_info_str}
 
 ---
@@ -758,6 +789,8 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, c
 
 
 def main():
+    scenarios_config = load_chip_config()
+    
     for test_suite in TEST_SUITES:
         print(f"\n{'#'*60}")
         print(f"Processing test suite: {test_suite}")
@@ -803,7 +836,8 @@ def main():
             
             generate_performance_trends_csv(chip_data, concurrencies, output_base, chip_name)
             
-            generate_markdown_report(chip_data, concurrencies, output_base, test_suite, chip_name)
+            generate_markdown_report(chip_data, concurrencies, output_base, test_suite, chip_name,
+                                      scenarios_config=scenarios_config)
             
             print(f"\n{'='*50}")
             print(f"Single chip analysis for {chip_name} - {test_suite} generated successfully!")

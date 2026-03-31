@@ -17,7 +17,7 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_05"]
+TEST_SUITES = ["test_01"]
 
 RUN_IDS = ["01", "02"]
 
@@ -425,7 +425,7 @@ def generate_markdown_report(runid_data, concurrencies, output_dir, test_suite, 
     
     for conc in concurrencies:
         header = f"| 指标 | RUN-{run_id1} | RUN-{run_id2} | 差异 | 百分比 |"
-        separator = "|------|------|------|------|------|"
+        separator = "|------|----------|---------|---------|---------|"
         
         serving_table = "\n".join([
             f"| {name} | {' | '.join(make_table_for_conc(conc, key))} |"
@@ -530,10 +530,14 @@ def generate_markdown_report(runid_data, concurrencies, output_dir, test_suite, 
     concurrency_comparison_img = '<img src="./runid_comparison.png" width="1000" />'
     
     dataset = test_overview.get('dataset', 'random')
-    concurrency = test_overview.get('concurrency', ', '.join(concurrencies))
-    total_requests = test_overview.get('total_requests', 'N/A')
-    input_ctx = test_overview.get('input_context_length', 'N/A')
-    output_ctx = test_overview.get('output_context_length', 'N/A')
+    concurrency_list = test_overview.get('concurrency', concurrencies)
+    concurrency = str(concurrency_list) if concurrency_list else ', '.join(concurrencies)
+    total_requests_list = test_overview.get('total_requests', [])
+    total_requests = str(total_requests_list) if total_requests_list else 'N/A'
+    input_len_list = test_overview.get('input_context_length', [])
+    input_ctx = str(input_len_list) if input_len_list else 'N/A'
+    output_len_list = test_overview.get('output_context_length', [])
+    output_ctx = str(output_len_list) if output_len_list else 'N/A'
     model = test_overview.get('model', MODEL_NAME)
     chip = test_overview.get('chip', chip_name)
     
@@ -560,27 +564,31 @@ def generate_markdown_report(runid_data, concurrencies, output_dir, test_suite, 
 ---
 
 ## 测试场景
-对比同一芯片、同一模型、同一测试套件下不同RUN-ID的测试结果，分析性能差异。
+对比同一芯片、同一测试套件下,同一模型优化前后测试结果比对，分析性能差异。
+
+**测试模型** <br>
+第一轮测试（RUN-{run_id1}）: {model} <br>
+第二轮测试（RUN-{run_id2}）: {model}
 
 
 ## 🤖 vLLM启动配置信息
 
-| 参数名称                   | RUN-{run_id1}           | RUN-{run_id2}                                       |
-|------------------------|------------------|----------------------------------------------|
+| 参数名称                   | RUN-{run_id1}     | RUN-{run_id2}                                     |
+|------------------------|------------|--------------------------------------------|
 {vllm_table}
 
 
 ## 📊 测试概览
 
-| 项目            | 配置           | 备注  |
-|---------------|--------------|-----|
-| **数据集**       | {dataset}       |     |
-| **并发数**       | {concurrency}           |     |
-| **总请求数**      | {total_requests}         |     |
-| **请求输入上下文长度** | {input_ctx}        |     |
-| **请求输出上下文长度** | {output_ctx}         |     |
-| **模型**        | {model} |     |
-| **被测芯片**      | {chip} |     |
+| 项目            | 配置                                    | 备注  |
+|---------------|---------------------------------------|-----|
+| **数据集**       | {dataset}                                |     |
+| **并发数**       | {concurrency} |     |
+| **总请求数**      | {total_requests}                                 |     |
+| **请求输入上下文长度** | {input_ctx}                               |     |
+| **请求输出上下文长度** | {output_ctx}                               |     |
+| **模型**        | {model}                          |     |
+| **被测芯片**      | {chip}                          |     |
 
 
 **主要采集指标**：
@@ -618,7 +626,7 @@ def generate_markdown_report(runid_data, concurrencies, output_dir, test_suite, 
 </div>
 """
     
-    md_file = os.path.join(output_dir, f"{MODEL_NAME}_{chip_name}_runid_compare.md")
+    md_file = os.path.join(output_dir, f"{MODEL_NAME}_{chip_name}_{test_suite}_runid_compare_{run_id1}vs{run_id2}.md")
     with open(md_file, 'w', encoding='utf-8') as f:
         f.write(md_content)
     

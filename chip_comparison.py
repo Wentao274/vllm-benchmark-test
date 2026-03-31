@@ -611,6 +611,13 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, s
     input_len = test_params.get("random-input-len", [])
     output_len = test_params.get("random-output-len", [])
     
+    models_config = scenarios_config.get("models", {})
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    
     def format_tokens(val):
         try:
             v = int(val)
@@ -775,7 +782,11 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, s
     chip_table_rows = []
     for chip_name in chip_names:
         info = chips_info.get(chip_name, {})
-        chip_table_rows.append(f"| **{chip_name}** | {info.get('model_precision', 'N/A')} | {info.get('vllm_version', 'N/A')} | {info.get('python_version', 'N/A')} | {info.get('remark', '')} |")
+        chip_key = chip_key_map.get(chip_name, chip_name.lower())
+        chip_models = models_config.get(chip_key, [])
+        model_info = chip_models[0] if chip_models else {}
+        model_path = model_info.get("model_path", "N/A")
+        chip_table_rows.append(f"| **{chip_name}** | {model_path} | {info.get('vllm_version', 'N/A')} | {info.get('python_version', 'N/A')} | {info.get('remark', '')} |")
     chip_table = "\n".join(chip_table_rows)
     
     param_names = ["max-model-len", "max-num-seqs", "max-num-batched-tokens", "gpu-memory-utilization", "dp", "tp", "pp", "enable-export-parallel", "tool-call-parser", "reasoning-parser"]
@@ -842,8 +853,8 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, s
 
 ## 🤖 芯片和模型配置信息
 
-| 芯片名称             | 模型精度              | vLLM版本                                         | Python版本 | 备注         |
-|------------------|-------------------|------------------------------------------------|----------|------------|
+| 芯片名称             | 模型路径                                           | vLLM版本 | Python版本 | 备注 |
+|------------------|------------------------------------------------|----------|----------|------|
 {chip_table}
 
 ---
