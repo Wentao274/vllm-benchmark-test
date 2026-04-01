@@ -23,18 +23,46 @@ TEST_SUITES = ["test_01"]
 
 RUN_ID = "01"
 
-CHIP_BASE_PATHS = {
-    "Kunlun_P800": "reports/kunlun_p800/benchmark/MiniMax-M2.5-W8A8-INT8-Dynamic",
-}
-
 MODEL_NAME = "MiniMax-M2.5"
 
 
-def get_chip_configs(test_suite, run_id):
+def load_models_scenarios(config_path="config/models_scenarios.yaml"):
+    if os.path.exists(config_path):
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+    return {}
+
+
+CHIP_BASE_PATHS = {}
+
+def load_chip_base_paths():
+    paths = {}
+    scenarios = load_models_scenarios()
+    models = scenarios.get("models", {})
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    for chip_name, chip_key in chip_key_map.items():
+        chip_models = models.get(chip_key, [])
+        if chip_models:
+            model_info = chip_models[0]
+            model_path = model_info.get("model_path", "")
+            if model_path:
+                model_name = Path(model_path).name
+                paths[chip_name] = f"reports/{chip_key}/benchmark/{model_name}"
+    return paths
+
+
+CHIP_BASE_PATHS = load_chip_base_paths()
+
+
+def get_chip_configs(chip_name, test_suite, run_id):
     return [
         {
-            "name": "Kunlun_P800",
-            "base_path": f"{CHIP_BASE_PATHS['Kunlun_P800']}/{test_suite}/{run_id}"
+            "name": chip_name,
+            "base_path": f"{CHIP_BASE_PATHS.get(chip_name, '')}/{test_suite}/{run_id}"
         }
     ]
 
@@ -47,13 +75,6 @@ def load_chip_config(config_path="config/chip_conf.yaml"):
 
 
 def load_vllm_config(config_path="config/model_deployment.yaml"):
-    if os.path.exists(config_path):
-        with open(config_path, 'r', encoding='utf-8') as f:
-            return yaml.safe_load(f)
-    return {}
-
-
-def load_models_scenarios(config_path="config/models_scenarios.yaml"):
     if os.path.exists(config_path):
         with open(config_path, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
@@ -789,60 +810,91 @@ def generate_markdown_report(chip_data, concurrencies, output_dir, test_suite, c
 
 
 def main():
-    scenarios_config = load_chip_config()
+    import argparse
     
-    for test_suite in TEST_SUITES:
-        print(f"\n{'#'*60}")
-        print(f"Processing test suite: {test_suite}")
-        print(f"{'#'*60}\n")
+    parser = argparse.ArgumentParser(description="Generate single chip benchmark report")
+    parser.add_argument("--chip", type=str, default=None,
+                        help="Chip name (e.g., Hygon_BW1000, Kunlun_P800, NVIDIA_H100)")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Model name (e.g., MiniMax-M2.5)")
+    parser.add_argument("--test-suite", type=str, default=None,
+                        help="Test suite name (e.g., test_01)")
+    parser.add_argument("--run-id", type=str, default=None,
+                        help="Run ID (e.g., 01)")
+    args = parser.parse_args()
+    
+    chip_to_use = args.chip.strip() if args.chip else list(CHIP_BASE_PATHS.keys())[0]
+    chip_to_use = chip_to_use.lower() if chip_to_use else chip_to_use
+    chip_key_map_reverse = {
+        "hygon_bw1000": "Hygon_BW1000",
+        "kunlun_p800": "Kunlun_P800", 
+        "nvidia_h100": "NVIDIA_H100",
+    }
+    chip_to_use = chip_key_map_reverse.get(chip_to_use, chip_to_use)
+    
+    model_input = args.model.strip() if args.model else MODEL_NAME
+    model_key_map = {
+        "minimax-m2.5": "MiniMax-M2.5",
+        "qwen3.5": "Qwen3.5",
+    }
+    model_to_use = model_key_map.get(model_input.lower(), model_input)
+    
+    test_suite_to_use = args.test_suite.strip() if args.test_suite else TEST_SUITES[0]
+    run_id_to_use = args.run_id.strip() if args.run_id else RUN_ID
+    
+    scenarios_config = load_models_scenarios()
+    
+    print(f"\n{'#'*60}")
+    print(f"Processing: chip={chip_to_use}, model={model_to_use}, test_suite={test_suite_to_use}, run_id={run_id_to_use}")
+    print(f"{'#'*60}\n")
+    
+    chip_configs = get_chip_configs(chip_to_use, test_suite_to_use, run_id_to_use)
+    
+    for chip in chip_configs:
+        chip_name = chip["name"]
+        output_base = f"analysis/single_chip/{chip_name}/{model_to_use}/{test_suite_to_use}/{run_id_to_use}"
+        Path(output_base).mkdir(parents=True, exist_ok=True)
         
-        chip_configs = get_chip_configs(test_suite, RUN_ID)
+        all_concurrencies = set()
+        concs = get_all_concurrencies(chip)
+        all_concurrencies.update(concs)
         
-        for chip in chip_configs:
-            chip_name = chip["name"]
-            output_base = f"analysis/single_chip/{chip_name}/{MODEL_NAME}/{test_suite}/{RUN_ID}"
-            Path(output_base).mkdir(parents=True, exist_ok=True)
-            
-            all_concurrencies = set()
-            concs = get_all_concurrencies(chip)
-            all_concurrencies.update(concs)
-            
-            if not all_concurrencies:
-                print(f"No concurrency configurations found for {chip_name} / {test_suite}!")
-                continue
-            
-            concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
-            print(f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}")
-            
-            chip_data = defaultdict(lambda: defaultdict(dict))
-            
-            print(f"\nProcessing chip: {chip_name}")
-            
-            for conc in concurrencies:
-                metrics = get_chip_metrics(chip, conc)
-                if metrics:
-                    chip_data[chip_name][conc] = metrics
-                    print(f"  - {conc}并发: OK")
-                else:
-                    print(f"  - {conc}并发: No data")
-            
-            print("\nGenerating comparison reports...")
-            
-            generate_comparison_csv(chip_data, concurrencies, output_base, chip_name)
-            
-            if HAS_MATPLOTLIB:
-                generate_comparison_charts(chip_data, concurrencies, output_base, chip_name)
-                generate_performance_trends(chip_data, concurrencies, output_base, chip_name)
-            
-            generate_performance_trends_csv(chip_data, concurrencies, output_base, chip_name)
-            
-            generate_markdown_report(chip_data, concurrencies, output_base, test_suite, chip_name,
-                                      scenarios_config=scenarios_config)
-            
-            print(f"\n{'='*50}")
-            print(f"Single chip analysis for {chip_name} - {test_suite} generated successfully!")
-            print(f"Output directory: {output_base}")
-            print(f"{'='*50}")
+        if not all_concurrencies:
+            print(f"No concurrency configurations found for {chip_name} / {test_suite_to_use}!")
+            continue
+        
+        concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+        print(f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}")
+        
+        chip_data = defaultdict(lambda: defaultdict(dict))
+        
+        print(f"\nProcessing chip: {chip_name}")
+        
+        for conc in concurrencies:
+            metrics = get_chip_metrics(chip, conc)
+            if metrics:
+                chip_data[chip_name][conc] = metrics
+                print(f"  - {conc}并发: OK")
+            else:
+                print(f"  - {conc}并发: No data")
+        
+        print("\nGenerating comparison reports...")
+        
+        generate_comparison_csv(chip_data, concurrencies, output_base, chip_name)
+        
+        if HAS_MATPLOTLIB:
+            generate_comparison_charts(chip_data, concurrencies, output_base, chip_name)
+            generate_performance_trends(chip_data, concurrencies, output_base, chip_name)
+        
+        generate_performance_trends_csv(chip_data, concurrencies, output_base, chip_name)
+        
+        generate_markdown_report(chip_data, concurrencies, output_base, test_suite_to_use, chip_name,
+                                  scenarios_config=scenarios_config)
+        
+        print(f"\n{'='*50}")
+        print(f"Single chip analysis for {chip_name} - {test_suite_to_use} generated successfully!")
+        print(f"Output directory: {output_base}")
+        print(f"{'='*50}")
 
 
 if __name__ == "__main__":

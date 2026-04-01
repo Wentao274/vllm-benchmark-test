@@ -1,0 +1,91 @@
+/root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/xpytorch_import_hook.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+XCCL /root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/torch_xmlir/libbkcl.so loaded
+[35mSYMBOL_REWRITE [0m[32mtorch success[0m
+INFO 03-31 21:44:50 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 03-31 21:44:50 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 03-31 21:44:50 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 03-31 21:44:50 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 03-31 21:44:50 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 03-31 21:44:50 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 03-31 21:44:50 [__init__.py:220] No platform detected, vLLM is running on UnspecifiedPlatform
+INFO 03-31 21:44:53 [__init__.py:207] Platform plugin kunlun is activated
+WARNING 03-31 21:44:54 [_custom_ops.py:20] Failed to import from vllm._C with ImportError('libcudart.so.12: cannot open shared object file: No such file or directory')
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.UnquantizedFusedMoEMethod       --> vllm_kunlun.ops.fused_moe.layer.KunlunUnquantizedFusedMoEMethod
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.FusedMoE       --> vllm_kunlun.ops.fused_moe.layer.KunlunFusedMoE
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQLinearMethod       --> vllm_kunlun.ops.quantization.awq.KunlunAWQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQConfig       --> vllm_kunlun.ops.quantization.awq.KunlunAWQConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors.CompressedTensorsConfig       --> vllm_kunlun.ops.quantization.compressed_tensors.KunlunCompressedTensorsConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.gptq.GPTQLinearMethod       --> vllm_kunlun.ops.quantization.gptq.KunlunGPTQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.moe_wna16.MoeWNA16Method       --> vllm_kunlun.ops.quantization.moe_wna16.KunlunMoeWNA16Method
+ERROR 03-31 21:44:56 [fa_utils.py:57] Cannot use FA version 2 is not supported due to FA2 is unavaible due to: libcudart.so.12: cannot open shared object file: No such file or directory
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen2VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_vl:Qwen2VLForConditionalGeneration.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen2_5_VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_5_vl:Qwen2_5_VLForConditionalGeneration.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3:Qwen3ForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3MoeForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_moe:Qwen3MoeForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3NextForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next:Qwen3NextForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3NextMTP is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next_mtp:Qwen3NextMTP.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture GlmForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.glm:GlmForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture InternLM2ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.internlm2:InternLM2ForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture InternVLChatModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.internvl:InternVLChatModel.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture InternS1ForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.interns1:InternS1ForConditionalGeneration.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl:Qwen3VLForConditionalGeneration.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture Qwen3VLMoeForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl_moe:Qwen3VLMoeForConditionalGeneration.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture SeedOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.seed_oss:SeedOssForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture DeepseekV3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture DeepseekV32ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 03-31 21:44:56 [registry.py:582] Model architecture DeepSeekMTPModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_mtp:DeepSeekMTP.
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7faeeb0596c0>, seed=123, num_prompts=100, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, custom_output_len=256, custom_skip_chat_template=False, spec_bench_output_len=256, spec_bench_category=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, blazedit_min_distance=0.0, blazedit_max_distance=1.0, random_input_len=194560, random_output_len=1024, random_range_ratio=0.0, random_prefix_len=0, random_batch_size=1, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 0}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, label=None, backend='openai-chat', endpoint_type=None, base_url='http://127.0.0.1:8080', host='127.0.0.1', port=8000, endpoint='/v1/chat/completions', header=None, max_concurrency=10, model='/data/MiniMax-M2.5-W8A8-INT8-Dynamic', tokenizer=None, use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, trust_remote_code=True, disable_tqdm=False, profile=False, save_result=False, save_detailed=False, append_result=False, metadata=None, result_dir=None, result_filename=None, ignore_eos=False, percentile_metrics='ttft,tpot,itl', metric_percentiles='95,99', goodput=None, request_id_prefix='benchmark-serving', top_p=None, top_k=None, min_p=None, temperature=0.7, tokenizer_mode='auto', served_model_name='minimax-m2.5', lora_modules=None, ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=30)
+INFO 03-31 21:44:57 [datasets.py:507] Sampling input_len from [194560, 194560] and output_len from [1024, 1024]
+Starting initial single prompt test run...
+Waiting for endpoint to become up in 30 seconds
+
+ |          | 00:00 elapsed, ? remaining
+ |          | 00:00 elapsed, 00:00 remaining
+ |          | 00:46 elapsed, 476:49:59 remaining
+Initial test run completed. Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 10
+
+  0%|          | 0/100 [00:00<?, ?it/s]
+  1%|          | 1/100 [05:18<8:45:00, 318.18s/it]
+ 11%|█         | 11/100 [05:18<30:53, 20.83s/it]  
+ 20%|██        | 20/100 [05:18<12:37,  9.47s/it]
+ 28%|██▊       | 28/100 [05:18<06:43,  5.60s/it]
+ 40%|████      | 40/100 [05:18<02:59,  2.99s/it]
+ 51%|█████     | 51/100 [05:18<01:31,  1.86s/it]
+ 60%|██████    | 60/100 [05:18<00:51,  1.29s/it]
+ 73%|███████▎  | 73/100 [05:19<00:21,  1.26it/s]
+ 88%|████████▊ | 88/100 [05:19<00:05,  2.05it/s]
+100%|██████████| 100/100 [05:19<00:00,  3.19s/it]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     10        
+Maximum request concurrency:             10        
+Benchmark duration (s):                  319.29    
+Total input tokens:                      1945600   
+Total generated tokens:                  242       
+Request throughput (req/s):              0.03      
+Output token throughput (tok/s):         0.76      
+Peak output token throughput (tok/s):    10.00     
+Peak concurrent requests:                10.00     
+Total Token throughput (tok/s):          6094.27   
+---------------Time to First Token----------------
+Mean TTFT (ms):                          141728.37 
+Median TTFT (ms):                        138028.25 
+P95 TTFT (ms):                           295773.23 
+P99 TTFT (ms):                           309853.88 
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          6128.53   
+Median TPOT (ms):                        6406.52   
+P95 TPOT (ms):                           6447.01   
+P99 TPOT (ms):                           6448.58   
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           5924.33   
+Median ITL (ms):                         6352.90   
+P95 ITL (ms):                            9439.38   
+P99 ITL (ms):                            9529.52   
+==================================================

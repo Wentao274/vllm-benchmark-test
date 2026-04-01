@@ -17,7 +17,7 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_01"]
+TEST_SUITES = ["test_03"]
 
 RUN_IDS = ["01", "02"]
 

@@ -180,10 +180,15 @@ def main():
     else:
         model_configs = available_models
     
-    test_suites_to_run = [args.test_suite] if args.test_suite else TEST_SUITES
+    test_suites_to_run = []
+    if args.test_suite:
+        test_suites_to_run = [s.strip() for s in args.test_suite.split(',')]
+    else:
+        test_suites_to_run = TEST_SUITES
     
-    if args.test_suite and args.test_suite not in TEST_SUITES:
-        print(f"Error: Test suite '{args.test_suite}' not found. Available: {', '.join(TEST_SUITES)}")
+    invalid_suites = [s for s in test_suites_to_run if s not in params_config]
+    if invalid_suites:
+        print(f"Error: Test suite(s) {invalid_suites} not found in config. Available: {', '.join(params_config.keys())}")
         return
     
     run_id = args.run_id
