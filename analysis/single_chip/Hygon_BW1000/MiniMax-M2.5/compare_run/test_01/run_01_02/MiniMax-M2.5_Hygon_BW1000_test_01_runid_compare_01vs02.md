@@ -1,4 +1,4 @@
-# MiniMax-M2.5模型在Hygon_BW1000上的RUN-ID对比报告
+# MiniMax-M2.5模型在单节点Hygon_BW1000上benchmark基准测试优化前后对比报告
 
 <div align="center">
 **测试日期：** 2026-03-31
@@ -22,7 +22,7 @@
 | 参数名称                   | RUN-01     | RUN-02                                     |
 |------------------------|------------|--------------------------------------------|
 | max-model-len          | 196608     | 196608                                     |
-| max-num-seqs           | 64         | 64                                         |
+| max-num-seqs           | 10         | 64                                         |
 | max-num-batched-tokens | 8192       | N/A                                        |
 | gpu-memory-utilization | 0.95       | 0.9                                        |
 | dp                     | 1          | 1                                          |

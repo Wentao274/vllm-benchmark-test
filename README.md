@@ -78,5 +78,39 @@ python chip_comparison.py
 
 所有参数值大小写不敏感
 
-# how to generate comparison report between models
+
+## 4. 如何生成同一芯片下不同模型之间的性能对比报告
+
+**命令**<br>
 python model_comparison.py
+
+#### 帮助信息：
+usage:<br> 
+model_comparison.py [-h] --chip CHIP --model MODEL
+                          [--test-suite TEST_SUITE] [--run-id RUN_ID]
+
+**options**:<br>
+--chip CHIP           Chip platform (e.g., hygon_bw1000, nvidia_h100)<br>
+--model MODEL         Model names to compare, separated by comma (e.g., MiniMax-M2.5-bf16,Qwen3.5-397B-A17B)<br>
+--test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
+--run-id RUN_ID       Run IDs for each model, separated by comma (e.g., 01 or 01,02)<br>
+
+#### 示例：
+##### 4.1 对比同一run-id（所有模型使用相同的run-id）
+python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01
+
+##### 4.2 对比不同run-id（第一个模型用01，第二个用02）
+python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01,02
+
+##### 4.3 使用默认参数（test_01, run-id 01）
+python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B"
+
+**注意**：所有参数值大小写不敏感
+
+#### 输出说明：
+- 输出目录：`analysis/<chip>_comparison/<test_suite>/<concurrency-np-iNi-oNo>/`
+- 生成文件：
+  - `concurrency<XXX>_comparison.csv` - CSV格式对比数据
+  - `concurrency<XXX>_comparison.png` - 可视化图表
+  - `concurrency<XXX>_comparison.md` - Markdown格式报告
+- 汇总报告：`analysis/<chip>_comparison/<test_suite>/summary.md`
