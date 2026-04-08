@@ -21,7 +21,7 @@
 
 vllm_configs:
   kunlun_p800:
-    - test-id: 01
+    - run-id: 01
       model: MiniMax-M2.5-W8A8-INT8-Dynamic
       max-model-len: 196608
       gpu-memory-utilization: 0.95

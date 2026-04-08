@@ -73,8 +73,9 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
         test_params = params_config.get(test_suite, {})
         max_concurrency = test_params.get("max-concurrency", [10])
         num_prompts = test_params.get("num-prompts", [300])
-        random_input_len = test_params.get("random-input-len", [20000])
-        random_output_len = test_params.get("random-output-len", [100])
+        random_input_output_len = test_params.get(
+            "random-input-output-len", [[20000, 100]]
+        )
 
         run_id_dir = os.path.join(output_base, test_suite, run_id)
         if os.path.exists(run_id_dir):
@@ -90,9 +91,11 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
 
         gpu_monitor = GPUMonitor(interval=10) if HAS_GPU_MONITOR else None
 
-        for nc, np, ni, no in product(
-            max_concurrency, num_prompts, random_input_len, random_output_len
+        for nc, np, io_len in product(
+            max_concurrency, num_prompts, random_input_output_len
         ):
+            ni = io_len[0]
+            no = io_len[1]
             param_dir = f"{test_suite}/{run_id}/{nc}-{np}-i{ni}-o{no}"
             output_dir = os.path.join(output_base, param_dir)
             Path(output_dir).mkdir(parents=True, exist_ok=True)

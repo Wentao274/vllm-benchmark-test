@@ -4,7 +4,7 @@
 
 vllm_configs:
   hygon_P800:
-    - test-id: 01
+    - run-id: 01
       model: MiniMax-M2.5-W8A8
       max-model-len: 196608
       gpu-memory-utilization: 0.9

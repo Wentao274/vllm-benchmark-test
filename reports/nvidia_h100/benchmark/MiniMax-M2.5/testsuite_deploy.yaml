@@ -3,16 +3,18 @@
 # 按芯片类型分组
 
 vllm_configs:
-  hygon_P800:
+  nvidia_h100:
     - run-id: 01
-      model: MiniMax-M2.5-bf16
+      model: MiniMax-M2.5
       max-model-len: 196608
-      gpu-memory-utilization: 0.98
+      gpu-memory-utilization: 0.88
       max-num-seqs: 64
-      dtype: float16
+      max-num-batched-tokens: 8192
       dp: 1
       tp: 8
       pp: 1
       enable-expert-parallel: true
       enable-auto-tool-choice: true
       tool-call-parser: minimax_m2
+      reasoning-parser: inimax_m2
+      cudagraph-capture-sizes: $(seq -s ' ' 1 19) $(seq -s ' ' 20 4 63) $(seq -s ' ' 64 8 512)
