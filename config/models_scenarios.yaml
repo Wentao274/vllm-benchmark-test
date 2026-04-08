@@ -44,18 +44,24 @@ base_config:
 
 models:
   hygon_bw1000:
-  - name: "minimax-m2.5"
+  - name: "MiniMax-M2.5-bf16"
     served-model-name: "minimax-m2.5"
     model_path: "/data/models/MiniMax-M2.5-bf16"
-  - name: "qwen3.5"
+  - name: "MiniMax-M2.5-W8A8"
+    served-model-name: "minimax-m2.5"
+    model_path: "/data/models/MiniMax-M2.5-W8A8"
+  - name: "Qwen3.5-397B-A17B"
     served-model-name: "qwen3.5"
     model_path: "/data/models/Qwen3.5-397B-A17B"
   kunlun_p800:
-  - name: "MiniMax2.5"
-    served-model-name: "MiniMax2.5"
+  - name: "MiniMax-M2.5-W8A8-INT8-Dynamic"
+    served-model-name: "minimax-m2.5"
     model_path: "/data/MiniMax-M2.5-W8A8-INT8-Dynamic"
+  - name: "Qwen3.5-122B-A10B"
+    served-model-name: "qwen3.5"
+    model_path: "/data/Qwen3.5-122B-A10B"
   nvidia_h100:
-  - name: "minimax-m2.5"
+  - name: "MiniMax-M2.5"
     served-model-name: "minimax-m2.5"
     model_path: "/userdata/llms/MiniMax/MiniMax-M2.5"
 

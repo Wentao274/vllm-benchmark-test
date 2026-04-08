@@ -9,11 +9,26 @@ chips:
     remark: 海光BW1000芯片
     
   Kunlun_P800:
-    model_precision: W8A8-INT8-Dynamic
-    vllm_version: 0.11.0
-    python_version: 3.10.15
-    remark: 昆仑芯P800芯片
-    
+    - model: minimax-m2.5
+      model_precision: W8A8-INT8-Dynamic
+      vllm_version: 0.11.0
+      python_version: 3.10.15
+      quantization_config: int-8
+      dtype: N/A
+      model_size: 215G
+      temperature: 1.0
+      top_k: 40
+      top_p: 0.95
+    - model: qwen3.5
+      model_precision: 122B-A10
+      vllm_version: 0.15.1
+      python_version: 3.10.19
+      quantization_config: N/A
+      dtype: bfloat16
+      model_size: 234G
+      temperature: 0.6
+      top_k: 20
+      top_p: 0.95
   NVIDIA_H100:
     model_precision: FP16
     vllm_version: 0.15.1

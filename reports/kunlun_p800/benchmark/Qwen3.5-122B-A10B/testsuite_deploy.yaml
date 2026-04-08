@@ -1,0 +1,21 @@
+# 模型部署配置
+# 用于生成芯片性能对比报告中的vLLM启动配置信息
+# 按芯片类型分组
+
+vllm_configs:
+  kunlun_p800:
+    - test-id: 01
+      model: Qwen3.5-122B-A10B
+      max-model-len: 196608
+      gpu-memory-utilization: 0.88
+      max-num-seqs: 64
+      max-num-batched-tokens: 8192
+      dtype: float16
+      block-sze: 128
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-auto-tool-choice: true
+      tool-call-parser: qwen3_coder
+      reasoning-parser: qwen3
+      remarks: 昆仑芯不启用专家并行避免通信问题
