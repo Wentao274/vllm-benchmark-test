@@ -100,7 +100,7 @@
 
 下图展示了MiniMax-M2.5在不同并发级别下的关键性能指标变化趋势：
 
-![Performance Trends](./performance_trends.png)
+![Performance Trends](images/performance_trends.png)
 
 ---
 

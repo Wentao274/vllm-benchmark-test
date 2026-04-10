@@ -7,43 +7,31 @@ base_config:
       max-concurrency: [ 1, 2, 4, 8, 10, 16, 32, 64, 80, 128 ]
       num-prompts: [ 320 ]
       random-input-output-len: [[ 10240, 256 ]]
-      random-input-len: [ 10240 ]
-      random-output-len: [ 256 ]
     test_02:
       dataset-name: random
       max-concurrency: [ 1 ]
       num-prompts: [ 100 ]
       random-input-output-len: [[ 194560, 1024 ]]
-#      random-input-len: [ 194560 ]
-#      random-output-len: [ 1024 ]
     test_03:
       dataset-name: random
       max-concurrency: [ 1, 2, 4, 8, 10 ]
       num-prompts: [ 100 ]
       random-input-output-len: [[ 194560, 1024 ]]
-#      random-input-output-len: [ 194560 ]
-#      random-output-len: [ 1024 ]
     test_04:
       dataset-name: random
       max-concurrency: [ 128, 200 ]
       num-prompts: [ 1024 ]
       random-input-output-len: [[ 10240, 1024 ]]
-#      random-input-len: [ 10240 ]
-#      random-output-len: [ 1024 ]
     test_05:
       dataset-name: random
       max-concurrency: [ 32, 64 ]
       num-prompts: [ 1000 ]
       random-input-output-len: [[ 90000, 2000 ]]
-#      random-input-len: [ 90000 ]
-#      random-output-len: [ 2000 ]
     test_06:
       dataset-name: random
       max-concurrency: [ 1, 2, 4, 8, 16, 32, 64, 80, 128 ]
       num-prompts: [ 300 ]
       random-input-output-len: [ [70000, 1500] ]
-#      random-input-len: [ 70000 ]
-#      random-output-len: [ 1500 ]
     test_07:
       dataset-name: random
       max-concurrency: [ 1, 4, 8, 16, 32, 64, 128 ]

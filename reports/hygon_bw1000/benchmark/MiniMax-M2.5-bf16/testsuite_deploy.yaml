@@ -9,7 +9,7 @@ vllm_configs:
       max-model-len: 196608
       gpu-memory-utilization: 0.98
       max-num-seqs: 64
-      dtype: float16
+      dtype: bfloat16
       dp: 1
       tp: 8
       pp: 1

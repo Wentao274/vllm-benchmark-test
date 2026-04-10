@@ -1,0 +1,27 @@
+Metric,MiniMax-M2.5-W8A8,MiniMax-M2.5-bf16
+[[Serving Benchmark Result]],,
+Successful requests,320,320
+Failed requests,0,0
+Benchmark duration (s),521.20,2123.78
+Total input tokens,3276800,3276800
+Total generated tokens,81920,81920
+Request throughput (req/s),0.61,0.15
+Output token throughput (tok/s),157.18,38.57
+Peak output token throughput (tok/s),424.00,160.00
+Peak concurrent requests,16.00,16.00
+Total token throughput (tok/s),6444.25,1581.48
+[[Time to First Token]],,
+Mean TTFT (ms),7190.37,34975.19
+Median TTFT (ms),8083.99,39435.78
+P95 TTFT (ms),8094.81,39548.64
+P99 TTFT (ms),8133.44,39566.34
+[[Time per Output Token]],,
+Mean TPOT (ms),22.89,71.05
+Median TPOT (ms),19.52,53.98
+P95 TPOT (ms),46.86,188.73
+P99 TPOT (ms),46.97,189.79
+[[Inter-token Latency]],,
+Mean ITL (ms),22.82,70.79
+Median ITL (ms),19.56,53.97
+P95 ITL (ms),20.53,58.48
+P99 ITL (ms),24.15,80.00

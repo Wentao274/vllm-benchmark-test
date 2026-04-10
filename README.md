@@ -29,8 +29,41 @@ python run_benchmark.py --chip hygon_bw1000 --model Qwen3.5 --test-suite test_01
 python run_benchmark.py --chip kunlun_p800 --model qwen3.5-plus --test-suite test_05,test_06 --run-id 02
 
 
+## 2. 如何生成不同芯片平台对比的性能报告
+**命令**<br>
+python chip_comparison.py
 
-## 2. 如何生成单个平台下的单个模型的单次测试的性能变化
+#### 帮助信息：
+usage:<br> 
+chip_comparison.py [-h] [--chip CHIP] [--model MODEL]
+                          [--test-suite TEST_SUITE] [--run-id RUN_ID]
+
+**options**:<br>
+--chip CHIP           Chip names to compare, comma-separated (e.g., hygon_bw1000,nvidia_h100)<br>
+--model MODEL         Model name to test (e.g., MiniMax-M2.5)<br>
+--test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
+--run-id RUN_ID       Run IDs, can be '01' for all chips or '01,02,03' for each chip<br>
+
+#### 示例：
+##### 2.1 所有芯片使用相同 run-id
+python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id 01
+
+##### 2.2 每个芯片使用不同的 run-id（按 --chip 参数顺序一一对应）
+python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id 01,02,01
+- Hygon_BW1000 使用 run-id 01
+- Kunlun_P800 使用 run-id 02
+- NVIDIA_H100 使用 run-id 01
+
+##### 2.3 使用默认参数（对比所有芯片，run-id 01）
+python chip_comparison.py
+
+**注意**：
+- run-id 参数如果只有一个值，所有芯片使用相同 run-id
+- run-id 参数如果有多个值（逗号分隔），按 --chip 参数顺序一一对应
+- 所有参数值大小写不敏感
+
+
+## 3. 如何生成单个平台下的单个模型的单次测试的性能变化
 **命令**<br>
 python parse_single_chip_model.py
 
@@ -54,32 +87,49 @@ python parse_single_chip_model.py <br>
 
 如果不指定任何参数，则默认使用CHIP_BASE_PATHS的第一个Key和代码中定义的MODEL_NAME, TEST_SUITES和RUN_ID
 
-## 3. 如何生成不同芯片平台对比的性能报告
+## 4. 如何生成同一芯片、同一模型下不同测试run-id的性能对比报告
+
 **命令**<br>
-python chip_comparison.py
+python parse_single_chip_model_runid.py
 
 #### 帮助信息：
 usage:<br> 
-chip_comparison.py [-h] [--chip CHIP] [--model MODEL]
-                          [--test-suite TEST_SUITE] [--run-id RUN_ID]
+parse_single_chip_model_runid.py [-h] [--chip CHIP] [--model MODEL]
+                                  [--test-suite TEST_SUITE] [--run-id RUN_ID]
 
 **options**:<br>
---chip CHIP           Chip names to compare, comma-separated (e.g., hygon_bw1000,nvidia_h100)<br>
+--chip CHIP           Chip platform (e.g., Hygon_BW1000, Kunlun_P800, NVIDIA_H100)<br>
 --model MODEL         Model name to test (e.g., MiniMax-M2.5)<br>
 --test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
---run-id RUN_ID       Run ID (e.g., 01)<br>
+--run-id RUN_ID       Run IDs to compare, comma-separated (e.g., 01,02)<br>
 
 #### 示例：
-#### 生成 Hygon_BW1000 和 NVIDIA_H100 芯片上 MiniMax-M2.5 模型 test_01 测试的第01次对比报告
-python chip_comparison.py --chip hygon_bw1000,nvidia_h100 --model MiniMax-M2.5 --test-suite test_01 --run-id 01
+##### 4.1 对比同一芯片、同一模型下的两次测试run-id
+python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5 --test-suite test_03 --run-id '01','02'
+<br>或者<br>
+python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5 --test-suite test_03 --run-id '01,02'
 
-#### 使用默认参数（对比所有芯片）
-python chip_comparison.py
+##### 4.2 对比三次测试run-id
+python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5 --test-suite test_03 --run-id '01','02','03'
 
-所有参数值大小写不敏感
+##### 4.3 使用默认参数（对比01和02）
+python parse_single_chip_model_runid.py
+
+**说明**：
+- 该脚本用于对比同一芯片、同一模型在不同测试运行（run-id）下的性能差异
+- 方便分析不同配置、不同优化或不同版本间的性能变化
+- run-id之间用逗号分隔，至少需要2个run-id才能进行对比
+- 输出目录：`analysis/single_chip/<chip_name>/<model_name>/compare_run/<test_suite>/run_<run_id1>_<run_id2>/`
+
+#### 输出说明：
+- 输出目录：`analysis/single_chip/<chip_name>/<model_name>/compare_run/<test_suite>/run_<run_id1>_<run_id2>/`
+- 生成文件：
+  - `concurrency<XXX>_comparison.csv` - CSV格式对比数据
+  - `concurrency<XXX>_comparison.png` - 可视化图表
+  - `<model_name>_runid_comparison_<run_ids>.md` - Markdown格式报告
 
 
-## 4. 如何生成同一芯片下不同模型之间的性能对比报告
+## 5. 如何生成同一芯片下不同模型之间的性能对比报告
 
 **命令**<br>
 python model_comparison.py
@@ -96,13 +146,13 @@ model_comparison.py [-h] --chip CHIP --model MODEL
 --run-id RUN_ID       Run IDs for each model, separated by comma (e.g., 01 or 01,02)<br>
 
 #### 示例：
-##### 4.1 对比同一run-id（所有模型使用相同的run-id）
+##### 5.1 对比同一run-id（所有模型使用相同的run-id）
 python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01
 
-##### 4.2 对比不同run-id（第一个模型用01，第二个用02）
+##### 5.2 对比不同run-id（第一个模型用01，第二个用02）
 python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01,02
 
-##### 4.3 使用默认参数（test_01, run-id 01）
+##### 5.3 使用默认参数（test_01, run-id 01）
 python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B"
 
 **注意**：所有参数值大小写不敏感

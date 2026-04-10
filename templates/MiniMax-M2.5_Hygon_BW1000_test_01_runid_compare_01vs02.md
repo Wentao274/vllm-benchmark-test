@@ -515,7 +515,7 @@
 
 ## 📊 RUN-ID对比柱状图
 
-<img src="./runid_comparison.png" width="1000" />
+<img src="./images/runid_comparison.png" width="1000" />
 
 ---
 

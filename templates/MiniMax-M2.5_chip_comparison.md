@@ -565,7 +565,7 @@
 
 ## 📈 性能趋势对比图 (所有芯片)
 
-<img src="./performance_trends.png" width="1000" />
+<img src="./images/performance_trends.png" width="1000" />
 
 ---
 

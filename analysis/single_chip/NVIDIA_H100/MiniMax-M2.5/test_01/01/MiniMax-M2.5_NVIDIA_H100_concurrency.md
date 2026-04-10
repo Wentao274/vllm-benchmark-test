@@ -1,7 +1,7 @@
 # MiniMax-M2.5模型在NVIDIA_H100上的Benchmark基准测试报告
 
 <div align="center">
-**测试日期：** 2026-04-01
+**测试日期：** 2026-04-10
 
 </div>
 
@@ -37,9 +37,18 @@
 
 ## 🤖 芯片和模型配置信息
 
-| 芯片名称             | 模型路径                                           | vLLM版本 | Python版本 | 备注 |
-|------------------|------------------------------------------------|----------|----------|------|
-| **NVIDIA_H100** | /userdata/llms/MiniMax/MiniMax-M2.5 | 0.15.1 | 3.12.3 | 英伟达H100芯片 |
+| 参数名称                    | NVIDIA_H100 |
+|------------------------|-------------|
+| **model_name** | MiniMax-M2.5 |
+| **quantization_config** | FP16 |
+| **model_size** | 215G |
+| **max_position_embeddings** | 196608 |
+| **temperature** | N/A |
+| **top_k** | N/A |
+| **top_p** | N/A |
+| **transformers_version** | 4.46.1 |
+| **vllm_version** | 0.15.1 |
+| **python_version** | 3.12.3 |
 
 ---
 
@@ -47,14 +56,18 @@
 
 | 参数名称                   | NVIDIA_H100 |
 |------------------------|-------------|
+| model_name | MiniMax-M2.5 |
 | max-model-len | 196608 |
 | max-num-seqs | 10 |
 | max-num-batched-tokens | 8192 |
 | gpu-memory-utilization | 0.85 |
+| dtype | default |
+| block_size | default |
 | dp | 1 |
 | tp | 8 |
 | pp | 1 |
 | enable-export-parallel | True |
+| enable-auto-tool-choice | True |
 | tool-call-parser | minimax_m2 |
 | reasoning-parser | minimax_m2 |
 
@@ -166,5 +179,5 @@ ITL随并发增加呈上升趋势。
 ---
 
 <div align="center">
-*报告生成时间: 2026-04-01*
+*报告生成时间: 2026-04-10*
 </div>

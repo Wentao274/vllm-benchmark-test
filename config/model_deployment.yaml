@@ -4,40 +4,70 @@
 
 vllm_configs:
   Hygon_BW1000:
-    max-model-len: 196608
-    max-num-seqs: 10
-    max-num-batched-tokens: 8192
-    gpu-memory-utilization: 0.95
-    dp: 1
-    tp: 8
-    pp: 1
-    enable-export-parallel: true
-    tool-call-parser: minimax_m2
-    reasoning-parser: "minimax_m2 (不生效)"
-    remarks: 海光芯片专家并行配置
-  
+    - model_name: MiniMax-M2.5-bf16
+      max-model-len: 196608
+      max-num-seqs: 64
+      max-num-batched-tokens: default
+      gpu-memory-utilization: 0.98
+      dtype: bfloat16
+      block_size: default
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-export-parallel: True
+      enable-auto-tool-choice: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: "minimax_m2 (不生效)"
+      compilation-config: N/A
+      remarks: 海光芯片专家并行配置
+    - model_name: MiniMax-M2.5-W8A8
+      max-model-len: 196608
+      max-num-seqs: 64
+      max-num-batched-tokens: default
+      gpu-memory-utilization: 0.9
+      dtype: bfloat16
+      block_size: default
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-export-parallel: True
+      enable-auto-tool-choice: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: "minimax_m2 (不生效)"
+      compilation-config: N/A
+      remarks: 海光芯片专家并行配置
+
   Kunlun_P800:
-    max-model-len: 196608
-    max-num-seqs: 10
-    max-num-batched-tokens: 8192
-    gpu-memory-utilization: 0.95
-    dp: 1
-    tp: 8
-    pp: 1
-    enable-export-parallel: false
-    tool-call-parser: minimax_m2
-    reasoning-parser: "minimax_m2 (不生效)"
-    remarks: 昆仑芯不启用专家并行避免通信问题
+    - model_name: MiniMax-M2.5-W8A8-INT8-Dynamic
+      max-model-len: 196608
+      max-num-seqs: 64
+      max-num-batched-tokens: 8192
+      gpu-memory-utilization: 0.95
+      dtype: auto
+      block_size: 128
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-export-parallel: False
+      enable-auto-tool-choice: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: "minimax_m2 (不生效)"
+      compilation-config: '{"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.unified_attention_with_output_kunlun","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer","vllm.sparse_attn_indexer_vllm_kunlun"]}'
+      remarks: 昆仑芯不启用专家并行避免通信问题
   
   NVIDIA_H100:
-    max-model-len: 196608
-    max-num-seqs: 10
-    max-num-batched-tokens: 8192
-    gpu-memory-utilization: 0.85
-    dp: 1
-    tp: 8
-    pp: 1
-    enable-export-parallel: true
-    tool-call-parser: minimax_m2
-    reasoning-parser: minimax_m2
-    remarks: 英伟达H100标准配置
+    - model_name: MiniMax-M2.5
+      max-model-len: 196608
+      max-num-seqs: 10
+      max-num-batched-tokens: 8192
+      gpu-memory-utilization: 0.85
+      dtype: default
+      block_size: default
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-export-parallel: True
+      enable-auto-tool-choice: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: minimax_m2
+      remarks: 英伟达H100标准配置
