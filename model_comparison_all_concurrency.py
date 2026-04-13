@@ -880,10 +880,11 @@ def main():
     print(f"Found {len(test_configs)} test configs from YAML")
     print(f"Concurrency list: {concurrency_list}")
 
-    output_base = f"analysis/{chip}_comparison"
+    output_base = f"analysis/{chip}_comparison_all_concurrency"
     Path(output_base).mkdir(parents=True, exist_ok=True)
 
-    generated_reports = []
+    # 收集所有并发级别的数据
+    all_concurrency_data = {}
 
     for test_config in test_configs:
         print(f"\n=== Processing test config: {test_config} ===")
@@ -894,9 +895,6 @@ def main():
             print(
                 f"    Looking for: {chip}/benchmark/{models[0]}/{test_suite}/{run_ids[0]}/{config_with_concurrency}"
             )
-
-            output_dir = os.path.join(output_base, test_suite, config_with_concurrency)
-            Path(output_dir).mkdir(parents=True, exist_ok=True)
 
             models_data = {}
             for i, model_name in enumerate(models):
@@ -923,57 +921,445 @@ def main():
                 print(f"    No data found for concurrency {concurrency}")
                 continue
 
-            print(f"    Comparing {len(models_data)} models, generating reports...")
+            # 存储每个并发级别的数据
+            all_concurrency_data[concurrency] = models_data
+            print(f"    Collected data for {len(models_data)} models at concurrency {concurrency}")
 
-            generate_comparison_csv(
-                models_data, config_with_concurrency, output_dir, concurrency
-            )
-            generate_comparison_charts(
-                models_data, config_with_concurrency, output_dir, concurrency
-            )
-            generate_comparison_markdown(
-                models_data,
-                config_with_concurrency,
-                output_dir,
-                chip,
-                test_suite,
-                run_ids,
-                concurrency_list,
-                concurrency,
-                chip,
-                models,
-            )
+    if not all_concurrency_data:
+        print("\nError: No data collected for any concurrency level!")
+        return
 
-            generated_reports.append((config_with_concurrency, concurrency))
+    print(f"\n=== Generating combined report for all {len(all_concurrency_data)} concurrency levels ===")
 
-    generate_summary_report(output_base, test_suite, generated_reports)
+    # 生成合并的CSV和报告
+    generate_combined_csv(all_concurrency_data, test_config, output_base, concurrency_list, chip, models, run_ids)
+    generate_combined_markdown(all_concurrency_data, test_config, output_base, chip, test_suite, run_ids, concurrency_list, chip, models)
 
     print(f"\n{'=' * 60}")
-    print("Model comparison reports generated successfully!")
+    print("Model comparison reports (all concurrency) generated successfully!")
     print(f"Output directory: {output_base}")
     print(f"{'=' * 60}")
 
 
-def generate_summary_report(output_base, test_suite, generated_reports):
-    summary_lines = []
-    summary_lines.append("# 多模型性能汇总对比报告\n")
-    summary_lines.append(f"**生成时间:** {datetime.now().strftime('%Y-%m-%d')}\n")
-    summary_lines.append("---\n")
-    summary_lines.append("## 各并发级别报告链接\n")
+def generate_combined_charts(all_concurrency_data, concurrency_list, ordered_models, output_dir):
+    """生成合并所有并发级别的柱状图"""
+    if not HAS_MATPLOTLIB:
+        return None
 
-    sorted_reports = sorted(generated_reports, key=lambda x: x[1])
-    for config_key, concurrency in sorted_reports:
-        csv_link = f"./{config_key}/concurrency{concurrency}_comparison.csv"
-        md_link = f"./{config_key}/concurrency{concurrency}_comparison.md"
-        summary_lines.append(
-            f"- [{config_key} (CSV)]({csv_link}) | [Markdown]({md_link})"
-        )
+    x = range(len(concurrency_list))
+    num_models = len(ordered_models)
+    bar_width = 0.8 / num_models
 
-    summary_file = os.path.join(output_base, test_suite, "summary.md")
-    with open(summary_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(summary_lines))
+    colors = ["#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6"]
 
-    print(f"Generated summary: {summary_file}")
+    # 准备各指标数据
+    def get_values(model, key):
+        values = []
+        for conc in concurrency_list:
+            val = all_concurrency_data[conc].get(model, {}).get(key, "0")
+            try:
+                values.append(float(val))
+            except:
+                values.append(0)
+        return values
+
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    fig.suptitle("Model Comparison Across All Concurrency Levels", fontsize=14, fontweight="bold")
+
+    metrics = [
+        ("Request Throughput (req/s)", "request throughput (req/s)", axes[0, 0]),
+        ("Total Token Throughput (tok/s)", "total token throughput (tok/s)", axes[0, 1]),
+        ("TTFT P99 (ms)", "p99 ttft (ms)", axes[1, 0]),
+        ("TPOT P99 (ms)", "p99 tpot (ms)", axes[1, 1]),
+    ]
+
+    for title, key, ax in metrics:
+        for i, model in enumerate(ordered_models):
+            values = get_values(model, key)
+            offset = (i - (num_models - 1) / 2) * bar_width
+            ax.bar([xi + offset for xi in x], values, bar_width, label=model, color=colors[i % len(colors)], alpha=0.8)
+
+        ax.set_title(title, fontsize=11)
+        ax.set_xlabel("Concurrency")
+        ax.set_ylabel(title.split("(")[-1].replace(")", "") if "(" in title else "")
+        ax.set_xticks(x)
+        ax.set_xticklabels(concurrency_list, rotation=45)
+        ax.legend()
+        ax.grid(axis="y", alpha=0.3)
+
+    for ax in axes.flat:
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    fig.set_facecolor("#f0f0f0")
+    for ax in axes.flat:
+        ax.set_facecolor("white")
+
+    plt.tight_layout()
+
+    chart_file = os.path.join(output_dir, "all_concurrency_comparison.png")
+    plt.savefig(chart_file, dpi=150, bbox_inches="tight")
+    plt.close()
+
+    print(f"Generated chart: {chart_file}")
+    return chart_file
+
+
+def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurrency_list, chip, model_names, run_ids):
+    """生成合并所有并发级别的CSV"""
+    metric_names = [
+        ("[Serving Benchmark Result]", ""),
+        ("Successful requests", "successful requests"),
+        ("Failed requests", "failed requests"),
+        ("Benchmark duration (s)", "benchmark duration (s)"),
+        ("Total input tokens", "total input tokens"),
+        ("Total generated tokens", "total generated tokens"),
+        ("Request throughput (req/s)", "request throughput (req/s)"),
+        ("Output token throughput (tok/s)", "output token throughput (tok/s)"),
+        ("Peak output token throughput (tok/s)", "peak output token throughput (tok/s)"),
+        ("Peak concurrent requests", "peak concurrent requests"),
+        ("Total token throughput (tok/s)", "total token throughput (tok/s)"),
+        ("[Time to First Token]", ""),
+        ("Mean TTFT (ms)", "mean ttft (ms)"),
+        ("Median TTFT (ms)", "median ttft (ms)"),
+        ("P95 TTFT (ms)", "p95 ttft (ms)"),
+        ("P99 TTFT (ms)", "p99 ttft (ms)"),
+        ("[Time per Output Token]", ""),
+        ("Mean TPOT (ms)", "mean tpot (ms)"),
+        ("Median TPOT (ms)", "median tpot (ms)"),
+        ("P95 TPOT (ms)", "p95 tpot (ms)"),
+        ("P99 TPOT (ms)", "p99 tpot (ms)"),
+        ("[Inter-token Latency]", ""),
+        ("Mean ITL (ms)", "mean itl (ms)"),
+        ("Median ITL (ms)", "median itl (ms)"),
+        ("P95 ITL (ms)", "p95 itl (ms)"),
+        ("P99 ITL (ms)", "p99 itl (ms)"),
+    ]
+
+    csv_lines = []
+
+    # 表头: Metric | 并发1-模型1 | 并发1-模型2 | 并发2-模型1 | ...
+    header_parts = ["Metric"]
+    sorted_conc = sorted(all_concurrency_data.keys())
+    ordered_models = [m for m in model_names if m in list(all_concurrency_data.values())[0].keys()]
+    if not ordered_models:
+        ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
+
+    for conc in sorted_conc:
+        for model in ordered_models:
+            header_parts.append(f"{conc}-{model}")
+    csv_lines.append(",".join(header_parts))
+
+    for display_name, key_name in metric_names:
+        if not key_name:
+            csv_lines.append(f"[{display_name}]" + ",," * (len(sorted_conc) * len(ordered_models)))
+            continue
+
+        row = [display_name]
+        for conc in sorted_conc:
+            models_data = all_concurrency_data[conc]
+            for model in ordered_models:
+                value = models_data.get(model, {}).get(key_name, "")
+                row.append(value if value else "0")
+        csv_lines.append(",".join(row))
+
+    csv_file = os.path.join(output_dir, "all_concurrency_comparison.csv")
+    with open(csv_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(csv_lines))
+
+    print(f"Generated: {csv_file}")
+    return csv_file
+
+
+def generate_combined_markdown(all_concurrency_data, test_config, output_dir, chip, test_suite, run_ids, concurrency_list, chip_name, model_names):
+    """生成合并所有并发级别的Markdown报告"""
+    current_date = datetime.now().strftime("%Y-%m-%d")
+
+    # 按用户输入顺序排列模型
+    ordered_models = [m for m in model_names if m in list(all_concurrency_data.values())[0].keys()]
+    if not ordered_models:
+        ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
+
+    sorted_conc = sorted(all_concurrency_data.keys())
+
+    # 计算差异和百分比的函数
+    def calculate_diff(baseline_val, other_val):
+        try:
+            v1 = float(baseline_val)
+            v2 = float(other_val)
+            diff = v2 - v1
+            if v1 != 0:
+                pct = (diff / v1) * 100
+                return diff, pct
+            return diff, 0
+        except:
+            return None, None
+
+    def format_diff(diff, pct):
+        if diff is None:
+            return "N/A", "N/A"
+        sign = "+" if diff > 0 else ""
+        diff_str = f"{sign}{diff:.2f}"
+        pct_str = f"{sign}{pct:.1f}%"
+        return diff_str, pct_str
+
+    def make_row_for_conc(conc, key_name):
+        baseline_model = ordered_models[0]
+        models_data = all_concurrency_data[conc]
+        baseline_val = models_data[baseline_model].get(key_name.lower(), "")
+
+        cells = [baseline_val]
+        for model in ordered_models[1:]:
+            other_val = models_data[model].get(key_name.lower(), "")
+            diff, pct = calculate_diff(baseline_val, other_val)
+            diff_str, pct_str = format_diff(diff, pct)
+            cells.append(other_val if other_val else "0")
+            cells.append(diff_str)
+            cells.append(pct_str)
+        return " | ".join(cells)
+
+    # 生成各并发级别的表格
+    metric_keys = [
+        ("成功请求数", "successful requests"),
+        ("失败请求数", "failed requests"),
+        ("测试持续时间 (s)", "benchmark duration (s)"),
+        ("总输入 tokens", "total input tokens"),
+        ("总生成 tokens", "total generated tokens"),
+        ("请求吞吐量 (req/s)", "request throughput (req/s)"),
+        ("输出 token 吞吐量 (tok/s)", "output token throughput (tok/s)"),
+        ("峰值输出 token 吞吐量 (tok/s)", "peak output token throughput (tok/s)"),
+        ("峰值并发请求数", "peak concurrent requests"),
+        ("总 token 吞吐量 (tok/s)", "total token throughput (tok/s)"),
+    ]
+
+    ttft_keys = [
+        ("平均 TTFT (ms)", "mean ttft (ms)"),
+        ("中位 TTFT (ms)", "median ttft (ms)"),
+        ("P95 TTFT (ms)", "p95 ttft (ms)"),
+        ("P99 TTFT (ms)", "p99 ttft (ms)"),
+    ]
+
+    tpot_keys = [
+        ("平均 TPOT (ms)", "mean tpot (ms)"),
+        ("中位 TPOT (ms)", "median tpot (ms)"),
+        ("P95 TPOT (ms)", "p95 tpot (ms)"),
+        ("P99 TPOT (ms)", "p99 tpot (ms)"),
+    ]
+
+    itl_keys = [
+        ("平均 ITL (ms)", "mean itl (ms)"),
+        ("中位 ITL (ms)", "median itl (ms)"),
+        ("P95 ITL (ms)", "p95 itl (ms)"),
+        ("P99 ITL (ms)", "p99 itl (ms)"),
+    ]
+
+    # 表头
+    if len(ordered_models) == 2:
+        headers = f"| 指标 | {ordered_models[0]} (基准) | {ordered_models[1]} | 差异 | % |"
+        separator = "|------|--------------- | --------- | ------- | -------|"
+    else:
+        header_parts = ["| 指标", f"{ordered_models[0]} (基准)"]
+        for model in ordered_models[1:]:
+            header_parts.extend([model, "差异", "%"])
+        headers = " | ".join(header_parts) + " |"
+        sep_parts = ["|------", "---------------"]
+        for _ in ordered_models[1:]:
+            sep_parts.extend(["---------", "-------", "-------"])
+        separator = " | ".join(sep_parts) + " |"
+
+    # 生成各并发级别的表格内容
+    all_tables_html = ""
+
+    for conc in sorted_conc:
+        serving_table = "\n".join([
+            f"| {name} | {make_row_for_conc(conc, key)} |"
+            for name, key in metric_keys
+        ])
+
+        ttft_table = "\n".join([
+            f"| {name} | {make_row_for_conc(conc, key)} |"
+            for name, key in ttft_keys
+        ])
+
+        tpot_table = "\n".join([
+            f"| {name} | {make_row_for_conc(conc, key)} |"
+            for name, key in tpot_keys
+        ])
+
+        itl_table = "\n".join([
+            f"| {name} | {make_row_for_conc(conc, key)} |"
+            for name, key in itl_keys
+        ])
+
+        all_tables_html += f"""
+### 并发级别: {conc}
+
+#### 服务基准结果
+
+{headers}
+{separator}
+{serving_table}
+
+#### 首Token延迟 (TTFT)
+
+{headers}
+{separator}
+{ttft_table}
+
+#### 每Token生成时间 (TPOT)
+
+{headers}
+{separator}
+{tpot_table}
+
+#### Token间延迟 (ITL)
+
+{headers}
+{separator}
+{itl_table}
+
+---
+
+"""
+
+    # 生成分析小结
+    analysis_lines = []
+
+    # 计算每个模型在各并发级别的平均性能
+    avg_perf = {model: {} for model in ordered_models}
+
+    for key in ["request throughput (req/s)", "total token throughput (tok/s)", "p99 ttft (ms)", "p99 tpot (ms)"]:
+        for model in ordered_models:
+            values = []
+            for conc in sorted_conc:
+                val = all_concurrency_data[conc].get(model, {}).get(key, "0")
+                try:
+                    values.append(float(val))
+                except:
+                    pass
+            avg_perf[model][key] = sum(values) / len(values) if values else 0
+
+    baseline_model = ordered_models[0]
+
+    # 请求吞吐量分析
+    try:
+        baseline_tp = avg_perf[baseline_model]["request throughput (req/s)"]
+        for model in ordered_models[1:]:
+            other_tp = avg_perf[model]["request throughput (req/s)"]
+            if baseline_tp > 0:
+                pct = ((other_tp - baseline_tp) / baseline_tp) * 100
+                if pct > 0:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均提升 **{pct:.1f}%**")
+                else:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均变化 **{pct:.1f}%**")
+    except:
+        pass
+
+    # 总token吞吐量分析
+    try:
+        baseline_tp = avg_perf[baseline_model]["total token throughput (tok/s)"]
+        for model in ordered_models[1:]:
+            other_tp = avg_perf[model]["total token throughput (tok/s)"]
+            if baseline_tp > 0:
+                pct = ((other_tp - baseline_tp) / baseline_tp) * 100
+                if pct > 0:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均提升 **{pct:.1f}%**")
+                else:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均变化 **{pct:.1f}%**")
+    except:
+        pass
+
+    # TTFT延迟分析
+    try:
+        baseline_ttft = avg_perf[baseline_model]["p99 ttft (ms)"]
+        for model in ordered_models[1:]:
+            other_ttft = avg_perf[model]["p99 ttft (ms)"]
+            if baseline_ttft > 0:
+                pct = ((other_ttft - baseline_ttft) / baseline_ttft) * 100
+                if pct < 0:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)")
+                else:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均增加 **{pct:.1f}%** (延迟增加)")
+    except:
+        pass
+
+    # TPOT延迟分析
+    try:
+        baseline_tpot = avg_perf[baseline_model]["p99 tpot (ms)"]
+        for model in ordered_models[1:]:
+            other_tpot = avg_perf[model]["p99 tpot (ms)"]
+            if baseline_tpot > 0:
+                pct = ((other_tpot - baseline_tpot) / baseline_tpot) * 100
+                if pct < 0:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)")
+                else:
+                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均增加 **{pct:.1f}%** (延迟增加)")
+    except:
+        pass
+
+    analysis_content = "\n".join(analysis_lines) if analysis_lines else "- 各模型性能表现待分析"
+
+    # 生成柱状图
+    chart_file = None
+    if HAS_MATPLOTLIB:
+        chart_file = generate_combined_charts(all_concurrency_data, sorted_conc, ordered_models, output_dir)
+
+    chart_html = f'![Model Performance Comparison](./{os.path.basename(chart_file)})' if chart_file else ""
+
+    run_id_display = ", ".join(run_ids) if run_ids else "N/A"
+    model_display = ", ".join(ordered_models)
+
+    md_content = f"""# 多模型性能对比报告 (全并发级别)
+
+<div>
+
+**测试日期：** {current_date}
+
+**芯片平台：** {chip}
+
+**测试套件：** {test_suite}
+
+**Run ID：** {run_id_display}
+
+**测试配置：** {test_config}
+
+**并发级别：** {", ".join(map(str, sorted_conc))}
+
+**对比模型：** {model_display}
+
+</div>
+
+---
+
+## 📊 模型性能对比
+
+{chart_html}
+
+---
+
+## 📝 分析小结
+
+{analysis_content}
+
+---
+
+## 📊 各并发级别详细对比
+
+{all_tables_html}
+
+---
+
+<div align="center">
+*报告生成时间: {current_date}*
+</div>
+"""
+
+    md_file = os.path.join(output_dir, "all_concurrency_comparison.md")
+    with open(md_file, "w", encoding="utf-8") as f:
+        f.write(md_content)
+
+    print(f"Generated: {md_file}")
+    return md_file
 
 
 if __name__ == "__main__":

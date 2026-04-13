@@ -1148,7 +1148,6 @@ def main():
     for chip in chip_configs:
         chip_name = chip["name"]
         output_base = f"analysis/single_chip/{chip_name}/{model_to_use}/{test_suite_to_use}/{run_id_to_use}"
-        Path(output_base).mkdir(parents=True, exist_ok=True)
 
         all_concurrencies = set()
         concs = get_all_concurrencies(chip)
@@ -1164,6 +1163,8 @@ def main():
         print(
             f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
         )
+
+        Path(output_base).mkdir(parents=True, exist_ok=True)
 
         chip_data = defaultdict(lambda: defaultdict(dict))
 

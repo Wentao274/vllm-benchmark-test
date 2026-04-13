@@ -49,7 +49,7 @@ chip_comparison.py [-h] [--chip CHIP] [--model MODEL]
 python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id 01
 
 ##### 2.2 每个芯片使用不同的 run-id（按 --chip 参数顺序一一对应）
-python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id 01,02,01
+python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id '01,02,01'
 - Hygon_BW1000 使用 run-id 01
 - Kunlun_P800 使用 run-id 02
 - NVIDIA_H100 使用 run-id 01
@@ -150,7 +150,7 @@ model_comparison.py [-h] --chip CHIP --model MODEL
 python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01
 
 ##### 5.2 对比不同run-id（第一个模型用01，第二个用02）
-python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id 01,02
+python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B" --test-suite test_01 --run-id '01,02'
 
 ##### 5.3 使用默认参数（test_01, run-id 01）
 python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.5-397B-A17B"
@@ -158,9 +158,49 @@ python model_comparison.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,Qwen3.
 **注意**：所有参数值大小写不敏感
 
 #### 输出说明：
+**注：此脚本输出的比对报告是每个并发级别单独分开的**
 - 输出目录：`analysis/<chip>_comparison/<test_suite>/<concurrency-np-iNi-oNo>/`
 - 生成文件：
   - `concurrency<XXX>_comparison.csv` - CSV格式对比数据
   - `concurrency<XXX>_comparison.png` - 可视化图表
   - `concurrency<XXX>_comparison.md` - Markdown格式报告
 - 汇总报告：`analysis/<chip>_comparison/<test_suite>/summary.md`
+
+
+## 6. 如何生成全并发级别的多模型对比报告
+
+**命令**<br>
+python model_comparison_all_concurrency.py
+
+与 `model_comparison.py` 不同的是，该脚本会将所有并发级别的对比数据合并到一个Markdown报告中，而不是按每个并发级别分别生成报告。
+
+#### 帮助信息：
+usage:<br>
+model_comparison_all_concurrency.py [-h] --chip CHIP --model MODEL
+                                       [--test-suite TEST_SUITE] [--run-id RUN_ID]
+
+**options**:<br>
+--chip CHIP           Chip platform (e.g., hygon_bw1000, nvidia_h100)<br>
+--model MODEL         Model names to compare, separated by comma (e.g., MiniMax-M2.5-bf16,Qwen3.5-397B-A17B)<br>
+--test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
+--run-id RUN_ID       Run IDs for each model, separated by comma (e.g., 01 or 01,02)<br>
+
+#### 示例：
+##### 6.1 对比两个模型的所有并发级别
+python model_comparison_all_concurrency.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,MiniMax-M2.5-W8A8"
+
+##### 6.2 指定测试套件和run-id
+python model_comparison_all_concurrency.py --chip hygon_bw1000 --model "MiniMax-M2.5-bf16,MiniMax-M2.5-W8A8" --test-suite test_01 --run-id '01,02'
+
+**注意**：所有参数值大小写不敏感
+
+#### 输出说明：
+- 输出目录：`analysis/<chip_name>_comparison_all_concurrency/`
+- 生成文件：
+  - `all_concurrency_comparison.csv` - CSV格式对比数据（包含所有并发级别）
+  - `all_concurrency_comparison.png` - 可视化图表（跨所有并发级别）
+  - `all_concurrency_comparison.md` - Markdown格式报告（合并所有并发级别）
+- 报告特点：
+  - 包含各并发级别的详细对比表格
+  - 包含模型性能对比柱状图
+  - 包含分析小结（以第一个模型为基准，显示其他模型的性能改进百分比）

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5)",
+      "Bash(python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5-bf16)",
+      "Bash(python parse_single_chip_model_runid.py --chip Hygon_BW1000)",
+      "Bash(python parse_single_chip_model_runid.py --chip Hygon_BW1000 --model MiniMax-M2.5-W8A8)",
+      "Bash(python parse_single_chip_model_runid.py --chip kunlun_p800 --model MiniMax-M2.5-W8A8-INT8-Dynamic --test-suite test_06)",
+      "Bash(python parse_single_chip_model_runid.py --run-id 01)",
+      "Bash(python parse_single_chip_model_runid.py --chip kunlun_p800 --model MiniMax-M2.5-W8A8-INT8-Dynamic --test-suite test_01 --run-id \"01,02,03\")",
+      "Bash(python parse_single_chip_model_runid.py --chip kunlun_p800 --model MiniMax-M2.5-W8A8-INT8-Dynamic --test-suite test_01 --run-id \"01,02\")",
+      "Bash(python model_comparison.py --chip hygon_bw1000 --model MiniMax-M2.5)",
+      "Bash(python model_comparison.py --chip hygon_bw1000 --model MiniMax-M2.5-bf16)",
+      "Bash(python model_comparison.py --chip hygon_bw1000 --model MiniMax-M2.5-bf16,MiniMax-M2.5-W8A8)",
+      "Bash(python model_comparison_all_concurrency.py --chip hygon_bw1000 --model MiniMax-M2.5-bf16,MiniMax-M2.5-W8A8)"
+    ]
+  }
+}
