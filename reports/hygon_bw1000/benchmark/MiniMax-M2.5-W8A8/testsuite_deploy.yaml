@@ -1,0 +1,18 @@
+# 模型部署配置
+# 用于生成芯片性能对比报告中的vLLM启动配置信息
+# 按芯片类型分组
+
+vllm_configs:
+  hygon_P800:
+    - run-id: 01
+      model: MiniMax-M2.5-W8A8
+      max-model-len: 196608
+      gpu-memory-utilization: 0.9
+      max-num-seqs: 64
+      dtype: float16
+      dp: 1
+      tp: 8
+      pp: 1
+      enable-auto-tool-choice: true
+      tool-call-parser: minimax_m2
+      cc: {"pass_config": {"fuse_act_quant": false}}

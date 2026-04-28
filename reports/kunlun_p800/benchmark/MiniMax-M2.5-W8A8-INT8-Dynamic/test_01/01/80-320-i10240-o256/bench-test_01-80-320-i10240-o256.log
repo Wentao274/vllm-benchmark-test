@@ -1,0 +1,356 @@
+/root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/xpytorch_import_hook.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+XCCL /root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/torch_xmlir/libbkcl.so loaded
+[35mSYMBOL_REWRITE [0m[32mtorch success[0m
+INFO 04-08 15:54:33 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 04-08 15:54:33 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 04-08 15:54:33 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 04-08 15:54:33 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 04-08 15:54:33 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 04-08 15:54:33 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 04-08 15:54:33 [__init__.py:220] No platform detected, vLLM is running on UnspecifiedPlatform
+INFO 04-08 15:54:36 [__init__.py:207] Platform plugin kunlun is activated
+WARNING 04-08 15:54:37 [_custom_ops.py:20] Failed to import from vllm._C with ImportError('libcudart.so.12: cannot open shared object file: No such file or directory')
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.UnquantizedFusedMoEMethod       --> vllm_kunlun.ops.fused_moe.layer.KunlunUnquantizedFusedMoEMethod
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.FusedMoE       --> vllm_kunlun.ops.fused_moe.layer.KunlunFusedMoE
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQLinearMethod       --> vllm_kunlun.ops.quantization.awq.KunlunAWQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQConfig       --> vllm_kunlun.ops.quantization.awq.KunlunAWQConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors.CompressedTensorsConfig       --> vllm_kunlun.ops.quantization.compressed_tensors.KunlunCompressedTensorsConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.gptq.GPTQLinearMethod       --> vllm_kunlun.ops.quantization.gptq.KunlunGPTQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.moe_wna16.MoeWNA16Method       --> vllm_kunlun.ops.quantization.moe_wna16.KunlunMoeWNA16Method
+ERROR 04-08 15:54:39 [fa_utils.py:57] Cannot use FA version 2 is not supported due to FA2 is unavaible due to: libcudart.so.12: cannot open shared object file: No such file or directory
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen2VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_vl:Qwen2VLForConditionalGeneration.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen2_5_VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_5_vl:Qwen2_5_VLForConditionalGeneration.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3:Qwen3ForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3MoeForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_moe:Qwen3MoeForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3NextForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next:Qwen3NextForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3NextMTP is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next_mtp:Qwen3NextMTP.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture GlmForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.glm:GlmForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture InternLM2ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.internlm2:InternLM2ForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture InternVLChatModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.internvl:InternVLChatModel.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture InternS1ForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.interns1:InternS1ForConditionalGeneration.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl:Qwen3VLForConditionalGeneration.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture Qwen3VLMoeForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl_moe:Qwen3VLMoeForConditionalGeneration.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture SeedOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.seed_oss:SeedOssForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture DeepseekV3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture DeepseekV32ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 04-08 15:54:39 [registry.py:582] Model architecture DeepSeekMTPModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_mtp:DeepSeekMTP.
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7f6abe2e96c0>, seed=123, num_prompts=320, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, custom_output_len=256, custom_skip_chat_template=False, spec_bench_output_len=256, spec_bench_category=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, blazedit_min_distance=0.0, blazedit_max_distance=1.0, random_input_len=10240, random_output_len=256, random_range_ratio=0.0, random_prefix_len=0, random_batch_size=1, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 0}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, label=None, backend='openai-chat', endpoint_type=None, base_url='http://127.0.0.1:8080', host='127.0.0.1', port=8000, endpoint='/v1/chat/completions', header=None, max_concurrency=80, model='/data/MiniMax-M2.5-W8A8-INT8-Dynamic', tokenizer=None, use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, trust_remote_code=True, disable_tqdm=False, profile=False, save_result=False, save_detailed=False, append_result=False, metadata=None, result_dir=None, result_filename=None, ignore_eos=False, percentile_metrics='ttft,tpot,itl', metric_percentiles='95,99', goodput=None, request_id_prefix='benchmark-serving', top_p=None, top_k=None, min_p=None, temperature=0.7, tokenizer_mode='auto', served_model_name='minimax-m2.5', lora_modules=None, ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=30)
+INFO 04-08 15:54:40 [datasets.py:507] Sampling input_len from [10240, 10240] and output_len from [256, 256]
+Starting initial single prompt test run...
+Waiting for endpoint to become up in 30 seconds
+
+ |          | 00:00 elapsed, ? remaining
+ |          | 00:00 elapsed, 00:00 remaining
+ |          | 00:05 elapsed, 54:36:42 remaining
+Initial test run completed. Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 80
+
+  0%|          | 0/320 [00:00<?, ?it/s]
+  0%|          | 1/320 [00:57<5:07:48, 57.89s/it]
+  1%|          | 2/320 [01:01<2:16:44, 25.80s/it]
+  1%|▏         | 4/320 [01:03<54:13, 10.29s/it]  
+  2%|▏         | 6/320 [01:05<30:45,  5.88s/it]
+  2%|▏         | 7/320 [01:06<24:03,  4.61s/it]
+  2%|▎         | 8/320 [01:06<18:48,  3.62s/it]
+  3%|▎         | 9/320 [01:07<14:54,  2.88s/it]
+  3%|▎         | 10/320 [01:08<11:34,  2.24s/it]
+  3%|▎         | 11/320 [01:09<09:08,  1.78s/it]
+  4%|▍         | 12/320 [01:10<08:09,  1.59s/it]
+  4%|▍         | 13/320 [01:10<06:40,  1.30s/it]
+  4%|▍         | 14/320 [01:12<06:24,  1.26s/it]
+  5%|▍         | 15/320 [01:12<05:25,  1.07s/it]
+  5%|▌         | 16/320 [01:13<05:19,  1.05s/it]
+  5%|▌         | 17/320 [01:14<05:01,  1.01it/s]
+  6%|▌         | 18/320 [01:15<04:48,  1.05it/s]
+  6%|▌         | 19/320 [01:16<04:16,  1.17it/s]
+  6%|▋         | 20/320 [01:17<04:30,  1.11it/s]
+  7%|▋         | 21/320 [01:17<04:03,  1.23it/s]
+  7%|▋         | 22/320 [01:18<03:45,  1.32it/s]
+  7%|▋         | 23/320 [01:18<03:33,  1.39it/s]
+  8%|▊         | 24/320 [01:20<04:21,  1.13it/s]
+  8%|▊         | 25/320 [01:20<03:58,  1.24it/s]
+  8%|▊         | 26/320 [01:21<03:41,  1.33it/s]
+  8%|▊         | 27/320 [01:22<03:29,  1.40it/s]
+  9%|▉         | 28/320 [01:23<04:17,  1.14it/s]
+  9%|▉         | 29/320 [01:23<03:53,  1.24it/s]
+  9%|▉         | 30/320 [01:24<03:37,  1.33it/s]
+ 10%|▉         | 31/320 [01:25<03:26,  1.40it/s]
+ 10%|█         | 32/320 [01:25<03:19,  1.45it/s]
+ 10%|█         | 33/320 [01:26<03:12,  1.49it/s]
+ 11%|█         | 34/320 [01:27<03:08,  1.52it/s]
+ 11%|█         | 35/320 [01:28<03:59,  1.19it/s]
+ 11%|█▏        | 36/320 [01:29<04:59,  1.05s/it]
+ 12%|█▏        | 37/320 [01:30<04:41,  1.00it/s]
+ 12%|█▏        | 38/320 [01:31<04:08,  1.14it/s]
+ 12%|█▏        | 39/320 [01:32<04:18,  1.09it/s]
+ 12%|█▎        | 40/320 [01:33<04:11,  1.11it/s]
+ 13%|█▎        | 42/320 [01:33<02:54,  1.59it/s]
+ 13%|█▎        | 43/320 [01:34<02:53,  1.60it/s]
+ 14%|█▍        | 44/320 [01:35<02:52,  1.60it/s]
+ 14%|█▍        | 45/320 [01:36<03:40,  1.25it/s]
+ 14%|█▍        | 46/320 [01:36<03:26,  1.33it/s]
+ 15%|█▍        | 47/320 [01:37<03:15,  1.39it/s]
+ 15%|█▌        | 48/320 [01:38<03:08,  1.45it/s]
+ 15%|█▌        | 49/320 [01:40<04:41,  1.04s/it]
+ 16%|█▌        | 50/320 [01:40<04:08,  1.09it/s]
+ 16%|█▌        | 51/320 [01:41<03:44,  1.20it/s]
+ 16%|█▋        | 52/320 [01:42<04:17,  1.04it/s]
+ 17%|█▋        | 53/320 [01:43<03:49,  1.16it/s]
+ 17%|█▋        | 54/320 [01:43<03:30,  1.26it/s]
+ 17%|█▋        | 55/320 [01:44<03:17,  1.34it/s]
+ 18%|█▊        | 56/320 [01:45<03:08,  1.40it/s]
+ 18%|█▊        | 57/320 [01:45<03:00,  1.46it/s]
+ 18%|█▊        | 58/320 [01:46<02:54,  1.50it/s]
+ 18%|█▊        | 59/320 [01:47<02:50,  1.53it/s]
+ 19%|█▉        | 60/320 [01:48<03:38,  1.19it/s]
+ 19%|█▉        | 61/320 [01:48<03:20,  1.29it/s]
+ 19%|█▉        | 62/320 [01:49<03:08,  1.37it/s]
+ 20%|█▉        | 63/320 [01:50<02:59,  1.43it/s]
+ 20%|██        | 64/320 [01:52<04:31,  1.06s/it]
+ 20%|██        | 65/320 [02:00<13:47,  3.24s/it]
+ 21%|██        | 66/320 [02:02<11:37,  2.74s/it]
+ 21%|██        | 67/320 [02:04<10:55,  2.59s/it]
+ 21%|██▏       | 68/320 [02:05<08:57,  2.13s/it]
+ 22%|██▏       | 69/320 [02:06<07:58,  1.91s/it]
+ 22%|██▏       | 70/320 [02:07<06:19,  1.52s/it]
+ 22%|██▏       | 71/320 [02:08<05:50,  1.41s/it]
+ 22%|██▎       | 72/320 [02:09<05:08,  1.24s/it]
+ 23%|██▎       | 73/320 [02:10<04:39,  1.13s/it]
+ 23%|██▎       | 74/320 [02:11<04:17,  1.05s/it]
+ 23%|██▎       | 75/320 [02:11<04:07,  1.01s/it]
+ 24%|██▍       | 77/320 [02:12<02:46,  1.46it/s]
+ 24%|██▍       | 78/320 [02:13<02:42,  1.49it/s]
+ 25%|██▍       | 79/320 [02:14<03:19,  1.21it/s]
+ 25%|██▌       | 80/320 [02:16<04:17,  1.07s/it]
+ 25%|██▌       | 81/320 [02:17<04:02,  1.01s/it]
+ 26%|██▌       | 82/320 [02:17<03:50,  1.03it/s]
+ 26%|██▌       | 83/320 [02:18<03:25,  1.15it/s]
+ 26%|██▋       | 84/320 [02:19<03:07,  1.26it/s]
+ 27%|██▋       | 85/320 [02:19<02:55,  1.34it/s]
+ 27%|██▋       | 86/320 [02:21<03:31,  1.11it/s]
+ 27%|██▋       | 87/320 [02:21<03:10,  1.22it/s]
+ 28%|██▊       | 88/320 [02:22<02:56,  1.31it/s]
+ 28%|██▊       | 89/320 [02:23<03:23,  1.13it/s]
+ 28%|██▊       | 90/320 [02:24<03:04,  1.25it/s]
+ 28%|██▊       | 91/320 [02:24<02:51,  1.34it/s]
+ 29%|██▉       | 92/320 [02:25<02:42,  1.40it/s]
+ 29%|██▉       | 94/320 [02:25<02:00,  1.88it/s]
+ 30%|██▉       | 95/320 [02:26<02:05,  1.79it/s]
+ 30%|███       | 96/320 [02:27<02:08,  1.74it/s]
+ 30%|███       | 97/320 [02:28<02:49,  1.32it/s]
+ 31%|███       | 99/320 [02:29<02:35,  1.42it/s]
+ 31%|███▏      | 100/320 [02:30<02:30,  1.46it/s]
+ 32%|███▏      | 101/320 [02:30<02:26,  1.50it/s]
+ 32%|███▏      | 102/320 [02:31<02:23,  1.52it/s]
+ 32%|███▏      | 103/320 [02:32<02:58,  1.22it/s]
+ 32%|███▎      | 104/320 [02:34<04:02,  1.12s/it]
+ 33%|███▎      | 105/320 [02:36<04:09,  1.16s/it]
+ 33%|███▎      | 106/320 [02:36<03:34,  1.00s/it]
+ 33%|███▎      | 107/320 [02:37<03:41,  1.04s/it]
+ 34%|███▍      | 108/320 [02:38<03:28,  1.02it/s]
+ 34%|███▍      | 109/320 [02:39<03:04,  1.14it/s]
+ 34%|███▍      | 110/320 [02:39<02:47,  1.25it/s]
+ 35%|███▍      | 111/320 [02:41<03:11,  1.09it/s]
+ 35%|███▌      | 112/320 [02:41<02:52,  1.21it/s]
+ 35%|███▌      | 113/320 [02:42<02:38,  1.30it/s]
+ 36%|███▌      | 114/320 [02:43<03:00,  1.14it/s]
+ 36%|███▌      | 115/320 [02:44<02:44,  1.25it/s]
+ 36%|███▋      | 116/320 [02:44<02:32,  1.34it/s]
+ 37%|███▋      | 117/320 [02:45<02:55,  1.16it/s]
+ 37%|███▋      | 118/320 [02:46<02:39,  1.27it/s]
+ 37%|███▋      | 119/320 [02:47<02:51,  1.17it/s]
+ 38%|███▊      | 120/320 [02:48<02:36,  1.28it/s]
+ 38%|███▊      | 121/320 [02:49<02:49,  1.18it/s]
+ 38%|███▊      | 122/320 [02:49<02:48,  1.17it/s]
+ 38%|███▊      | 123/320 [02:50<02:48,  1.17it/s]
+ 39%|███▉      | 124/320 [02:51<02:33,  1.28it/s]
+ 39%|███▉      | 125/320 [02:52<02:23,  1.36it/s]
+ 39%|███▉      | 126/320 [02:52<02:15,  1.43it/s]
+ 40%|███▉      | 127/320 [02:53<02:48,  1.15it/s]
+ 40%|████      | 128/320 [02:54<02:33,  1.25it/s]
+ 40%|████      | 129/320 [03:02<09:46,  3.07s/it]
+ 41%|████      | 130/320 [03:04<08:18,  2.62s/it]
+ 41%|████      | 131/320 [03:06<07:34,  2.41s/it]
+ 41%|████▏     | 132/320 [03:07<06:16,  2.00s/it]
+ 42%|████▏     | 133/320 [03:08<04:56,  1.59s/it]
+ 42%|████▏     | 134/320 [03:09<04:29,  1.45s/it]
+ 42%|████▏     | 135/320 [03:10<04:24,  1.43s/it]
+ 42%|████▎     | 136/320 [03:11<03:41,  1.21s/it]
+ 43%|████▎     | 137/320 [03:12<03:44,  1.23s/it]
+ 43%|████▎     | 138/320 [03:13<03:23,  1.12s/it]
+ 43%|████▎     | 139/320 [03:14<03:08,  1.04s/it]
+ 44%|████▍     | 140/320 [03:15<03:00,  1.00s/it]
+ 44%|████▍     | 141/320 [03:15<02:38,  1.13it/s]
+ 44%|████▍     | 142/320 [03:16<02:23,  1.24it/s]
+ 45%|████▍     | 143/320 [03:17<02:39,  1.11it/s]
+ 45%|████▌     | 144/320 [03:18<02:23,  1.22it/s]
+ 45%|████▌     | 145/320 [03:19<02:39,  1.10it/s]
+ 46%|████▌     | 146/320 [03:19<02:23,  1.21it/s]
+ 46%|████▌     | 147/320 [03:21<02:38,  1.09it/s]
+ 46%|████▋     | 148/320 [03:21<02:22,  1.21it/s]
+ 47%|████▋     | 149/320 [03:22<02:10,  1.31it/s]
+ 47%|████▋     | 151/320 [03:23<01:59,  1.42it/s]
+ 48%|████▊     | 152/320 [03:24<01:55,  1.46it/s]
+ 48%|████▊     | 153/320 [03:24<01:52,  1.49it/s]
+ 48%|████▊     | 154/320 [03:25<01:49,  1.52it/s]
+ 48%|████▊     | 155/320 [03:26<02:16,  1.21it/s]
+ 49%|████▉     | 156/320 [03:27<02:35,  1.05it/s]
+ 49%|████▉     | 157/320 [03:28<02:19,  1.17it/s]
+ 49%|████▉     | 158/320 [03:29<02:08,  1.26it/s]
+ 50%|████▉     | 159/320 [03:29<01:59,  1.34it/s]
+ 50%|█████     | 160/320 [03:30<01:53,  1.41it/s]
+ 50%|█████     | 161/320 [03:31<01:48,  1.46it/s]
+ 51%|█████     | 162/320 [03:32<02:15,  1.17it/s]
+ 51%|█████     | 163/320 [03:33<02:33,  1.02it/s]
+ 51%|█████▏    | 164/320 [03:34<02:16,  1.15it/s]
+ 52%|█████▏    | 165/320 [03:35<02:26,  1.06it/s]
+ 52%|█████▏    | 166/320 [03:35<02:10,  1.18it/s]
+ 52%|█████▎    | 168/320 [03:36<01:30,  1.67it/s]
+ 53%|█████▎    | 169/320 [03:37<01:31,  1.66it/s]
+ 53%|█████▎    | 170/320 [03:38<01:56,  1.29it/s]
+ 53%|█████▎    | 171/320 [03:39<01:49,  1.36it/s]
+ 54%|█████▍    | 172/320 [03:39<01:43,  1.42it/s]
+ 54%|█████▍    | 174/320 [03:40<01:37,  1.50it/s]
+ 55%|█████▍    | 175/320 [03:42<01:56,  1.24it/s]
+ 55%|█████▌    | 176/320 [03:42<01:49,  1.32it/s]
+ 55%|█████▌    | 177/320 [03:44<02:38,  1.11s/it]
+ 56%|█████▌    | 178/320 [03:45<02:18,  1.03it/s]
+ 56%|█████▋    | 180/320 [03:46<01:35,  1.47it/s]
+ 57%|█████▋    | 181/320 [03:47<01:53,  1.22it/s]
+ 57%|█████▋    | 182/320 [03:48<01:46,  1.29it/s]
+ 57%|█████▋    | 183/320 [03:48<01:40,  1.36it/s]
+ 57%|█████▊    | 184/320 [03:50<02:19,  1.03s/it]
+ 58%|█████▊    | 185/320 [03:51<02:12,  1.02it/s]
+ 58%|█████▊    | 186/320 [03:51<01:56,  1.15it/s]
+ 58%|█████▊    | 187/320 [03:52<02:01,  1.10it/s]
+ 59%|█████▉    | 188/320 [03:53<01:58,  1.12it/s]
+ 59%|█████▉    | 189/320 [03:54<01:58,  1.10it/s]
+ 59%|█████▉    | 190/320 [03:55<01:46,  1.22it/s]
+ 60%|█████▉    | 191/320 [03:56<01:55,  1.12it/s]
+ 60%|██████    | 192/320 [03:57<01:44,  1.23it/s]
+ 60%|██████    | 193/320 [04:03<05:13,  2.47s/it]
+ 61%|██████    | 194/320 [04:04<04:32,  2.16s/it]
+ 61%|██████    | 195/320 [04:06<04:25,  2.12s/it]
+ 61%|██████▏   | 196/320 [04:08<04:03,  1.96s/it]
+ 62%|██████▏   | 197/320 [04:09<03:29,  1.71s/it]
+ 62%|██████▏   | 198/320 [04:11<03:21,  1.65s/it]
+ 62%|██████▏   | 199/320 [04:12<03:00,  1.49s/it]
+ 62%|██████▎   | 200/320 [04:13<02:40,  1.34s/it]
+ 63%|██████▎   | 201/320 [04:14<02:40,  1.35s/it]
+ 63%|██████▎   | 202/320 [04:15<02:33,  1.30s/it]
+ 63%|██████▎   | 203/320 [04:16<02:16,  1.17s/it]
+ 64%|██████▍   | 204/320 [04:17<02:05,  1.08s/it]
+ 64%|██████▍   | 205/320 [04:18<01:58,  1.03s/it]
+ 64%|██████▍   | 206/320 [04:18<01:43,  1.10it/s]
+ 65%|██████▌   | 208/320 [04:20<01:40,  1.11it/s]
+ 66%|██████▌   | 210/320 [04:21<01:12,  1.51it/s]
+ 66%|██████▌   | 211/320 [04:23<01:39,  1.09it/s]
+ 66%|██████▋   | 212/320 [04:23<01:31,  1.18it/s]
+ 67%|██████▋   | 213/320 [04:24<01:38,  1.09it/s]
+ 68%|██████▊   | 216/320 [04:25<00:56,  1.83it/s]
+ 68%|██████▊   | 217/320 [04:27<01:23,  1.23it/s]
+ 68%|██████▊   | 218/320 [04:28<01:18,  1.29it/s]
+ 68%|██████▊   | 219/320 [04:28<01:14,  1.36it/s]
+ 69%|██████▉   | 220/320 [04:29<01:10,  1.41it/s]
+ 69%|██████▉   | 221/320 [04:29<01:08,  1.45it/s]
+ 69%|██████▉   | 222/320 [04:30<01:06,  1.48it/s]
+ 70%|██████▉   | 223/320 [04:31<01:04,  1.51it/s]
+ 70%|███████   | 224/320 [04:31<01:02,  1.54it/s]
+ 70%|███████   | 225/320 [04:32<01:00,  1.56it/s]
+ 71%|███████   | 226/320 [04:33<01:17,  1.21it/s]
+ 71%|███████   | 227/320 [04:34<01:11,  1.31it/s]
+ 71%|███████▏  | 228/320 [04:35<01:23,  1.10it/s]
+ 72%|███████▏  | 229/320 [04:36<01:32,  1.02s/it]
+ 72%|███████▏  | 230/320 [04:37<01:20,  1.11it/s]
+ 72%|███████▏  | 231/320 [04:38<01:12,  1.22it/s]
+ 72%|███████▎  | 232/320 [04:40<01:40,  1.14s/it]
+ 73%|███████▎  | 233/320 [04:40<01:25,  1.01it/s]
+ 73%|███████▎  | 234/320 [04:41<01:25,  1.01it/s]
+ 73%|███████▎  | 235/320 [04:42<01:14,  1.14it/s]
+ 74%|███████▍  | 236/320 [04:42<01:07,  1.25it/s]
+ 74%|███████▍  | 237/320 [04:43<01:02,  1.34it/s]
+ 74%|███████▍  | 238/320 [04:44<01:13,  1.11it/s]
+ 75%|███████▍  | 239/320 [04:45<01:06,  1.23it/s]
+ 75%|███████▌  | 240/320 [04:46<01:00,  1.32it/s]
+ 75%|███████▌  | 241/320 [04:46<00:56,  1.39it/s]
+ 76%|███████▌  | 242/320 [04:47<01:08,  1.14it/s]
+ 76%|███████▋  | 244/320 [04:49<00:57,  1.32it/s]
+ 77%|███████▋  | 245/320 [04:49<00:54,  1.38it/s]
+ 77%|███████▋  | 246/320 [04:50<00:51,  1.43it/s]
+ 77%|███████▋  | 247/320 [04:51<01:01,  1.18it/s]
+ 78%|███████▊  | 248/320 [04:52<00:56,  1.27it/s]
+ 78%|███████▊  | 249/320 [04:52<00:52,  1.35it/s]
+ 78%|███████▊  | 250/320 [04:54<01:06,  1.05it/s]
+ 78%|███████▊  | 251/320 [04:55<01:03,  1.08it/s]
+ 79%|███████▉  | 252/320 [04:55<00:56,  1.20it/s]
+ 79%|███████▉  | 253/320 [04:56<00:59,  1.13it/s]
+ 79%|███████▉  | 254/320 [04:57<00:57,  1.14it/s]
+ 80%|███████▉  | 255/320 [04:58<00:59,  1.10it/s]
+ 80%|████████  | 256/320 [04:59<00:58,  1.09it/s]
+ 80%|████████  | 257/320 [05:02<01:28,  1.40s/it]
+ 81%|████████  | 258/320 [05:03<01:22,  1.33s/it]
+ 81%|████████  | 259/320 [05:05<01:43,  1.70s/it]
+ 81%|████████▏ | 260/320 [05:07<01:47,  1.80s/it]
+ 82%|████████▏ | 261/320 [05:08<01:28,  1.50s/it]
+ 82%|████████▏ | 262/320 [05:09<01:07,  1.16s/it]
+ 82%|████████▏ | 263/320 [05:09<00:58,  1.03s/it]
+ 82%|████████▎ | 264/320 [05:10<00:46,  1.20it/s]
+ 83%|████████▎ | 265/320 [05:11<00:46,  1.19it/s]
+ 83%|████████▎ | 266/320 [05:11<00:38,  1.41it/s]
+ 83%|████████▎ | 267/320 [05:11<00:28,  1.87it/s]
+ 84%|████████▍ | 268/320 [05:11<00:21,  2.44it/s]
+ 84%|████████▍ | 269/320 [05:11<00:17,  2.93it/s]
+ 85%|████████▍ | 271/320 [05:11<00:10,  4.73it/s]
+ 85%|████████▌ | 272/320 [05:12<00:09,  5.29it/s]
+ 86%|████████▌ | 274/320 [05:12<00:06,  7.47it/s]
+ 86%|████████▋ | 276/320 [05:12<00:05,  8.00it/s]
+ 87%|████████▋ | 278/320 [05:12<00:05,  7.75it/s]
+ 88%|████████▊ | 280/320 [05:12<00:04,  8.80it/s]
+ 88%|████████▊ | 283/320 [05:12<00:03, 12.29it/s]
+ 89%|████████▉ | 285/320 [05:13<00:02, 12.50it/s]
+ 90%|█████████ | 289/320 [05:13<00:01, 16.45it/s]
+ 91%|█████████ | 291/320 [05:13<00:01, 15.75it/s]
+ 92%|█████████▏| 295/320 [05:13<00:01, 17.47it/s]
+ 93%|█████████▎| 297/320 [05:13<00:01, 15.48it/s]
+ 94%|█████████▍| 300/320 [05:13<00:01, 16.22it/s]
+ 95%|█████████▍| 303/320 [05:14<00:01, 16.69it/s]
+ 96%|█████████▌| 306/320 [05:14<00:00, 16.06it/s]
+ 97%|█████████▋| 309/320 [05:14<00:00, 18.24it/s]
+ 97%|█████████▋| 311/320 [05:14<00:00, 18.31it/s]
+ 98%|█████████▊| 314/320 [05:14<00:00, 17.19it/s]
+ 99%|█████████▉| 317/320 [05:14<00:00, 17.95it/s]
+100%|█████████▉| 319/320 [05:15<00:00, 16.52it/s]
+100%|██████████| 320/320 [05:15<00:00,  1.02it/s]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     320       
+Maximum request concurrency:             80        
+Benchmark duration (s):                  315.14    
+Total input tokens:                      3276748   
+Total generated tokens:                  80493     
+Request throughput (req/s):              1.02      
+Output token throughput (tok/s):         255.42    
+Peak output token throughput (tok/s):    1025.00   
+Peak concurrent requests:                83.00     
+Total Token throughput (tok/s):          10653.29  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          21074.74  
+Median TTFT (ms):                        15109.31  
+P95 TTFT (ms):                           50874.99  
+P99 TTFT (ms):                           71633.46  
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          223.83    
+Median TPOT (ms):                        243.06    
+P95 TPOT (ms):                           251.21    
+P99 TPOT (ms):                           255.96    
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           223.17    
+Median ITL (ms):                         65.36     
+P95 ITL (ms):                            630.93    
+P99 ITL (ms):                            638.32    
+==================================================

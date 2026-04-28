@@ -1,0 +1,126 @@
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7f60b9372050>, seed=123, num_prompts=320, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, skip_chat_template=False, disable_shuffle=False, custom_output_len=256, spec_bench_output_len=256, spec_bench_category=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, blazedit_min_distance=0.0, blazedit_max_distance=1.0, random_input_len=10240, random_output_len=256, random_range_ratio=0.0, random_prefix_len=0, random_batch_size=1, no_reranker=False, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 1}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, label=None, backend='openai-chat', base_url='http://127.0.0.1:8080', host='127.0.0.1', port=8000, endpoint='/v1/chat/completions', header=None, max_concurrency=4, model='/data/models/MiniMax-M2.5-bf16', input_len=None, output_len=None, tokenizer=None, tokenizer_mode='auto', use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, trust_remote_code=True, disable_tqdm=False, num_warmups=0, profile=False, save_result=False, save_detailed=False, append_result=False, metadata=None, result_dir=None, result_filename=None, ignore_eos=False, percentile_metrics=None, metric_percentiles='95,99', goodput=None, request_id_prefix='bench-8b00b98e-', top_p=None, top_k=None, min_p=None, temperature=0.7, frequency_penalty=None, presence_penalty=None, repetition_penalty=None, served_model_name='minimax-m2.5', lora_modules=None, ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=30, extra_body=None)
+INFO 04-07 14:36:01 [datasets.py:612] Sampling input_len from [10240, 10240] and output_len from [256, 256]
+Starting initial single prompt test run...
+Waiting for endpoint to become up in 30 seconds
+
+ |          | 00:00 elapsed, ? remaining
+ |          | 00:00 elapsed, 00:00 remaining
+ |          | 00:10 elapsed, 84:04:36 remaining
+Initial test run completed.
+Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 4
+
+  0%|          | 0/320 [00:00<?, ?it/s]
+  0%|          | 1/320 [00:24<2:12:39, 24.95s/it]
+  2%|▏         | 5/320 [00:54<52:40, 10.03s/it]  
+  3%|▎         | 9/320 [01:24<44:31,  8.59s/it]
+  4%|▍         | 13/320 [01:53<41:13,  8.06s/it]
+  5%|▌         | 17/320 [02:23<39:22,  7.80s/it]
+  7%|▋         | 21/320 [02:53<38:12,  7.67s/it]
+  8%|▊         | 25/320 [03:22<37:15,  7.58s/it]
+  9%|▉         | 29/320 [03:52<36:25,  7.51s/it]
+ 10%|█         | 33/320 [04:21<35:44,  7.47s/it]
+ 12%|█▏        | 37/320 [04:51<35:07,  7.45s/it]
+ 13%|█▎        | 41/320 [05:20<34:32,  7.43s/it]
+ 14%|█▍        | 45/320 [05:50<34:07,  7.44s/it]
+ 15%|█▌        | 49/320 [06:20<33:37,  7.44s/it]
+ 17%|█▋        | 53/320 [06:50<33:07,  7.44s/it]
+ 18%|█▊        | 57/320 [07:19<32:33,  7.43s/it]
+ 19%|█▉        | 61/320 [07:49<31:59,  7.41s/it]
+ 20%|██        | 65/320 [08:19<31:31,  7.42s/it]
+ 22%|██▏       | 69/320 [08:48<31:01,  7.42s/it]
+ 23%|██▎       | 73/320 [09:18<30:28,  7.40s/it]
+ 24%|██▍       | 77/320 [09:47<30:00,  7.41s/it]
+ 25%|██▌       | 81/320 [10:17<29:29,  7.40s/it]
+ 27%|██▋       | 85/320 [10:47<28:59,  7.40s/it]
+ 28%|██▊       | 89/320 [11:16<28:28,  7.40s/it]
+ 29%|██▉       | 93/320 [11:46<28:06,  7.43s/it]
+ 30%|███       | 97/320 [12:16<27:33,  7.42s/it]
+ 32%|███▏      | 101/320 [12:45<27:01,  7.40s/it]
+ 33%|███▎      | 105/320 [13:15<26:34,  7.41s/it]
+ 34%|███▍      | 109/320 [13:44<26:02,  7.41s/it]
+ 35%|███▌      | 113/320 [14:14<25:34,  7.41s/it]
+ 37%|███▋      | 117/320 [14:44<25:04,  7.41s/it]
+ 38%|███▊      | 121/320 [15:13<24:33,  7.40s/it]
+ 39%|███▉      | 125/320 [15:43<24:00,  7.39s/it]
+ 40%|████      | 129/320 [16:13<23:34,  7.41s/it]
+ 42%|████▏     | 133/320 [16:42<23:04,  7.40s/it]
+ 43%|████▎     | 137/320 [17:12<22:33,  7.39s/it]
+ 44%|████▍     | 141/320 [17:41<22:03,  7.39s/it]
+ 45%|████▌     | 145/320 [18:11<21:32,  7.38s/it]
+ 47%|████▋     | 149/320 [18:40<21:04,  7.40s/it]
+ 48%|████▊     | 153/320 [19:10<20:36,  7.40s/it]
+ 49%|████▉     | 157/320 [19:40<20:08,  7.41s/it]
+ 50%|█████     | 161/320 [20:10<19:40,  7.43s/it]
+ 52%|█████▏    | 165/320 [20:39<19:10,  7.42s/it]
+ 53%|█████▎    | 169/320 [21:09<18:38,  7.41s/it]
+ 54%|█████▍    | 173/320 [21:39<18:11,  7.42s/it]
+ 55%|█████▌    | 177/320 [22:08<17:41,  7.42s/it]
+ 57%|█████▋    | 181/320 [22:38<17:10,  7.42s/it]
+ 58%|█████▊    | 185/320 [23:07<16:40,  7.41s/it]
+ 59%|█████▉    | 189/320 [23:37<16:09,  7.40s/it]
+ 60%|██████    | 193/320 [24:07<15:40,  7.40s/it]
+ 62%|██████▏   | 197/320 [24:36<15:12,  7.41s/it]
+ 63%|██████▎   | 201/320 [25:06<14:40,  7.40s/it]
+ 64%|██████▍   | 205/320 [25:35<14:11,  7.41s/it]
+ 65%|██████▌   | 209/320 [26:05<13:42,  7.41s/it]
+ 67%|██████▋   | 213/320 [26:35<13:11,  7.40s/it]
+ 68%|██████▊   | 217/320 [27:04<12:41,  7.39s/it]
+ 69%|██████▉   | 221/320 [27:34<12:10,  7.38s/it]
+ 70%|███████   | 225/320 [28:03<11:41,  7.38s/it]
+ 72%|███████▏  | 229/320 [28:33<11:11,  7.38s/it]
+ 73%|███████▎  | 233/320 [29:02<10:42,  7.38s/it]
+ 74%|███████▍  | 237/320 [29:32<10:13,  7.39s/it]
+ 75%|███████▌  | 241/320 [30:01<09:43,  7.39s/it]
+ 77%|███████▋  | 245/320 [30:31<09:14,  7.40s/it]
+ 78%|███████▊  | 249/320 [31:00<08:44,  7.38s/it]
+ 79%|███████▉  | 253/320 [31:30<08:15,  7.40s/it]
+ 80%|████████  | 257/320 [32:00<07:46,  7.40s/it]
+ 82%|████████▏ | 261/320 [32:29<07:16,  7.40s/it]
+ 83%|████████▎ | 265/320 [32:59<06:46,  7.39s/it]
+ 84%|████████▍ | 269/320 [33:29<06:17,  7.40s/it]
+ 85%|████████▌ | 273/320 [33:58<05:48,  7.41s/it]
+ 87%|████████▋ | 277/320 [34:28<05:19,  7.42s/it]
+ 88%|████████▊ | 281/320 [34:58<04:49,  7.42s/it]
+ 89%|████████▉ | 285/320 [35:28<04:20,  7.43s/it]
+ 90%|█████████ | 289/320 [35:57<03:50,  7.43s/it]
+ 92%|█████████▏| 293/320 [36:27<03:20,  7.43s/it]
+ 93%|█████████▎| 297/320 [36:57<02:50,  7.42s/it]
+ 94%|█████████▍| 301/320 [37:26<02:21,  7.42s/it]
+ 95%|█████████▌| 305/320 [37:56<01:51,  7.42s/it]
+ 97%|█████████▋| 309/320 [38:26<01:21,  7.42s/it]
+ 98%|█████████▊| 313/320 [38:55<00:51,  7.41s/it]
+ 99%|█████████▉| 317/320 [39:25<00:22,  7.41s/it]
+100%|██████████| 320/320 [39:25<00:00,  7.39s/it]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     320       
+Failed requests:                         0         
+Maximum request concurrency:             4         
+Benchmark duration (s):                  2365.34   
+Total input tokens:                      3276800   
+Total generated tokens:                  81920     
+Request throughput (req/s):              0.14      
+Output token throughput (tok/s):         34.63     
+Peak output token throughput (tok/s):    111.00    
+Peak concurrent requests:                8.00      
+Total token throughput (tok/s):          1419.97   
+---------------Time to First Token----------------
+Mean TTFT (ms):                          16214.96  
+Median TTFT (ms):                        19806.56  
+P95 TTFT (ms):                           19874.02  
+P99 TTFT (ms):                           19888.60  
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          52.36     
+Median TPOT (ms):                        38.58     
+P95 TPOT (ms):                           96.58     
+P99 TPOT (ms):                           97.18     
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           52.22     
+Median ITL (ms):                         38.47     
+P95 ITL (ms):                            43.58     
+P99 ITL (ms):                            64.02     
+==================================================
+Warning: Resource leak detected by SharedSignalPool, 32 Signals leaked.

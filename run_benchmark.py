@@ -9,7 +9,7 @@ from pathlib import Path
 
 API_KEY = os.environ.get("API_KEY", "abc123")
 
-TEST_SUITES = ["test_01", "test_02", "test_03", "test_04", "test_05", "test_06", "test_07"]
+TEST_SUITES = ["test_01", "test_03", "test_05", "test_06", "test_07"]
 
 RUN_ID = "01"
 

@@ -1,0 +1,7 @@
+# Core dependencies
+PyYAML>=5.0
+requests>=2.25.0
+
+# Optional dependencies (for chart generation)
+matplotlib>=3.0.0
+numpy>=1.20.0
