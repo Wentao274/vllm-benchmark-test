@@ -36,13 +36,14 @@ python chip_comparison.py
 #### 帮助信息：
 usage:<br> 
 chip_comparison.py [-h] [--chip CHIP] [--model MODEL]
-                          [--test-suite TEST_SUITE] [--run-id RUN_ID]
+                          [--test-suite TEST_SUITE] [--run-id RUN_ID] [--concurrency CONCURRENCY]
 
 **options**:<br>
 --chip CHIP           Chip names to compare, comma-separated (e.g., hygon_bw1000,nvidia_h100)<br>
 --model MODEL         Model name to test (e.g., MiniMax-M2.5)<br>
 --test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
 --run-id RUN_ID       Run IDs, can be '01' for all chips or '01,02,03' for each chip<br>
+--concurrency CONCURRENCY  Specific concurrency levels to compare, comma-separated (e.g., 1,2,4,8,10)<br>
 
 #### 示例：
 ##### 2.1 所有芯片使用相同 run-id
@@ -56,6 +57,12 @@ python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-sui
 
 ##### 2.3 使用默认参数（对比所有芯片，run-id 01）
 python chip_comparison.py
+
+##### 2.4 指定特定并发数进行对比
+python chip_comparison.py --chip hygon_bw1000,nvidia_h100 --test-suite test_01 --concurrency 1,2,4,8
+
+##### 2.5 使用简写-c指定并发数
+python chip_comparison.py -c 1,4,8,16 --chip hygon_bw1000,nvidia_h100
 
 **注意**：
 - run-id 参数如果只有一个值，所有芯片使用相同 run-id

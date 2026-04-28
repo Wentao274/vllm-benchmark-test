@@ -1422,6 +1422,13 @@ def main():
         default=None,
         help="Run IDs, can be '01' for all chips or '01,02,03' for each chip",
     )
+    parser.add_argument(
+        "--concurrency",
+        "-c",
+        type=str,
+        default=None,
+        help="Specific concurrency levels to compare, comma-separated (e.g., 1,2,4,8,10)",
+    )
     args = parser.parse_args()
 
     scenarios_config = load_models_scenarios()
@@ -1527,6 +1534,18 @@ def main():
             continue
 
         concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+
+        if args.concurrency:
+            conc_list = [s.strip() for s in args.concurrency.split(",")]
+            filtered_concs = [c for c in concurrencies if c in conc_list]
+            if filtered_concs:
+                concurrencies = filtered_concs
+                print(f"Using specified concurrency levels: {', '.join(concurrencies)}")
+            else:
+                print(
+                    f"Warning: None of the specified concurrency levels {conc_list} found, using all"
+                )
+
         print(
             f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
         )
