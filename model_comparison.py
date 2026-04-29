@@ -802,6 +802,13 @@ def main():
         default="01",
         help="Run IDs for each model, separated by comma (e.g., 01 or 01,02)",
     )
+    parser.add_argument(
+        "-c",
+        "--concurrency",
+        type=str,
+        default=None,
+        help="Specific concurrency levels to compare, comma-separated (e.g., 1,2,4,8,10)",
+    )
 
     args = parser.parse_args()
 
@@ -850,7 +857,11 @@ def main():
         print(f"\nError: Benchmark path not found: {benchmark_path}")
         return
 
-    available_models = [d for d in os.listdir(benchmark_path) if os.path.isdir(os.path.join(benchmark_path, d))]
+    available_models = [
+        d
+        for d in os.listdir(benchmark_path)
+        if os.path.isdir(os.path.join(benchmark_path, d))
+    ]
 
     # 检查每个模型目录是否存在
     missing_models = []
@@ -879,6 +890,20 @@ def main():
 
     print(f"Found {len(test_configs)} test configs from YAML")
     print(f"Concurrency list: {concurrency_list}")
+
+    # 如果指定了并发级别，则过滤
+    if args.concurrency:
+        conc_list = [s.strip() for s in args.concurrency.split(",")]
+        filtered_concs = [c for c in concurrency_list if str(c) in conc_list]
+        if filtered_concs:
+            concurrency_list = filtered_concs
+            print(f"Using specified concurrency levels: {concurrency_list}")
+        else:
+            print(
+                f"Warning: None of the specified concurrency levels {conc_list} found, using all"
+            )
+
+    print(f"Processing concurrency levels: {concurrency_list}")
 
     output_base = f"analysis/{chip}_comparison"
     Path(output_base).mkdir(parents=True, exist_ok=True)

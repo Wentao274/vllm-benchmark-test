@@ -250,7 +250,9 @@ def format_diff(diff, pct):
     return f"{diff:.2f}", "N/A"
 
 
-def generate_comparison_csv(runid_data, concurrencies, output_dir, chip_name, run_ids=None):
+def generate_comparison_csv(
+    runid_data, concurrencies, output_dir, chip_name, run_ids=None
+):
     if run_ids is None:
         run_ids = RUN_IDS
 
@@ -353,7 +355,10 @@ def generate_comparison_csv(runid_data, concurrencies, output_dir, chip_name, ru
         num_other = len(other_ids)
         for display_name, key_name in metric_names:
             if not key_name:
-                csv_lines.append(f"[{display_name}]" + ",," * (len(concurrencies) * (1 + num_other * 3)))
+                csv_lines.append(
+                    f"[{display_name}]"
+                    + ",," * (len(concurrencies) * (1 + num_other * 3))
+                )
                 continue
 
             row = [display_name]
@@ -394,18 +399,29 @@ def generate_comparison_csv(runid_data, concurrencies, output_dir, chip_name, ru
     return [csv_file]
 
 
-def generate_comparison_charts(runid_data, concurrencies, output_dir, chip_name, model_name=None, run_ids=None):
+def generate_comparison_charts(
+    runid_data, concurrencies, output_dir, chip_name, model_name=None, run_ids=None
+):
     if not HAS_MATPLOTLIB:
         return None
 
     if run_ids is None:
         run_ids = RUN_IDS
 
+    plt.rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = ["DejaVu Sans", "Arial", "Helvetica"]
+    plt.rcParams["axes.unicode_minus"] = False
+
     actual_model_name = model_name if model_name else MODEL_NAME
     num_run_ids = len(run_ids)
 
     # 生成 RUN-ID 列表字符串用于标题
-    run_id_str = " vs ".join(run_ids) if num_run_ids <= 3 else " vs ".join(run_ids[:3]) + (" (+{} more)".format(num_run_ids - 3) if num_run_ids > 3 else "")
+    run_id_str = (
+        " vs ".join(run_ids)
+        if num_run_ids <= 3
+        else " vs ".join(run_ids[:3])
+        + (" (+{} more)".format(num_run_ids - 3) if num_run_ids > 3 else "")
+    )
 
     x = range(len(concurrencies))
 
@@ -415,12 +431,21 @@ def generate_comparison_charts(runid_data, concurrencies, output_dir, chip_name,
     bar_width = total_width / num_run_ids if num_run_ids > 0 else 0.35
 
     # 为每个 RUN-ID 分配颜色
-    colors = ["#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6", "#1abc9c", "#e67e22", "#34495e"]
+    colors = [
+        "#3498db",
+        "#2ecc71",
+        "#e74c3c",
+        "#f39c12",
+        "#9b59b6",
+        "#1abc9c",
+        "#e67e22",
+        "#34495e",
+    ]
 
-    fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+    fig, axes = plt.subplots(2, 3, figsize=(22, 14))
     fig.suptitle(
         f"{actual_model_name} on {chip_name} - Run ID Comparison ({run_id_str})",
-        fontsize=14,
+        fontsize=16,
         fontweight="bold",
     )
 
@@ -466,21 +491,38 @@ def generate_comparison_charts(runid_data, concurrencies, output_dir, chip_name,
         for i, run_id in enumerate(run_ids):
             offset = (i - (num_run_ids - 1) / 2) * bar_width
             values = all_run_ids_data[run_id][data_key]
-            ax.bar(
+            bars = ax.bar(
                 [xi + offset for xi in x],
                 values,
-                bar_width,
+                bar_width * 0.7,
                 label=run_id,
                 color=colors[i % len(colors)],
                 alpha=0.8,
             )
 
-        ax.set_title(title, fontsize=11)
-        ax.set_xlabel("Concurrency")
-        ax.set_ylabel(title.split("(")[-1].replace(")", "") if "(" in title else "")
+            # 在柱子上方显示数值
+            for bar, val in zip(bars, values):
+                height = bar.get_height()
+                if height > 0:
+                    ax.annotate(
+                        f"{val:.2f}",
+                        xy=(bar.get_x() + bar.get_width() / 2, height),
+                        xytext=(0, 3),
+                        textcoords="offset points",
+                        ha="center",
+                        va="bottom",
+                        fontsize=11,
+                        rotation=0,
+                    )
+
+        ax.set_title(title, fontsize=13)
+        ax.set_xlabel("Concurrency", fontsize=11)
+        ax.set_ylabel(
+            title.split("(")[-1].replace(")", "") if "(" in title else "", fontsize=11
+        )
         ax.set_xticks(x)
-        ax.set_xticklabels(concurrencies, rotation=45)
-        ax.legend()
+        ax.set_xticklabels(concurrencies, rotation=0, fontsize=11)
+        ax.legend(fontsize=11)
         ax.grid(axis="y", alpha=0.3)
 
     for ax in axes.flat:
@@ -494,7 +536,7 @@ def generate_comparison_charts(runid_data, concurrencies, output_dir, chip_name,
     plt.tight_layout()
 
     chart_file = os.path.join(output_dir, "runid_comparison.png")
-    plt.savefig(chart_file, dpi=150, bbox_inches="tight")
+    plt.savefig(chart_file, dpi=300, bbox_inches="tight")
     plt.close()
 
     print(f"Generated chart: {chart_file}")
@@ -670,7 +712,7 @@ def generate_comparison_charts(runid_data, concurrencies, output_dir, chip_name,
     plt.tight_layout()
 
     chart_file = os.path.join(output_dir, "runid_comparison.png")
-    plt.savefig(chart_file, dpi=150, bbox_inches="tight")
+    plt.savefig(chart_file, dpi=300, bbox_inches="tight")
     plt.close()
 
     print(f"Generated chart: {chart_file}")
@@ -895,7 +937,9 @@ def generate_markdown_report(
     for other_id in other_run_ids:
         improvements_data[other_id] = {
             "tp": calc_avg_improvement("Request throughput (req/s)", other_id),
-            "output_tp": calc_avg_improvement("Output token throughput (tok/s)", other_id),
+            "output_tp": calc_avg_improvement(
+                "Output token throughput (tok/s)", other_id
+            ),
             "ttft": calc_avg_improvement("P99 TTFT (ms)", other_id),
             "tpot": calc_avg_improvement("P99 TPOT (ms)", other_id),
             "itl": calc_avg_improvement("P99 ITL (ms)", other_id),
@@ -1037,7 +1081,7 @@ def generate_markdown_report(
 对比同一芯片、同一测试套件下,同一模型优化前后测试结果比对，分析性能差异。
 
 **测试模型** <br>
-{''.join([f'第{i+1}轮测试（RUN-{rid}）: {model} <br>' for i, rid in enumerate(run_ids)])}
+{"".join([f"第{i + 1}轮测试（RUN-{rid}）: {model} <br>" for i, rid in enumerate(run_ids)])}
 
 ## 🤖 芯片和模型配置信息
 
@@ -1080,15 +1124,15 @@ def generate_markdown_report(
 
 ---
 
-## 各并发级别详细对比
-
-{tables_html}
-
----
-
 ## 📊 RUN-ID对比柱状图
 
 {concurrency_comparison_img}
+
+---
+
+## 各并发级别详细对比
+
+{tables_html}
 
 ---
 
@@ -1137,9 +1181,19 @@ def main():
         default=None,
         help="Run IDs to compare, can be '01,02' or '01' '02' or '01','02'",
     )
+    parser.add_argument(
+        "--concurrency",
+        type=str,
+        default=None,
+        help="Specific concurrency levels to compare, comma-separated (e.g., 1,2,4,8,10)",
+    )
     args = parser.parse_args()
 
     global TEST_SUITES, RUN_IDS, CHIP_BASE_PATHS, MODEL_NAME
+
+    concurrency_filter = None
+    if args.concurrency:
+        concurrency_filter = [s.strip() for s in args.concurrency.split(",")]
 
     if args.test_suite:
         TEST_SUITES = [args.test_suite]
@@ -1156,7 +1210,7 @@ def main():
     if len(RUN_IDS) < 2:
         print(f"\nError: At least 2 RUN-IDs are required for comparison")
         print(f"Provided: {len(RUN_IDS)} ({', '.join(RUN_IDS) if RUN_IDS else 'none'})")
-        print(f"Usage: --run-id 01,02 or --run-id \"01, 02\"")
+        print(f'Usage: --run-id 01,02 or --run-id "01, 02"')
         return
 
     # 确定 chip 名称
@@ -1187,7 +1241,11 @@ def main():
         print(f"\nError: Benchmark path not found: {benchmark_path}")
         return
 
-    available_models = [d for d in os.listdir(benchmark_path) if os.path.isdir(os.path.join(benchmark_path, d))]
+    available_models = [
+        d
+        for d in os.listdir(benchmark_path)
+        if os.path.isdir(os.path.join(benchmark_path, d))
+    ]
 
     model_path = os.path.join(benchmark_path, model_input)
     if not os.path.exists(model_path):
@@ -1227,13 +1285,21 @@ def main():
                     missing_run_ids.append(run_id)
 
             if missing_run_ids:
-                print(f"\nError: Missing RUN-ID directories for {chip_name} / {MODEL_NAME} / {test_suite}")
+                print(
+                    f"\nError: Missing RUN-ID directories for {chip_name} / {MODEL_NAME} / {test_suite}"
+                )
                 print(f"Expected RUN-IDs: {', '.join(RUN_IDS)}")
                 print(f"Missing: {', '.join(missing_run_ids)}")
 
                 # 显示可用的 RUN-ID
-                available_run_ids = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
-                print(f"Available RUN-IDs: {', '.join(available_run_ids) if available_run_ids else 'None'}")
+                available_run_ids = [
+                    d
+                    for d in os.listdir(base_path)
+                    if os.path.isdir(os.path.join(base_path, d))
+                ]
+                print(
+                    f"Available RUN-IDs: {', '.join(available_run_ids) if available_run_ids else 'None'}"
+                )
                 continue
 
             # 只有在所有 RUN-ID 都存在时才创建输出目录
@@ -1264,6 +1330,19 @@ def main():
                 continue
 
             concurrencies = sorted(common_concurrencies, key=lambda x: int(x))
+
+            if concurrency_filter:
+                filtered_concs = [c for c in concurrencies if c in concurrency_filter]
+                if filtered_concs:
+                    concurrencies = filtered_concs
+                    print(
+                        f"Using specified concurrency levels: {', '.join(concurrencies)}"
+                    )
+                else:
+                    print(
+                        f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                    )
+
             print(
                 f"Found {len(concurrencies)} common concurrency levels: {', '.join(concurrencies)}"
             )
@@ -1287,11 +1366,18 @@ def main():
 
             print("\nGenerating comparison reports...")
 
-            generate_comparison_csv(runid_data, concurrencies, output_base, chip_name, run_ids=RUN_IDS)
+            generate_comparison_csv(
+                runid_data, concurrencies, output_base, chip_name, run_ids=RUN_IDS
+            )
 
             if HAS_MATPLOTLIB:
                 generate_comparison_charts(
-                    runid_data, concurrencies, output_base, chip_name, MODEL_NAME, run_ids=RUN_IDS
+                    runid_data,
+                    concurrencies,
+                    output_base,
+                    chip_name,
+                    MODEL_NAME,
+                    run_ids=RUN_IDS,
                 )
 
             generate_markdown_report(

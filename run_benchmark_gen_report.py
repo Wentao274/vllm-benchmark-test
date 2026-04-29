@@ -1,8 +1,11 @@
 import os
+import sys
 import yaml
 import subprocess
 import requests
 import time
+import re
+import glob
 from datetime import datetime
 from itertools import product
 from pathlib import Path
@@ -166,10 +169,124 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
             time.sleep(30)
 
 
+def get_available_run_ids(chip_name, model_name, test_suite):
+    base_path = f"reports/{chip_name}/benchmark/{model_name}/{test_suite}"
+    if not os.path.exists(base_path):
+        return []
+
+    run_ids = []
+    for item in os.listdir(base_path):
+        item_path = os.path.join(base_path, item)
+        if os.path.isdir(item_path):
+            run_ids.append(item)
+
+    return sorted(run_ids)
+
+
+def run_single_report(chip_name, model_name, test_suite, run_id, concurrency=None):
+    print(f"\n{'#' * 60}")
+    print(f"Generating single run-id report: {run_id}")
+    print(f"{'#' * 60}")
+
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    chip_key = chip_key_map.get(chip_name, chip_name.lower())
+
+    cmd = [
+        sys.executable,
+        "parse_single_chip_model.py",
+        "--chip",
+        chip_key,
+        "--model",
+        model_name,
+        "--test-suite",
+        test_suite,
+        "--run-id",
+        run_id,
+    ]
+
+    if concurrency:
+        cmd.extend(["--concurrency", concurrency])
+
+    print(f"Running: {' '.join(cmd)}")
+    result = subprocess.run(cmd, capture_output=False, text=True)
+    return result.returncode == 0
+
+
+def run_runid_comparison(chip_name, model_name, test_suite, run_ids, concurrency=None):
+    print(f"\n{'#' * 60}")
+    print(f"Generating run-id comparison report for: {', '.join(run_ids)}")
+    print(f"{'#' * 60}")
+
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    chip_key = chip_key_map.get(chip_name, chip_name.lower())
+
+    run_ids_str = ",".join(run_ids)
+
+    cmd = [
+        sys.executable,
+        "parse_single_chip_model_runid.py",
+        "--chip",
+        chip_key,
+        "--model",
+        model_name,
+        "--test-suite",
+        test_suite,
+        "--run-id",
+        run_ids_str,
+    ]
+
+    if concurrency:
+        cmd.extend(["--concurrency", concurrency])
+
+    print(f"Running: {' '.join(cmd)}")
+    result = subprocess.run(cmd, capture_output=False, text=True)
+    return result.returncode == 0
+
+
+def generate_reports(chip_name, model_name, test_suites, concurrency=None):
+    chip_key_map = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
+    chip_key = chip_key_map.get(chip_name, chip_name.lower())
+
+    for test_suite in test_suites:
+        print(f"\n{'=' * 60}")
+        print(f"Checking test suite: {test_suite}")
+        print(f"{'=' * 60}")
+
+        run_ids = get_available_run_ids(chip_key, model_name, test_suite)
+
+        if not run_ids:
+            print(f"No run-id data found for test suite: {test_suite}")
+            continue
+
+        print(f"Found {len(run_ids)} run-id(s): {', '.join(run_ids)}")
+
+        if len(run_ids) == 1:
+            run_id = run_ids[0]
+            print(f"Only one run-id found, generating single report...")
+            run_single_report(chip_key, model_name, test_suite, run_id, concurrency)
+        else:
+            print(f"Multiple run-ids found, generating comparison report...")
+            run_runid_comparison(chip_key, model_name, test_suite, run_ids, concurrency)
+
+
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run vLLM benchmark")
+    parser = argparse.ArgumentParser(
+        description="Run vLLM benchmark and generate reports"
+    )
     parser.add_argument(
         "--chip",
         type=str,
@@ -193,6 +310,23 @@ def main():
         type=str,
         default=RUN_ID,
         help=f"Run ID to identify this test run (default: {RUN_ID})",
+    )
+    parser.add_argument(
+        "--skip-benchmark",
+        action="store_true",
+        help="Skip running benchmark, only generate reports based on existing data",
+    )
+    parser.add_argument(
+        "--only-report",
+        action="store_true",
+        help="Only generate reports without running benchmark",
+    )
+    parser.add_argument(
+        "-c",
+        "--concurrency",
+        type=str,
+        default=None,
+        help="Specific concurrency levels to generate report for, comma-separated (e.g., 1,2,4,8,10)",
     )
     args = parser.parse_args()
 
@@ -251,9 +385,32 @@ def main():
     run_id = args.run_id
 
     for model_config in model_configs:
-        print(f"Processing chip: {chip_name}, model: {model_config.get('name')}")
-        run_benchmark(chip_name, base_config, model_config, test_suites_to_run, run_id)
-        print(f"Finished chip: {chip_name}, model: {model_config.get('name')}")
+        model_name = model_config.get("name")
+
+        print(f"\n{'#' * 60}")
+        print(f"Processing chip: {chip_name}, model: {model_name}")
+        print(f"{'#' * 60}")
+
+        if not args.only_report:
+            if not args.skip_benchmark:
+                run_benchmark(
+                    chip_name, base_config, model_config, test_suites_to_run, run_id
+                )
+            else:
+                print("Skipping benchmark execution (--skip-benchmark specified)")
+                print("Loading config for report generation...")
+
+        print(f"\nFinished benchmark for chip: {chip_name}, model: {model_name}")
+
+        print(f"\n{'#' * 60}")
+        print("Generating reports...")
+        print(f"{'#' * 60}")
+
+        generate_reports(chip_name, model_name, test_suites_to_run, args.concurrency)
+
+        print(f"\n{'#' * 60}")
+        print(f"All reports generated for chip: {chip_name}, model: {model_name}")
+        print(f"{'#' * 60}")
 
 
 if __name__ == "__main__":

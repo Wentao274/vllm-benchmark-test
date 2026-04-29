@@ -1,0 +1,13 @@
+# Multi-turn benchmark configuration
+
+model: "/data/models/MiniMax-M2.5-W8A8"
+served_model_name: "minimax-m2.5"
+url: "http://127.0.0.1:8080/v1"
+input_file: "generate_conversations.json"
+output_file: "generate_conversations_output.json"
+num_clients: 50
+max_active_conversations: 100
+warmup_step: true
+extra_body_json:
+  chat_template_kwargs:
+    enable_thinking: false

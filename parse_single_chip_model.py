@@ -218,7 +218,9 @@ def generate_comparison_csv(chip_data, concurrencies, output_dir, chip_name):
     return [csv_file]
 
 
-def generate_comparison_charts(chip_data, concurrencies, output_dir, chip_name, model_name=None):
+def generate_comparison_charts(
+    chip_data, concurrencies, output_dir, chip_name, model_name=None
+):
     if not HAS_MATPLOTLIB:
         return None
 
@@ -371,7 +373,9 @@ def generate_comparison_charts(chip_data, concurrencies, output_dir, chip_name, 
     return [chart_file]
 
 
-def generate_performance_trends(chip_data, concurrencies, output_dir, chip_name, model_name=None):
+def generate_performance_trends(
+    chip_data, concurrencies, output_dir, chip_name, model_name=None
+):
     if not HAS_MATPLOTLIB:
         return None
 
@@ -1083,6 +1087,12 @@ def main():
         "--test-suite", type=str, default=None, help="Test suite name (e.g., test_01)"
     )
     parser.add_argument("--run-id", type=str, default=None, help="Run ID (e.g., 01)")
+    parser.add_argument(
+        "--concurrency",
+        type=str,
+        default=None,
+        help="Specific concurrency levels to include, comma-separated (e.g., 1,2,4,8,10)",
+    )
     args = parser.parse_args()
 
     chip_to_use = args.chip.strip() if args.chip else list(CHIP_BASE_PATHS.keys())[0]
@@ -1107,6 +1117,10 @@ def main():
 
     test_suite_to_use = args.test_suite.strip() if args.test_suite else TEST_SUITES[0]
     run_id_to_use = args.run_id.strip() if args.run_id else RUN_ID
+
+    concurrency_filter = None
+    if args.concurrency:
+        concurrency_filter = [s.strip() for s in args.concurrency.split(",")]
 
     scenarios_config = load_models_scenarios()
 
@@ -1160,6 +1174,17 @@ def main():
             continue
 
         concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+
+        if concurrency_filter:
+            filtered_concs = [c for c in concurrencies if c in concurrency_filter]
+            if filtered_concs:
+                concurrencies = filtered_concs
+                print(f"Using specified concurrency levels: {', '.join(concurrencies)}")
+            else:
+                print(
+                    f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                )
+
         print(
             f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
         )
@@ -1183,7 +1208,9 @@ def main():
         generate_comparison_csv(chip_data, concurrencies, output_base, chip_name)
 
         if HAS_MATPLOTLIB:
-            generate_comparison_charts(chip_data, concurrencies, output_base, chip_name, model_to_use)
+            generate_comparison_charts(
+                chip_data, concurrencies, output_base, chip_name, model_to_use
+            )
             generate_performance_trends(
                 chip_data, concurrencies, output_base, chip_name, model_to_use
             )
