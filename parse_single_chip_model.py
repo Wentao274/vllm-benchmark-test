@@ -25,7 +25,7 @@ TEST_SUITES = ["test_01"]
 
 RUN_ID = "01"
 
-MODEL_NAME = "MiniMax-M2.5-bf16"
+MODEL_NAME = "MiniMax-M2.5"
 
 
 def load_models_scenarios(config_path="config/models_scenarios.yaml"):

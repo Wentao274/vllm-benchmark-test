@@ -105,7 +105,10 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
             )
 
             if gpu_monitor:
-                gpu_monitor.start_monitoring("monitor/logs", model_name_yaml, param_dir)
+                monitor_param_dir = f"{test_suite}/{run_id}/{nc}-{np}-i{ni}-o{no}"
+                gpu_monitor.start_monitoring(
+                    "monitor", chip_name, model_name_yaml, monitor_param_dir
+                )
 
             cmd = [
                 "vllm",

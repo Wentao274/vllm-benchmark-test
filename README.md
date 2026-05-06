@@ -97,31 +97,36 @@ chip_comparison.py [-h] [--chip CHIP] [--model MODEL]
 
 **options**:<br>
 --chip CHIP           Chip names to compare, comma-separated (e.g., hygon_bw1000,nvidia_h100)<br>
---model MODEL         Model name to test (e.g., MiniMax-M2.5)<br>
+--model MODEL         Model names for each chip, comma-separated and must match chip order (e.g., MiniMax-M2.5-bf16,MiniMax-M2.5)<br>
 --test-suite TEST_SUITE  Test suite name (e.g., test_01)<br>
 --run-id RUN_ID       Run IDs, can be '01' for all chips or '01,02,03' for each chip<br>
 --concurrency CONCURRENCY  Specific concurrency levels to compare, comma-separated (e.g., 1,2,4,8,10)<br>
 
 #### 示例：
-##### 3.1 所有芯片使用相同 run-id
+##### 3.1 所有芯片使用相同 run-id，默认使用第一个模型
 python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id 01
 
-##### 3.2 每个芯片使用不同的 run-id（按 --chip 参数顺序一一对应）
+##### 3.2 每个芯片使用不同的模型（一一对应）
+python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --model "MiniMax-M2.5-bf16,MiniMax-M2.5-W8A8-INT8-Dynamic,MiniMax-M2.5" --test-suite test_01 --run-id 01
+
+##### 3.3 每个芯片使用不同的 run-id（按 --chip 参数顺序一一对应）
 python chip_comparison.py --chip hygon_bw1000,kunlun_p800,nvidia_h100 --test-suite test_01 --run-id '01,02,01'
 - Hygon_BW1000 使用 run-id 01
 - Kunlun_P800 使用 run-id 02
 - NVIDIA_H100 使用 run-id 01
 
-##### 3.3 使用默认参数（对比所有芯片，run-id 01）
+##### 3.4 使用默认参数（对比所有芯片，run-id 01）
 python chip_comparison.py
 
-##### 3.4 指定特定并发数进行对比
+##### 3.5 指定特定并发数进行对比
 python chip_comparison.py --chip hygon_bw1000,nvidia_h100 --test-suite test_01 --concurrency 1,2,4,8
 
-##### 3.5 使用简写-c指定并发数
+##### 3.6 使用简写-c指定并发数
 python chip_comparison.py -c 1,4,8,16 --chip hygon_bw1000,nvidia_h100
 
 **注意**：
+- model 参数如果只有一个值，所有芯片使用相同模型
+- model 参数如果有多个值（逗号分隔），按 --chip 参数顺序一一对应，每个芯片比对不同的模型
 - run-id 参数如果只有一个值，所有芯片使用相同 run-id
 - run-id 参数如果有多个值（逗号分隔），按 --chip 参数顺序一一对应
 - 所有参数值大小写不敏感
@@ -290,3 +295,38 @@ python model_comparison_all_concurrency.py --chip hygon_bw1000 --model "MiniMax-
   - 包含各并发级别的详细对比表格
   - 包含模型性能对比柱状图
   - 包含分析小结（以第一个模型为基准，显示其他模型的性能改进百分比）
+
+
+## 8. GPU 监控日志目录结构
+
+在运行 benchmark 测试时，会自动启动 GPU 监控，记录 GPU 使用情况。监控日志保存在 `monitor` 目录下。
+
+#### 目录结构：
+```
+monitor/{chip}/logs/{model}/{test_suite}/{run_id}/{concurrency}-{num_prompts}-i{input_len}-o{output_len}/gpu_monitor_{timestamp}.log
+```
+
+#### 示例：
+```
+monitor/nvidia_h100/logs/MiniMax-M2.5/test_01/01/1-320-i10240-o256/gpu_monitor_20260430123341.log
+monitor/kunlun_p800/logs/MiniMax-M2.5-W8A8-INT8-Dynamic/test_03/01/4-100-i194560-o1024/gpu_monitor_20260430143239.log
+```
+
+#### 说明：
+- `{chip}`: 芯片平台（如 `nvidia_h100`, `kunlun_p800`, `hygon_bw1000`）
+- `{model}`: 模型名称（如 `MiniMax-M2.5`, `MiniMax-M2.5-W8A8-INT8-Dynamic`）
+- `{test_suite}`: 测试套件（如 `test_01`, `test_03`, `test_05` 等）
+- `{run_id}`: 测试运行 ID（如 `01`, `02`）
+- `{concurrency}-{num_prompts}-i{input_len}-o{output_len}`: 并发数-提示数-输入长度-输出长度
+- `gpu_monitor_{timestamp}.log`: GPU 监控日志文件
+
+#### 日志格式：
+日志文件为 CSV 格式，包含以下字段：
+- Time: 时间戳
+- GPU: GPU 索引
+- Name: GPU 名称
+- Used_MB: 已使用显存 (MB)
+- Total_MB: 总显存 (MB)
+- Utilization_%: GPU 利用率 (%)
+- Memory_%: 显存利用率 (%)
+- Temperature_C: 温度 (°C)

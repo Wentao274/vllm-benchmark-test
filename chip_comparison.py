@@ -470,6 +470,8 @@ def generate_performance_trends(
     axes[0, 0].set_title("Request Throughput (req/s)")
     axes[0, 0].set_xlabel("Concurrency")
     axes[0, 0].set_ylabel("req/s")
+    axes[0, 0].set_xticks(concurrencies_int)
+    axes[0, 0].set_xticklabels(concurrencies)
     axes[0, 0].legend()
     axes[0, 0].grid(True, alpha=0.3)
 
@@ -489,6 +491,8 @@ def generate_performance_trends(
     axes[0, 1].set_title("Output Token Throughput (tok/s)")
     axes[0, 1].set_xlabel("Concurrency")
     axes[0, 1].set_ylabel("tok/s")
+    axes[0, 1].set_xticks(concurrencies_int)
+    axes[0, 1].set_xticklabels(concurrencies)
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
 
@@ -508,6 +512,8 @@ def generate_performance_trends(
     axes[0, 2].set_title("Total Token Throughput (tok/s)")
     axes[0, 2].set_xlabel("Concurrency")
     axes[0, 2].set_ylabel("tok/s")
+    axes[0, 2].set_xticks(concurrencies_int)
+    axes[0, 2].set_xticklabels(concurrencies)
     axes[0, 2].legend()
     axes[0, 2].grid(True, alpha=0.3)
 
@@ -538,6 +544,8 @@ def generate_performance_trends(
     axes[1, 0].set_title("TTFT Latency (ms)")
     axes[1, 0].set_xlabel("Concurrency")
     axes[1, 0].set_ylabel("ms")
+    axes[1, 0].set_xticks(concurrencies_int)
+    axes[1, 0].set_xticklabels(concurrencies)
     axes[1, 0].legend(fontsize=7)
     axes[1, 0].grid(True, alpha=0.3)
 
@@ -568,6 +576,8 @@ def generate_performance_trends(
     axes[1, 1].set_title("TPOT Latency (ms)")
     axes[1, 1].set_xlabel("Concurrency")
     axes[1, 1].set_ylabel("ms")
+    axes[1, 1].set_xticks(concurrencies_int)
+    axes[1, 1].set_xticklabels(concurrencies)
     axes[1, 1].legend(fontsize=7)
     axes[1, 1].grid(True, alpha=0.3)
 
@@ -598,6 +608,8 @@ def generate_performance_trends(
     axes[1, 2].set_title("ITL Latency (ms)")
     axes[1, 2].set_xlabel("Concurrency")
     axes[1, 2].set_ylabel("ms")
+    axes[1, 2].set_xticks(concurrencies_int)
+    axes[1, 2].set_xticklabels(concurrencies)
     axes[1, 2].legend(fontsize=7)
     axes[1, 2].grid(True, alpha=0.3)
 
@@ -923,11 +935,20 @@ def generate_analysis_content(chip_data, chip_names, concurrencies):
 
 
 def generate_markdown_report(
-    chip_data, concurrencies, output_dir, test_suite, scenarios_config, chip_names=None
+    chip_data,
+    concurrencies,
+    output_dir,
+    test_suite,
+    scenarios_config,
+    chip_names=None,
+    model_display=None,
 ):
     current_date = datetime.now().strftime("%Y-%m-%d")
     if chip_names is None:
         chip_names = list(CHIP_BASE_PATHS.keys())
+
+    if model_display is None:
+        model_display = MODEL_NAME
 
     chip_suffix = "_vs_".join([c.lower() for c in chip_names])
 
@@ -1339,11 +1360,7 @@ def generate_markdown_report(
 
 ---
 
-## 📈 各并发级别性能对比
-
-{concurrency_tables}
-
-## 📊 芯片性能柱状图
+## 📊 芯片性能对比柱状图
 
 {chart_images}
 
@@ -1352,6 +1369,12 @@ def generate_markdown_report(
 ## 📈 性能趋势对比图 (所有芯片)
 
 {performance_trends_img}
+
+---
+
+## 📈 各并发级别性能对比详情
+
+{concurrency_tables}
 
 ---
 
@@ -1391,7 +1414,7 @@ def generate_markdown_report(
 """
 
     md_file = os.path.join(
-        output_dir, f"{MODEL_NAME}_chip_comparison_{test_suite}_{chip_suffix}.md"
+        output_dir, f"{model_display}_chip_comparison_{test_suite}_{chip_suffix}.md"
     )
     with open(md_file, "w", encoding="utf-8") as f:
         f.write(md_content)
@@ -1411,7 +1434,10 @@ def main():
         help="Chip names to compare, comma-separated (e.g., hygon_bw1000,nvidia_h100)",
     )
     parser.add_argument(
-        "--model", type=str, default=None, help="Model name (e.g., MiniMax-M2.5)"
+        "--model",
+        type=str,
+        default=None,
+        help="Model names for each chip, comma-separated and must match chip order (e.g., MiniMax-M2.5-bf16,MiniMax-M2.5)",
     )
     parser.add_argument(
         "--test-suite", type=str, default=None, help="Test suite name (e.g., test_01)"
@@ -1451,12 +1477,33 @@ def main():
     else:
         chip_names = list(chip_key_map_reverse.values())
 
-    model_input = args.model.strip() if args.model else MODEL_NAME
-    model_key_map = {
-        "minimax-m2.5": "MiniMax-M2.5",
-        "qwen3.5": "Qwen3.5",
-    }
-    model_to_use = model_key_map.get(model_input.lower(), model_input)
+    num_chips = len(chip_names)
+
+    # 处理模型参数 - 支持多个模型，与芯片一一对应
+    if args.model:
+        model_input_list = [s.strip() for s in args.model.split(",")]
+        model_key_map = {
+            "minimax-m2.5": "MiniMax-M2.5",
+            "qwen3.5": "Qwen3.5",
+        }
+        models_to_use = [model_key_map.get(m.lower(), m) for m in model_input_list]
+
+        # 如果只指定一个模型，所有芯片使用相同模型
+        if len(models_to_use) == 1:
+            models_to_use = [models_to_use[0]] * num_chips
+            print(f"Using model '{models_to_use[0]}' for all {num_chips} chips")
+        elif len(models_to_use) != num_chips:
+            print(
+                f"Error: Number of models ({len(models_to_use)}) must match number of chips ({num_chips})"
+            )
+            print(f"Chips: {', '.join(chip_names)}")
+            print(f"Models: {', '.join(models_to_use)}")
+            return
+    else:
+        # 使用默认模型
+        model_to_use = MODEL_NAME
+        models_to_use = [model_to_use] * num_chips
+        print(f"No model specified, using default: {model_to_use} for all chips")
 
     test_suite_input = args.test_suite.strip() if args.test_suite else TEST_SUITES[0]
     test_suite_to_use = (
@@ -1466,7 +1513,6 @@ def main():
     run_ids_input = args.run_id.strip() if args.run_id else None
     if run_ids_input:
         run_ids_list = [s.strip() for s in run_ids_input.split(",")]
-        num_chips = len(chip_names)
         if len(run_ids_list) == 1:
             run_id_to_use = [run_ids_list[0]] * num_chips
         elif len(run_ids_list) == num_chips:
@@ -1477,34 +1523,89 @@ def main():
             )
             return
     else:
-        num_chips = len(chip_names)
         run_id_to_use = [RUN_IDS[0]] * num_chips
 
+    # 验证每个芯片是否有对应的模型报告文件
     chip_base_paths = {}
-    chip_config = load_chip_config()
-    chips_raw = chip_config.get("chips", {})
+    chip_key_map_for_path = {
+        "Hygon_BW1000": "hygon_bw1000",
+        "Kunlun_P800": "kunlun_p800",
+        "NVIDIA_H100": "nvidia_h100",
+    }
 
-    for chip_name in chip_names:
-        base = CHIP_BASE_PATHS.get(chip_name, "")
-        if not base:
-            continue
+    for i, chip_name in enumerate(chip_names):
+        model_name = models_to_use[i]
+        chip_key = chip_key_map_for_path.get(chip_name, chip_name.lower())
 
+        # 动态构建 base path
+        base = f"reports/{chip_key}/benchmark/{model_name}"
+
+        # 检查模型目录是否存在
+        if not os.path.exists(base):
+            print(f"Error: Model '{model_name}' not found for chip '{chip_name}'")
+            print(f"Expected path: {base}")
+            print(f"Available models for {chip_name}:")
+            # 列出 reports 目录下的模型
+            reports_chip_path = f"reports/{chip_key}/benchmark"
+            if os.path.exists(reports_chip_path):
+                available_models = [
+                    d
+                    for d in os.listdir(reports_chip_path)
+                    if os.path.isdir(os.path.join(reports_chip_path, d))
+                ]
+                for m in available_models:
+                    print(f"  - {m}")
+            else:
+                print(f"  No reports found for {chip_name}")
+            return
+
+        # 检查测试套件目录是否存在
         test_path = f"{base}/{test_suite_to_use}"
         if not os.path.exists(test_path):
-            print(f"Warning: No data for {chip_name} at {test_path}")
-            continue
+            print(
+                f"Error: Test suite '{test_suite_to_use}' not found for chip '{chip_name}' model '{model_name}'"
+            )
+            print(f"Expected path: {test_path}")
+            return
+
+        # 检查 run-id 目录是否存在（只检查当前芯片对应的 run-id）
+        rid = run_id_to_use[i]
+        runid_path = f"{test_path}/{rid}"
+        if not os.path.exists(runid_path):
+            print(
+                f"Error: Run-id '{rid}' not found for chip '{chip_name}' model '{model_name}' test-suite '{test_suite_to_use}'"
+            )
+            print(f"Expected path: {runid_path}")
+            # 列出可用的 run-id
+            if os.path.exists(test_path):
+                available_runids = [
+                    d
+                    for d in os.listdir(test_path)
+                    if os.path.isdir(os.path.join(test_path, d))
+                ]
+                print(
+                    f"Available run-ids: {', '.join(available_runids) if available_runids else 'None'}"
+                )
+            return
 
         chip_base_paths[chip_name] = base
+        print(
+            f"Validated: {chip_name} - {model_name} - {test_suite_to_use} - run-id {rid}"
+        )
 
-    def get_chip_configs_for_chips(chip_names, test_suite, chip_run_ids):
+    print(f"\nComparing {num_chips} chips with {len(set(models_to_use))} model(s)")
+
+    def get_chip_configs_for_chips(chip_names, test_suite, chip_run_ids, chip_models):
         configs = []
         for i, chip_name in enumerate(chip_names):
             base_path = chip_base_paths.get(chip_name, "")
             run_id = chip_run_ids[i] if i < len(chip_run_ids) else chip_run_ids[0]
+            model_name = chip_models[i] if i < len(chip_models) else chip_models[0]
             if base_path:
                 configs.append(
                     {
                         "name": chip_name,
+                        "model": model_name,
                         "base_path": f"{base_path}/{test_suite}/{run_id}",
                     }
                 )
@@ -1514,13 +1615,41 @@ def main():
         print(f"\n{'#' * 60}")
         print(f"Processing test suite: {test_suite}")
         print(f"Chips: {', '.join(chip_names)}")
+        print(f"Models: {', '.join(models_to_use)}")
         print(f"Run IDs: {', '.join(run_id_to_use)}")
         print(f"{'#' * 60}\n")
 
-        chip_configs = get_chip_configs_for_chips(chip_names, test_suite, run_id_to_use)
+        chip_configs = get_chip_configs_for_chips(
+            chip_names, test_suite, run_id_to_use, models_to_use
+        )
         run_id_display = "_".join(run_id_to_use)
+
+        # 使用模型名称组合作为输出目录名
+        # 提取公共前缀来简化目录名
+        def get_common_prefix(names):
+            if not names:
+                return ""
+            if len(names) == 1:
+                return names[0]
+            prefix = names[0]
+            for name in names[1:]:
+                while not name.startswith(prefix):
+                    prefix = prefix[:-1]
+                    if not prefix:
+                        break
+            return prefix
+
+        common_prefix = get_common_prefix(models_to_use)
+
+        if len(set(models_to_use)) > 1 and common_prefix and len(common_prefix) > 3:
+            # 有公共前缀且长度大于3，使用公共前缀
+            model_display = common_prefix
+        else:
+            # 没有足够长的公共前缀或有重复模型，使用完整名称
+            model_display = "_vs_".join(models_to_use)
+
         output_base = (
-            f"analysis/chip_comparison/{model_to_use}/{test_suite}/{run_id_display}"
+            f"analysis/chip_comparison/{model_display}/{test_suite}/{run_id_display}"
         )
         Path(output_base).mkdir(parents=True, exist_ok=True)
 
@@ -1589,6 +1718,7 @@ def main():
             test_suite_to_use,
             scenarios_config,
             chip_names,
+            model_display,
         )
 
         print(f"\n{'=' * 50}")
