@@ -183,7 +183,7 @@ def get_concurrency_from_log_path(path):
 def get_model_data(chip, model_name, test_suite, run_id, config_with_concurrency):
     reports_base = "reports"
     model_dir = os.path.join(
-        reports_base, chip, "benchmark", model_name, test_suite, run_id
+        reports_base, "benchmark", chip, model_name, test_suite, run_id
     )
 
     print(f"      get_model_data: checking {model_dir}")
@@ -213,7 +213,7 @@ def get_model_data(chip, model_name, test_suite, run_id, config_with_concurrency
 def get_all_test_configs(chip, model_name, test_suite, run_id):
     reports_base = "reports"
     model_dir = os.path.join(
-        reports_base, chip, "benchmark", model_name, test_suite, run_id
+        reports_base, "benchmark", chip, model_name, test_suite, run_id
     )
 
     if not os.path.isdir(model_dir):
@@ -852,7 +852,7 @@ def main():
     print(f"{'=' * 60}\n")
 
     # 验证模型目录是否存在（优先检查）
-    benchmark_path = os.path.join("reports", chip, "benchmark")
+    benchmark_path = os.path.join("reports", "benchmark", chip)
     if not os.path.exists(benchmark_path):
         print(f"\nError: Benchmark path not found: {benchmark_path}")
         return
@@ -917,7 +917,7 @@ def main():
             config_with_concurrency = f"{concurrency}-{test_config}"
             print(f"\n--- Processing concurrency: {concurrency} ---")
             print(
-                f"    Looking for: {chip}/benchmark/{models[0]}/{test_suite}/{run_ids[0]}/{config_with_concurrency}"
+                f"    Looking for: benchmark/{chip}/{models[0]}/{test_suite}/{run_ids[0]}/{config_with_concurrency}"
             )
 
             output_dir = os.path.join(output_base, test_suite, config_with_concurrency)
@@ -927,7 +927,7 @@ def main():
             for i, model_name in enumerate(models):
                 rid = run_ids[i]
                 model_dir = os.path.join(
-                    "reports", chip, "benchmark", model_name, test_suite, rid
+                    "reports", "benchmark", chip, model_name, test_suite, rid
                 )
                 config_path = os.path.join(model_dir, config_with_concurrency)
                 print(f"    Checking path: {config_path}")

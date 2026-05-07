@@ -54,7 +54,7 @@ def load_chip_base_paths():
             model_path = model_info.get("model_path", "")
             if model_path:
                 model_name = Path(model_path).name
-                paths[chip_name] = f"reports/{chip_key}/benchmark/{model_name}"
+                paths[chip_name] = f"reports/benchmark/{chip_key}/{model_name}"
     return paths
 
 
@@ -1124,13 +1124,13 @@ def main():
 
     scenarios_config = load_models_scenarios()
 
-    base_path = f"reports/{chip_to_use.lower()}/benchmark/{model_to_use}"
+    base_path = f"reports/benchmark/{chip_to_use.lower()}/{model_to_use}"
 
     if not os.path.exists(base_path):
         print(f"\nError: No data found for chip={chip_to_use}, model={model_to_use}")
         print(f"Expected path: {base_path}")
 
-        available_reports = f"reports/{chip_to_use.lower()}/benchmark/"
+        available_reports = f"reports/benchmark/{chip_to_use.lower()}/"
         if os.path.exists(available_reports):
             print(f"Available model reports:")
             for item in os.listdir(available_reports):

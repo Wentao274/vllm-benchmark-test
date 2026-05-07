@@ -183,7 +183,7 @@ def get_concurrency_from_log_path(path):
 def get_model_data(chip, model_name, test_suite, run_id, config_with_concurrency):
     reports_base = "reports"
     model_dir = os.path.join(
-        reports_base, chip, "benchmark", model_name, test_suite, run_id
+        reports_base, "benchmark", chip, model_name, test_suite, run_id
     )
 
     print(f"      get_model_data: checking {model_dir}")
@@ -213,7 +213,7 @@ def get_model_data(chip, model_name, test_suite, run_id, config_with_concurrency
 def get_all_test_configs(chip, model_name, test_suite, run_id):
     reports_base = "reports"
     model_dir = os.path.join(
-        reports_base, chip, "benchmark", model_name, test_suite, run_id
+        reports_base, "benchmark", chip, model_name, test_suite, run_id
     )
 
     if not os.path.isdir(model_dir):
@@ -845,12 +845,16 @@ def main():
     print(f"{'=' * 60}\n")
 
     # 验证模型目录是否存在（优先检查）
-    benchmark_path = os.path.join("reports", chip, "benchmark")
+    benchmark_path = os.path.join("reports", "benchmark", chip)
     if not os.path.exists(benchmark_path):
         print(f"\nError: Benchmark path not found: {benchmark_path}")
         return
 
-    available_models = [d for d in os.listdir(benchmark_path) if os.path.isdir(os.path.join(benchmark_path, d))]
+    available_models = [
+        d
+        for d in os.listdir(benchmark_path)
+        if os.path.isdir(os.path.join(benchmark_path, d))
+    ]
 
     # 检查每个模型目录是否存在
     missing_models = []
@@ -893,14 +897,14 @@ def main():
             config_with_concurrency = f"{concurrency}-{test_config}"
             print(f"\n--- Processing concurrency: {concurrency} ---")
             print(
-                f"    Looking for: {chip}/benchmark/{models[0]}/{test_suite}/{run_ids[0]}/{config_with_concurrency}"
+                f"    Looking for: benchmark/{chip}/{models[0]}/{test_suite}/{run_ids[0]}/{config_with_concurrency}"
             )
 
             models_data = {}
             for i, model_name in enumerate(models):
                 rid = run_ids[i]
                 model_dir = os.path.join(
-                    "reports", chip, "benchmark", model_name, test_suite, rid
+                    "reports", "benchmark", chip, model_name, test_suite, rid
                 )
                 config_path = os.path.join(model_dir, config_with_concurrency)
                 print(f"    Checking path: {config_path}")
@@ -923,17 +927,39 @@ def main():
 
             # 存储每个并发级别的数据
             all_concurrency_data[concurrency] = models_data
-            print(f"    Collected data for {len(models_data)} models at concurrency {concurrency}")
+            print(
+                f"    Collected data for {len(models_data)} models at concurrency {concurrency}"
+            )
 
     if not all_concurrency_data:
         print("\nError: No data collected for any concurrency level!")
         return
 
-    print(f"\n=== Generating combined report for all {len(all_concurrency_data)} concurrency levels ===")
+    print(
+        f"\n=== Generating combined report for all {len(all_concurrency_data)} concurrency levels ==="
+    )
 
     # 生成合并的CSV和报告
-    generate_combined_csv(all_concurrency_data, test_config, output_base, concurrency_list, chip, models, run_ids)
-    generate_combined_markdown(all_concurrency_data, test_config, output_base, chip, test_suite, run_ids, concurrency_list, chip, models)
+    generate_combined_csv(
+        all_concurrency_data,
+        test_config,
+        output_base,
+        concurrency_list,
+        chip,
+        models,
+        run_ids,
+    )
+    generate_combined_markdown(
+        all_concurrency_data,
+        test_config,
+        output_base,
+        chip,
+        test_suite,
+        run_ids,
+        concurrency_list,
+        chip,
+        models,
+    )
 
     print(f"\n{'=' * 60}")
     print("Model comparison reports (all concurrency) generated successfully!")
@@ -941,7 +967,9 @@ def main():
     print(f"{'=' * 60}")
 
 
-def generate_combined_charts(all_concurrency_data, concurrency_list, ordered_models, output_dir):
+def generate_combined_charts(
+    all_concurrency_data, concurrency_list, ordered_models, output_dir
+):
     """生成合并所有并发级别的柱状图"""
     if not HAS_MATPLOTLIB:
         return None
@@ -964,11 +992,17 @@ def generate_combined_charts(all_concurrency_data, concurrency_list, ordered_mod
         return values
 
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-    fig.suptitle("Model Comparison Across All Concurrency Levels", fontsize=14, fontweight="bold")
+    fig.suptitle(
+        "Model Comparison Across All Concurrency Levels", fontsize=14, fontweight="bold"
+    )
 
     metrics = [
         ("Request Throughput (req/s)", "request throughput (req/s)", axes[0, 0]),
-        ("Total Token Throughput (tok/s)", "total token throughput (tok/s)", axes[0, 1]),
+        (
+            "Total Token Throughput (tok/s)",
+            "total token throughput (tok/s)",
+            axes[0, 1],
+        ),
         ("TTFT P99 (ms)", "p99 ttft (ms)", axes[1, 0]),
         ("TPOT P99 (ms)", "p99 tpot (ms)", axes[1, 1]),
     ]
@@ -977,7 +1011,14 @@ def generate_combined_charts(all_concurrency_data, concurrency_list, ordered_mod
         for i, model in enumerate(ordered_models):
             values = get_values(model, key)
             offset = (i - (num_models - 1) / 2) * bar_width
-            ax.bar([xi + offset for xi in x], values, bar_width, label=model, color=colors[i % len(colors)], alpha=0.8)
+            ax.bar(
+                [xi + offset for xi in x],
+                values,
+                bar_width,
+                label=model,
+                color=colors[i % len(colors)],
+                alpha=0.8,
+            )
 
         ax.set_title(title, fontsize=11)
         ax.set_xlabel("Concurrency")
@@ -1005,7 +1046,15 @@ def generate_combined_charts(all_concurrency_data, concurrency_list, ordered_mod
     return chart_file
 
 
-def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurrency_list, chip, model_names, run_ids):
+def generate_combined_csv(
+    all_concurrency_data,
+    test_config,
+    output_dir,
+    concurrency_list,
+    chip,
+    model_names,
+    run_ids,
+):
     """生成合并所有并发级别的CSV"""
     metric_names = [
         ("[Serving Benchmark Result]", ""),
@@ -1016,7 +1065,10 @@ def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurr
         ("Total generated tokens", "total generated tokens"),
         ("Request throughput (req/s)", "request throughput (req/s)"),
         ("Output token throughput (tok/s)", "output token throughput (tok/s)"),
-        ("Peak output token throughput (tok/s)", "peak output token throughput (tok/s)"),
+        (
+            "Peak output token throughput (tok/s)",
+            "peak output token throughput (tok/s)",
+        ),
         ("Peak concurrent requests", "peak concurrent requests"),
         ("Total token throughput (tok/s)", "total token throughput (tok/s)"),
         ("[Time to First Token]", ""),
@@ -1041,7 +1093,9 @@ def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurr
     # 表头: Metric | 并发1-模型1 | 并发1-模型2 | 并发2-模型1 | ...
     header_parts = ["Metric"]
     sorted_conc = sorted(all_concurrency_data.keys())
-    ordered_models = [m for m in model_names if m in list(all_concurrency_data.values())[0].keys()]
+    ordered_models = [
+        m for m in model_names if m in list(all_concurrency_data.values())[0].keys()
+    ]
     if not ordered_models:
         ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
 
@@ -1052,7 +1106,9 @@ def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurr
 
     for display_name, key_name in metric_names:
         if not key_name:
-            csv_lines.append(f"[{display_name}]" + ",," * (len(sorted_conc) * len(ordered_models)))
+            csv_lines.append(
+                f"[{display_name}]" + ",," * (len(sorted_conc) * len(ordered_models))
+            )
             continue
 
         row = [display_name]
@@ -1071,12 +1127,24 @@ def generate_combined_csv(all_concurrency_data, test_config, output_dir, concurr
     return csv_file
 
 
-def generate_combined_markdown(all_concurrency_data, test_config, output_dir, chip, test_suite, run_ids, concurrency_list, chip_name, model_names):
+def generate_combined_markdown(
+    all_concurrency_data,
+    test_config,
+    output_dir,
+    chip,
+    test_suite,
+    run_ids,
+    concurrency_list,
+    chip_name,
+    model_names,
+):
     """生成合并所有并发级别的Markdown报告"""
     current_date = datetime.now().strftime("%Y-%m-%d")
 
     # 按用户输入顺序排列模型
-    ordered_models = [m for m in model_names if m in list(all_concurrency_data.values())[0].keys()]
+    ordered_models = [
+        m for m in model_names if m in list(all_concurrency_data.values())[0].keys()
+    ]
     if not ordered_models:
         ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
 
@@ -1155,7 +1223,9 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
 
     # 表头
     if len(ordered_models) == 2:
-        headers = f"| 指标 | {ordered_models[0]} (基准) | {ordered_models[1]} | 差异 | % |"
+        headers = (
+            f"| 指标 | {ordered_models[0]} (基准) | {ordered_models[1]} | 差异 | % |"
+        )
         separator = "|------|--------------- | --------- | ------- | -------|"
     else:
         header_parts = ["| 指标", f"{ordered_models[0]} (基准)"]
@@ -1171,25 +1241,24 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
     all_tables_html = ""
 
     for conc in sorted_conc:
-        serving_table = "\n".join([
-            f"| {name} | {make_row_for_conc(conc, key)} |"
-            for name, key in metric_keys
-        ])
+        serving_table = "\n".join(
+            [
+                f"| {name} | {make_row_for_conc(conc, key)} |"
+                for name, key in metric_keys
+            ]
+        )
 
-        ttft_table = "\n".join([
-            f"| {name} | {make_row_for_conc(conc, key)} |"
-            for name, key in ttft_keys
-        ])
+        ttft_table = "\n".join(
+            [f"| {name} | {make_row_for_conc(conc, key)} |" for name, key in ttft_keys]
+        )
 
-        tpot_table = "\n".join([
-            f"| {name} | {make_row_for_conc(conc, key)} |"
-            for name, key in tpot_keys
-        ])
+        tpot_table = "\n".join(
+            [f"| {name} | {make_row_for_conc(conc, key)} |" for name, key in tpot_keys]
+        )
 
-        itl_table = "\n".join([
-            f"| {name} | {make_row_for_conc(conc, key)} |"
-            for name, key in itl_keys
-        ])
+        itl_table = "\n".join(
+            [f"| {name} | {make_row_for_conc(conc, key)} |" for name, key in itl_keys]
+        )
 
         all_tables_html += f"""
 ### 并发级别: {conc}
@@ -1228,7 +1297,12 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
     # 计算每个模型在各并发级别的平均性能
     avg_perf = {model: {} for model in ordered_models}
 
-    for key in ["request throughput (req/s)", "total token throughput (tok/s)", "p99 ttft (ms)", "p99 tpot (ms)"]:
+    for key in [
+        "request throughput (req/s)",
+        "total token throughput (tok/s)",
+        "p99 ttft (ms)",
+        "p99 tpot (ms)",
+    ]:
         for model in ordered_models:
             values = []
             for conc in sorted_conc:
@@ -1249,9 +1323,13 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
             if baseline_tp > 0:
                 pct = ((other_tp - baseline_tp) / baseline_tp) * 100
                 if pct > 0:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均提升 **{pct:.1f}%**")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均提升 **{pct:.1f}%**"
+                    )
                 else:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均变化 **{pct:.1f}%**")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均变化 **{pct:.1f}%**"
+                    )
     except:
         pass
 
@@ -1263,9 +1341,13 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
             if baseline_tp > 0:
                 pct = ((other_tp - baseline_tp) / baseline_tp) * 100
                 if pct > 0:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均提升 **{pct:.1f}%**")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均提升 **{pct:.1f}%**"
+                    )
                 else:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均变化 **{pct:.1f}%**")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均变化 **{pct:.1f}%**"
+                    )
     except:
         pass
 
@@ -1277,9 +1359,13 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
             if baseline_ttft > 0:
                 pct = ((other_ttft - baseline_ttft) / baseline_ttft) * 100
                 if pct < 0:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)"
+                    )
                 else:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均增加 **{pct:.1f}%** (延迟增加)")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均增加 **{pct:.1f}%** (延迟增加)"
+                    )
     except:
         pass
 
@@ -1291,20 +1377,32 @@ def generate_combined_markdown(all_concurrency_data, test_config, output_dir, ch
             if baseline_tpot > 0:
                 pct = ((other_tpot - baseline_tpot) / baseline_tpot) * 100
                 if pct < 0:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)"
+                    )
                 else:
-                    analysis_lines.append(f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均增加 **{pct:.1f}%** (延迟增加)")
+                    analysis_lines.append(
+                        f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均增加 **{pct:.1f}%** (延迟增加)"
+                    )
     except:
         pass
 
-    analysis_content = "\n".join(analysis_lines) if analysis_lines else "- 各模型性能表现待分析"
+    analysis_content = (
+        "\n".join(analysis_lines) if analysis_lines else "- 各模型性能表现待分析"
+    )
 
     # 生成柱状图
     chart_file = None
     if HAS_MATPLOTLIB:
-        chart_file = generate_combined_charts(all_concurrency_data, sorted_conc, ordered_models, output_dir)
+        chart_file = generate_combined_charts(
+            all_concurrency_data, sorted_conc, ordered_models, output_dir
+        )
 
-    chart_html = f'![Model Performance Comparison](./{os.path.basename(chart_file)})' if chart_file else ""
+    chart_html = (
+        f"![Model Performance Comparison](./{os.path.basename(chart_file)})"
+        if chart_file
+        else ""
+    )
 
     run_id_display = ", ".join(run_ids) if run_ids else "N/A"
     model_display = ", ".join(ordered_models)

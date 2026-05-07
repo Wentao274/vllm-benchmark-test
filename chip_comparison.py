@@ -26,9 +26,9 @@ TEST_SUITES = ["test_01"]
 RUN_IDS = ["01", "01", "01"]
 
 CHIP_BASE_PATHS = {
-    "Hygon_BW1000": "reports/hygon_bw1000/benchmark/MiniMax-M2.5-W8A8",
-    "Kunlun_P800": "reports/kunlun_p800/benchmark/MiniMax-M2.5-W8A8-INT8-Dynamic",
-    "NVIDIA_H100": "reports/nvidia_h100/benchmark/MiniMax-M2.5",
+    "Hygon_BW1000": "reports/benchmark/hygon_bw1000/MiniMax-M2.5-W8A8",
+    "Kunlun_P800": "reports/benchmark/kunlun_p800/MiniMax-M2.5-W8A8-INT8-Dynamic",
+    "NVIDIA_H100": "reports/benchmark/nvidia_h100/MiniMax-M2.5",
 }
 
 MODEL_NAME = "MiniMax-M2.5"
@@ -1538,7 +1538,7 @@ def main():
         chip_key = chip_key_map_for_path.get(chip_name, chip_name.lower())
 
         # 动态构建 base path
-        base = f"reports/{chip_key}/benchmark/{model_name}"
+        base = f"reports/benchmark/{chip_key}/{model_name}"
 
         # 检查模型目录是否存在
         if not os.path.exists(base):
@@ -1546,7 +1546,7 @@ def main():
             print(f"Expected path: {base}")
             print(f"Available models for {chip_name}:")
             # 列出 reports 目录下的模型
-            reports_chip_path = f"reports/{chip_key}/benchmark"
+            reports_chip_path = f"reports/benchmark/{chip_key}"
             if os.path.exists(reports_chip_path):
                 available_models = [
                     d

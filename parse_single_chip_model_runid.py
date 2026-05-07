@@ -1235,7 +1235,7 @@ def main():
 
     # 验证模型目录是否存在
     chip_key_for_path = chip_name.lower().replace("_", "_")
-    benchmark_path = f"reports/{chip_name.lower()}/benchmark"
+    benchmark_path = f"reports/benchmark/{chip_name.lower()}"
 
     if not os.path.exists(benchmark_path):
         print(f"\nError: Benchmark path not found: {benchmark_path}")
@@ -1257,7 +1257,7 @@ def main():
         return
 
     MODEL_NAME = model_input
-    CHIP_BASE_PATHS = {chip_name: f"reports/{chip_name.lower()}/benchmark/{MODEL_NAME}"}
+    CHIP_BASE_PATHS = {chip_name: f"reports/benchmark/{chip_name.lower()}/{MODEL_NAME}"}
 
     run_id1 = RUN_IDS[0]
     run_id2 = RUN_IDS[1] if len(RUN_IDS) > 1 else RUN_IDS[0]

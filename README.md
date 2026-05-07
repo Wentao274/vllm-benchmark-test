@@ -297,24 +297,55 @@ python model_comparison_all_concurrency.py --chip hygon_bw1000 --model "MiniMax-
   - 包含分析小结（以第一个模型为基准，显示其他模型的性能改进百分比）
 
 
-## 8. GPU 监控日志目录结构
+## 8. 数据目录结构
+
+### 8.1 Benchmark 测试结果目录结构
+
+测试结果保存在 `reports` 目录下。
+
+#### 目录结构：
+```
+reports/benchmark/<chip_name>/<model_name>/<test_suite>/<run_id>/<concurrency>-<num_prompts>-i<input_len>-o<output_len>/
+```
+
+#### 示例：
+```
+reports/benchmark/hygon_bw1000/MiniMax-M2.5-bf16/test_01/01/1-320-i10240-o256/
+reports/benchmark/nvidia_h100/MiniMax-M2.5/test_03/02/4-100-i194560-o1024/
+```
+
+#### 说明：
+- `benchmark`: 固定目录名
+- `{chip_name}`: 芯片平台（如 `hygon_bw1000`, `nvidia_h100`, `kunlun_p800`）
+- `{model_name}`: 模型名称（如 `MiniMax-M2.5`, `MiniMax-M2.5-bf16`, `MiniMax-M2.5-W8A8-INT8-Dynamic`）
+- `{test_suite}`: 测试套件（如 `test_01`, `test_03`, `test_05` 等）
+- `{run_id}`: 测试运行 ID（如 `01`, `02`）
+- `{concurrency}-{num_prompts}-i{input_len}-o{output_len}`: 并发数-提示数-输入长度-输出长度
+
+#### 输出文件：
+- `bench-<test_suite>-<conc>-<num_prompts>-i<input>-o<output>.log`: 测试日志
+- `bench-<test_suite>-<conc>-<num_prompts>-i<input>-o<output>.jsonl`: 详细结果数据
+
+
+### 8.2 GPU 监控日志目录结构
 
 在运行 benchmark 测试时，会自动启动 GPU 监控，记录 GPU 使用情况。监控日志保存在 `monitor` 目录下。
 
 #### 目录结构：
 ```
-monitor/{chip}/logs/{model}/{test_suite}/{run_id}/{concurrency}-{num_prompts}-i{input_len}-o{output_len}/gpu_monitor_{timestamp}.log
+monitor/logs/<chip_name>/<model_name>/<test_suite>/<run_id>/<concurrency>-<num_prompts>-i<input_len>-o<output_len>/
 ```
 
 #### 示例：
 ```
-monitor/nvidia_h100/logs/MiniMax-M2.5/test_01/01/1-320-i10240-o256/gpu_monitor_20260430123341.log
-monitor/kunlun_p800/logs/MiniMax-M2.5-W8A8-INT8-Dynamic/test_03/01/4-100-i194560-o1024/gpu_monitor_20260430143239.log
+monitor/logs/nvidia_h100/MiniMax-M2.5/test_01/01/1-320-i10240-o256/gpu_monitor_20260430123341.log
+monitor/logs/kunlun_p800/MiniMax-M2.5-W8A8-INT8-Dynamic/test_03/01/4-100-i194560-o1024/gpu_monitor_20260430143239.log
 ```
 
 #### 说明：
-- `{chip}`: 芯片平台（如 `nvidia_h100`, `kunlun_p800`, `hygon_bw1000`）
-- `{model}`: 模型名称（如 `MiniMax-M2.5`, `MiniMax-M2.5-W8A8-INT8-Dynamic`）
+- `logs`: 固定目录名
+- `{chip_name}`: 芯片平台（如 `nvidia_h100`, `kunlun_p800`, `hygon_bw1000`）
+- `{model_name}`: 模型名称（如 `MiniMax-M2.5`, `MiniMax-M2.5-W8A8-INT8-Dynamic`）
 - `{test_suite}`: 测试套件（如 `test_01`, `test_03`, `test_05` 等）
 - `{run_id}`: 测试运行 ID（如 `01`, `02`）
 - `{concurrency}-{num_prompts}-i{input_len}-o{output_len}`: 并发数-提示数-输入长度-输出长度

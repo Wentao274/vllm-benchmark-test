@@ -68,7 +68,7 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
     ready_timeout = base_config.get("ready-check-timeout-sec", 30)
 
     M = model_name_yaml
-    output_base = f"reports/{chip_name}/benchmark/{M}"
+    output_base = f"reports/benchmark/{chip_name}/{M}"
 
     params_config = base_config.get("params", {})
 
@@ -166,14 +166,15 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
             if gpu_monitor:
                 gpu_log = gpu_monitor.stop_monitoring()
                 if gpu_log:
-                    generate_gpu_charts(gpu_log, output_dir)
+                    gpu_log_dir = os.path.dirname(gpu_log)
+                    generate_gpu_charts(gpu_log, gpu_log_dir)
 
             print(f"Completed: {log_file}")
             time.sleep(30)
 
 
 def get_available_run_ids(chip_name, model_name, test_suite):
-    base_path = f"reports/{chip_name}/benchmark/{model_name}/{test_suite}"
+    base_path = f"reports/benchmark/{chip_name}/{model_name}/{test_suite}"
     if not os.path.exists(base_path):
         return []
 

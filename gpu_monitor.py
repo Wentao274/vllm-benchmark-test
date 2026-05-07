@@ -60,7 +60,7 @@ class GPUMonitor:
             print("Warning: No GPU monitoring tool available")
             return False
 
-        monitor_dir = os.path.join(base_dir, chip_name, "logs", model_name, param_dir)
+        monitor_dir = os.path.join(base_dir, "logs", chip_name, model_name, param_dir)
         Path(monitor_dir).mkdir(parents=True, exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
