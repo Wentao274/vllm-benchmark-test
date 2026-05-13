@@ -1,0 +1,167 @@
+root@k8s-node4:/home/workspace/poc/16-kh/llmtest/IFBench/output# tail -f ifb_mm25_w8a8_20260504_think.log
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: /data/data_shared/MiniMax-M2.5-W8A
+API: http://127.0.0.1:8000/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 8192
+WORKERS: 32
+Generating responses for 300 prompts...
+Generating: 100%|██████████| 300/300 [25:25<00:00,  5.09s/it]
+
+Saved 300 responses to data/mm25-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/mm25-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 254 responses (84.7%)
+Output: data/mm25-clean.jsonl
+I0504 21:00:40.648701 139719325083456 run_eval.py:56] Generating eval_results_strict...
+I0504 21:00:41.382328 139719325083456 run_eval.py:62] Accuracy: 0.623333
+I0504 21:00:41.393243 139719325083456 run_eval.py:76] Generated: eval/mm25-clean-eval_results_strict.jsonl
+I0504 21:00:41.393718 139719325083456 run_eval.py:56] Generating eval_results_loose...
+I0504 21:00:44.056566 139719325083456 run_eval.py:62] Accuracy: 0.656667
+I0504 21:00:44.070020 139719325083456 run_eval.py:76] Generated: eval/mm25-clean-eval_results_loose.jsonl
+================================================================
+eval/mm25-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.6233333333333333
+instruction-level: 0.627906976744186
+
+count 0.8615384615384616
+custom 0.5454545454545454
+format 0.8061224489795918
+ratio 0.4318181818181818
+repeat 0.2222222222222222
+sentence 0.5
+words 0.449438202247191
+
+count:conjunctions 1.0
+count:keywords_multiple 0.6
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.7272727272727273
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 0.0
+custom:csv_special_character 0.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 0.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.7777777777777778
+format:line_indent 0.5555555555555556
+format:list 0.8888888888888888
+format:newline 0.6666666666666666
+format:no_bullets_bullets 0.8
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 1.0
+format:quotes 0.875
+format:sub-bullets 0.6666666666666666
+format:thesis 1.0
+format:title_case 0.25
+ratio:overlap 0.08333333333333333
+ratio:sentence_balance 0.42857142857142855
+ratio:sentence_type 0.8333333333333334
+ratio:sentence_words 0.0
+ratio:stop_words 0.8333333333333334
+repeat:repeat_change 0.3333333333333333
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.2
+sentence:increment 0.625
+sentence:keyword 0.5333333333333333
+words:alphabet 0.3333333333333333
+words:consonants 0.13333333333333333
+words:keywords_specific_position 0.0
+words:last_first 0.6
+words:no_consecutive 0.625
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 1.0
+words:prime_lengths 0.6
+words:repeats 0.8
+words:start_verb 0.5
+words:vowel 0.2
+words:words_position 1.0
+================================================================
+eval/mm25-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.6566666666666666
+instruction-level: 0.6598837209302325
+
+count 0.8769230769230769
+custom 0.7272727272727273
+format 0.8469387755102041
+ratio 0.45454545454545453
+repeat 0.2222222222222222
+sentence 0.6071428571428571
+words 0.449438202247191
+
+count:conjunctions 1.0
+count:keywords_multiple 0.8
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.7272727272727273
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 0.0
+custom:csv_special_character 1.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 1.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.7777777777777778
+format:line_indent 0.5555555555555556
+format:list 0.8888888888888888
+format:newline 0.6666666666666666
+format:no_bullets_bullets 0.8
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 1.0
+format:quotes 0.875
+format:sub-bullets 1.0
+format:thesis 1.0
+format:title_case 0.25
+ratio:overlap 0.08333333333333333
+ratio:sentence_balance 0.5714285714285714
+ratio:sentence_type 0.8333333333333334
+ratio:sentence_words 0.0
+ratio:stop_words 0.8333333333333334
+repeat:repeat_change 0.3333333333333333
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.8
+sentence:increment 0.625
+sentence:keyword 0.5333333333333333
+words:alphabet 0.3333333333333333
+words:consonants 0.13333333333333333
+words:keywords_specific_position 0.0
+words:last_first 0.6
+words:no_consecutive 0.625
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 1.0
+words:prime_lengths 0.6
+words:repeats 0.8
+words:start_verb 0.5
+words:vowel 0.2
+words:words_position 1.0

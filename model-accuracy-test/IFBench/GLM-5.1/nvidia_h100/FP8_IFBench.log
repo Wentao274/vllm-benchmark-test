@@ -1,0 +1,164 @@
+nohup: ignoring input
+/userdata/liwt/gittest/IFBench
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: glm-5.1
+API: http://127.0.0.1:8000/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 8192
+WORKERS: 32
+Generating responses for 300 prompts...
+Generating: 100%|██████████| 300/300 [43:52<00:00,  8.77s/it]t]
+
+Saved 300 responses to data/glm-5.1-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/glm-5.1-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 0 responses (0.0%)
+Output: data/glm-5.1-clean.jsonl
+/userdata/liwt/gittest/IFBench/.venv/lib/python3.12/site-packages/syllapy/data_loader.py:3: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+I0513 13:07:00.757413 139663189717760 run_eval.py:56] Generating eval_results_strict...
+I0513 13:07:01.302915 139663189717760 run_eval.py:62] Accuracy: 0.600000
+I0513 13:07:01.318779 139663189717760 run_eval.py:76] Generated: eval/glm-5.1-clean-eval_results_strict.jsonl
+I0513 13:07:01.319321 139663189717760 run_eval.py:56] Generating eval_results_loose...
+I0513 13:07:02.245371 139663189717760 run_eval.py:62] Accuracy: 0.623333
+I0513 13:07:02.261681 139663189717760 run_eval.py:76] Generated: eval/glm-5.1-clean-eval_results_loose.jsonl
+================================================================
+eval/glm-5.1-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.6
+instruction-level: 0.5901162790697675
+
+count 0.8307692307692308
+custom 0.8181818181818182
+format 0.7448979591836735
+ratio 0.4090909090909091
+repeat 0.5555555555555556
+sentence 0.39285714285714285
+words 0.3707865168539326
+
+count:conjunctions 1.0
+count:keywords_multiple 1.0
+count:numbers 0.875
+count:person_names 1.0
+count:pronouns 0.75
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.6363636363636364
+count:words_japanese 0.2
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 0.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 1.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.7777777777777778
+format:line_indent 0.1111111111111111
+format:list 0.8888888888888888
+format:newline 0.8333333333333334
+format:no_bullets_bullets 1.0
+format:no_whitespace 1.0
+format:options 0.6666666666666666
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 0.8
+format:quotes 0.875
+format:sub-bullets 0.75
+format:thesis 0.8888888888888888
+format:title_case 0.0
+ratio:overlap 0.0
+ratio:sentence_balance 0.42857142857142855
+ratio:sentence_type 0.6666666666666666
+ratio:sentence_words 0.14285714285714285
+ratio:stop_words 0.8333333333333334
+repeat:repeat_change 1.0
+repeat:repeat_simple 1.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.0
+sentence:increment 0.375
+sentence:keyword 0.5333333333333333
+words:alphabet 0.16666666666666666
+words:consonants 0.06666666666666667
+words:keywords_specific_position 0.75
+words:last_first 0.6
+words:no_consecutive 0.625
+words:odd_even_syllables 0.0
+words:palindrome 0.8571428571428571
+words:paragraph_last_first 0.5
+words:prime_lengths 0.4
+words:repeats 0.6
+words:start_verb 0.16666666666666666
+words:vowel 0.2
+words:words_position 1.0
+================================================================
+eval/glm-5.1-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.6233333333333333
+instruction-level: 0.6104651162790697
+
+count 0.8307692307692308
+custom 0.8181818181818182
+format 0.8061224489795918
+ratio 0.4090909090909091
+repeat 0.5555555555555556
+sentence 0.39285714285714285
+words 0.38202247191011235
+
+count:conjunctions 1.0
+count:keywords_multiple 1.0
+count:numbers 0.875
+count:person_names 1.0
+count:pronouns 0.75
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.6363636363636364
+count:words_japanese 0.2
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 0.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 1.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.8888888888888888
+format:line_indent 0.4444444444444444
+format:list 0.8888888888888888
+format:newline 0.8333333333333334
+format:no_bullets_bullets 1.0
+format:no_whitespace 1.0
+format:options 0.6666666666666666
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 0.8
+format:quotes 0.875
+format:sub-bullets 0.9166666666666666
+format:thesis 0.8888888888888888
+format:title_case 0.0
+ratio:overlap 0.0
+ratio:sentence_balance 0.42857142857142855
+ratio:sentence_type 0.6666666666666666
+ratio:sentence_words 0.14285714285714285
+ratio:stop_words 0.8333333333333334
+repeat:repeat_change 1.0
+repeat:repeat_simple 1.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.0
+sentence:increment 0.375
+sentence:keyword 0.5333333333333333
+words:alphabet 0.16666666666666666
+words:consonants 0.06666666666666667
+words:keywords_specific_position 0.75
+words:last_first 0.6
+words:no_consecutive 0.625
+words:odd_even_syllables 0.0
+words:palindrome 0.8571428571428571

@@ -1,0 +1,26 @@
+2026-04-29:18:29:10 INFO     [evaluator:575] Running generate_until requests
+2026-04-29:18:29:10 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 12032/12032 [15:37:14<00:00,  4.67s/it]
+2026-04-30:10:06:30 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'kimi-k2.5', 'base_url': 'http://127.0.0.1:8000/v1/completions', 'max_length': 131072, 'tokenizer': '/data2/data_shared/Kimi-K2.5_int4_2', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+|       Tasks       |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|-------------------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro           |      2|custom-extract|     5|exact_match|↑  |0.8264|±  |0.0034|
+| - biology         |      3|custom-extract|     5|exact_match|↑  |0.9358|±  |0.0092|
+| - business        |      3|custom-extract|     5|exact_match|↑  |0.8657|±  |0.0121|
+| - chemistry       |      3|custom-extract|     5|exact_match|↑  |0.8587|±  |0.0104|
+| - computer_science|      3|custom-extract|     5|exact_match|↑  |0.8780|±  |0.0162|
+| - economics       |      3|custom-extract|     5|exact_match|↑  |0.8614|±  |0.0119|
+| - engineering     |      3|custom-extract|     5|exact_match|↑  |0.7668|±  |0.0136|
+| - health          |      3|custom-extract|     5|exact_match|↑  |0.7958|±  |0.0141|
+| - history         |      3|custom-extract|     5|exact_match|↑  |0.7113|±  |0.0232|
+| - law             |      3|custom-extract|     5|exact_match|↑  |0.6213|±  |0.0146|
+| - math            |      3|custom-extract|     5|exact_match|↑  |0.9275|±  |0.0071|
+| - other           |      3|custom-extract|     5|exact_match|↑  |0.7965|±  |0.0133|
+| - philosophy      |      3|custom-extract|     5|exact_match|↑  |0.8096|±  |0.0176|
+| - physics         |      3|custom-extract|     5|exact_match|↑  |0.8645|±  |0.0095|
+| - psychology      |      3|custom-extract|     5|exact_match|↑  |0.8333|±  |0.0132|
+
+| Groups |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro|      2|custom-extract|     5|exact_match|↑  |0.8264|±  |0.0034|

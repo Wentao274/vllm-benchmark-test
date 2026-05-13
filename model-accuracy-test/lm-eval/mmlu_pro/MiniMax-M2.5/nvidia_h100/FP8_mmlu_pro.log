@@ -1,0 +1,25 @@
+Requesting API: 100%|██████████| 12032/12032 [3:14:22<00:00,  1.03it/s]                                                                                                                                                                                          [768/1952]
+2026-05-04:23:16:10 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'minimax-m2.5', 'base_url': 'http://127.0.0.1:8080/v1/completions', 'max_length': 131072, 'tokenizer': '/userdata/llms/MiniMax/MiniMax-M2.5', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers'
+: {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+|       Tasks       |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|-------------------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro           |      2|custom-extract|     5|exact_match|↑  |0.7378|±  |0.0039|
+| - biology         |      3|custom-extract|     5|exact_match|↑  |0.8703|±  |0.0126|
+| - business        |      3|custom-extract|     5|exact_match|↑  |0.8238|±  |0.0136|
+| - chemistry       |      3|custom-extract|     5|exact_match|↑  |0.7836|±  |0.0122|
+| - computer_science|      3|custom-extract|     5|exact_match|↑  |0.8049|±  |0.0196|
+| - economics       |      3|custom-extract|     5|exact_match|↑  |0.7974|±  |0.0138|
+| - engineering     |      3|custom-extract|     5|exact_match|↑  |0.5851|±  |0.0158|
+| - health          |      3|custom-extract|     5|exact_match|↑  |0.7702|±  |0.0147|
+| - history         |      3|custom-extract|     5|exact_match|↑  |0.6115|±  |0.0250|
+| - law             |      3|custom-extract|     5|exact_match|↑  |0.4759|±  |0.0151|
+| - math            |      3|custom-extract|     5|exact_match|↑  |0.8312|±  |0.0102|
+| - other           |      3|custom-extract|     5|exact_match|↑  |0.7240|±  |0.0147|
+| - philosophy      |      3|custom-extract|     5|exact_match|↑  |0.6814|±  |0.0209|
+| - physics         |      3|custom-extract|     5|exact_match|↑  |0.7691|±  |0.0117|
+| - psychology      |      3|custom-extract|     5|exact_match|↑  |0.7870|±  |0.0145|
+
+| Groups |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro|      2|custom-extract|     5|exact_match|↑  |0.7378|±  |0.0039|

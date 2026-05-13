@@ -1,0 +1,13 @@
+2026-05-07:17:50:19 INFO     [evaluator_utils:446] Selected tasks:
+2026-05-07:17:50:19 INFO     [evaluator_utils:480] Task: gsm_plus (gsm_plus/gsm_plus.yaml)
+2026-05-07:17:50:19 INFO     [evaluator:307] gsm_plus: Using gen_kwargs: {'until': ['Question:', '</s>', '<|im_end|>'], 'do_sample': False, 'temperature': 0.0, 'max_gen_toks': 8192, 'top_p': 0.95, 'top_k': 40}
+2026-05-07:17:50:19 INFO     [api.task:312] Building contexts for gsm_plus on rank 0...
+. . .
+API: 100%|██████████| 10552/10552 [5:33:17<00:00,  1.90s/it]
+2026-05-07:23:24:59 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'minimax-m2.5', 'base_url': 'http://127.0.0.1:8080/v1/completions', 'max_length': 131072, 'tokenizer': '/data/models/MiniMax-M2.5-W8A8', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bea
+rer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.6655|±  |0.0046|
+|        |       |strict-match    |     5|exact_match|↑  |0.7301|±  |0.0043|

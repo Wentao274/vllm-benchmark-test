@@ -1,0 +1,242 @@
+/root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/xpytorch_import_hook.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+XCCL /root/miniconda/envs/python310_torch25_cuda/lib/python3.10/site-packages/torch_xmlir/libbkcl.so loaded
+[35mSYMBOL_REWRITE [0m[32mtorch success[0m
+INFO 05-12 08:30:56 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 05-12 08:30:56 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 05-12 08:30:56 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 05-12 08:30:56 [__init__.py:36] Available plugins for group vllm.platform_plugins:
+INFO 05-12 08:30:56 [__init__.py:38] - kunlun -> vllm_kunlun:register
+INFO 05-12 08:30:56 [__init__.py:41] All plugins in this group will be loaded. Set `VLLM_PLUGINS` to control which plugins to load.
+INFO 05-12 08:30:56 [__init__.py:220] No platform detected, vLLM is running on UnspecifiedPlatform
+INFO 05-12 08:30:59 [__init__.py:207] Platform plugin kunlun is activated
+WARNING 05-12 08:31:00 [_custom_ops.py:20] Failed to import from vllm._C with ImportError('libcudart.so.12: cannot open shared object file: No such file or directory')
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.UnquantizedFusedMoEMethod       --> vllm_kunlun.ops.fused_moe.layer.KunlunUnquantizedFusedMoEMethod
+[Monkey Patch Applied] >>> from vllm.model_executor.layers.fused_moe.layer.FusedMoE       --> vllm_kunlun.ops.fused_moe.layer.KunlunFusedMoE
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQLinearMethod       --> vllm_kunlun.ops.quantization.awq.KunlunAWQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.awq.AWQConfig       --> vllm_kunlun.ops.quantization.awq.KunlunAWQConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors.CompressedTensorsConfig       --> vllm_kunlun.ops.quantization.compressed_tensors.KunlunCompressedTensorsConfig
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.gptq.GPTQLinearMethod       --> vllm_kunlun.ops.quantization.gptq.KunlunGPTQLinearMethod
+[Monkey Patch Applied] >>> vllm.model_executor.layers.quantization.moe_wna16.MoeWNA16Method       --> vllm_kunlun.ops.quantization.moe_wna16.KunlunMoeWNA16Method
+ERROR 05-12 08:31:02 [fa_utils.py:57] Cannot use FA version 2 is not supported due to FA2 is unavaible due to: libcudart.so.12: cannot open shared object file: No such file or directory
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen2VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_vl:Qwen2VLForConditionalGeneration.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen2_5_VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen2_5_vl:Qwen2_5_VLForConditionalGeneration.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3:Qwen3ForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3MoeForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_moe:Qwen3MoeForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3NextForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next:Qwen3NextForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3NextMTP is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_next_mtp:Qwen3NextMTP.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture GlmForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.glm:GlmForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture InternLM2ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.internlm2:InternLM2ForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture InternVLChatModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.internvl:InternVLChatModel.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture InternS1ForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.interns1:InternS1ForConditionalGeneration.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3VLForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl:Qwen3VLForConditionalGeneration.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture Qwen3VLMoeForConditionalGeneration is already registered, and will be overwritten by the new model class vllm_kunlun.models.qwen3_vl_moe:Qwen3VLMoeForConditionalGeneration.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture SeedOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.seed_oss:SeedOssForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture GptOssForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.gpt_oss:GptOssForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture DeepseekV3ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture DeepseekV32ForCausalLM is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_v2:DeepseekV3ForCausalLM.
+WARNING 05-12 08:31:02 [registry.py:582] Model architecture DeepSeekMTPModel is already registered, and will be overwritten by the new model class vllm_kunlun.models.deepseek_mtp:DeepSeekMTP.
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7f9f57b816c0>, seed=123, num_prompts=1000, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, custom_output_len=256, custom_skip_chat_template=False, spec_bench_output_len=256, spec_bench_category=None, sonnet_input_len=550, sonnet_output_len=150, sonnet_prefix_len=200, sharegpt_output_len=None, blazedit_min_distance=0.0, blazedit_max_distance=1.0, random_input_len=128, random_output_len=128, random_range_ratio=0.0, random_prefix_len=0, random_batch_size=1, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 0}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, label=None, backend='openai-chat', endpoint_type=None, base_url='http://127.0.0.1:8080', host='127.0.0.1', port=8000, endpoint='/v1/chat/completions', header=None, max_concurrency=32, model='/data/MiniMax-M2.5-W8A8-INT8-Dynamic', tokenizer=None, use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, trust_remote_code=True, disable_tqdm=False, profile=False, save_result=False, save_detailed=False, append_result=False, metadata=None, result_dir=None, result_filename=None, ignore_eos=False, percentile_metrics='ttft,tpot,itl', metric_percentiles='95,99', goodput=None, request_id_prefix='benchmark-serving', top_p=None, top_k=None, min_p=None, temperature=0.7, tokenizer_mode='auto', served_model_name='minimax-m2.5', lora_modules=None, ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=30)
+INFO 05-12 08:31:03 [datasets.py:507] Sampling input_len from [128, 128] and output_len from [128, 128]
+Starting initial single prompt test run...
+Waiting for endpoint to become up in 30 seconds
+
+ |          | 00:00 elapsed, ? remaining
+ |          | 00:00 elapsed, 00:00 remaining
+ |          | 00:02 elapsed, 37:40:30 remaining
+Initial test run completed. Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 32
+
+  0%|          | 0/1000 [00:00<?, ?it/s]
+  0%|          | 1/1000 [00:05<1:34:18,  5.66s/it]
+  3%|▎         | 33/1000 [00:10<04:20,  3.71it/s] 
+  3%|▎         | 34/1000 [00:11<04:45,  3.38it/s]
+  6%|▋         | 65/1000 [00:15<02:55,  5.33it/s]
+  7%|▋         | 66/1000 [00:16<03:15,  4.78it/s]
+  7%|▋         | 67/1000 [00:17<03:38,  4.27it/s]
+  8%|▊         | 84/1000 [00:17<01:57,  7.77it/s]
+ 10%|▉         | 97/1000 [00:20<02:29,  6.04it/s]
+ 10%|▉         | 99/1000 [00:22<03:31,  4.26it/s]
+ 12%|█▏        | 115/1000 [00:22<01:57,  7.56it/s]
+ 13%|█▎        | 129/1000 [00:25<02:16,  6.36it/s]
+ 13%|█▎        | 133/1000 [00:28<03:22,  4.28it/s]
+ 16%|█▌        | 161/1000 [00:30<02:02,  6.86it/s]
+ 16%|█▋        | 164/1000 [00:33<02:43,  5.11it/s]
+ 17%|█▋        | 166/1000 [00:34<03:15,  4.27it/s]
+ 19%|█▉        | 192/1000 [00:35<01:30,  8.91it/s]
+ 20%|█▉        | 195/1000 [00:38<02:33,  5.26it/s]
+ 20%|█▉        | 197/1000 [00:40<03:31,  3.80it/s]
+ 22%|██▎       | 225/1000 [00:41<01:30,  8.57it/s]
+ 23%|██▎       | 228/1000 [00:43<02:14,  5.72it/s]
+ 23%|██▎       | 230/1000 [00:45<03:11,  4.03it/s]
+ 23%|██▎       | 232/1000 [00:46<03:14,  3.94it/s]
+ 26%|██▌       | 258/1000 [00:47<01:25,  8.64it/s]
+ 26%|██▌       | 260/1000 [00:48<01:53,  6.54it/s]
+ 26%|██▌       | 262/1000 [00:51<02:58,  4.14it/s]
+ 26%|██▋       | 263/1000 [00:52<03:36,  3.40it/s]
+ 29%|██▉       | 290/1000 [00:52<01:14,  9.55it/s]
+ 29%|██▉       | 292/1000 [00:54<01:42,  6.91it/s]
+ 29%|██▉       | 294/1000 [00:56<02:48,  4.20it/s]
+ 30%|██▉       | 295/1000 [00:57<03:26,  3.41it/s]
+ 30%|██▉       | 297/1000 [00:58<03:23,  3.45it/s]
+ 32%|███▏      | 323/1000 [00:59<01:17,  8.79it/s]
+ 32%|███▎      | 325/1000 [01:02<02:13,  5.06it/s]
+ 33%|███▎      | 327/1000 [01:03<02:36,  4.31it/s]
+ 33%|███▎      | 329/1000 [01:03<02:40,  4.18it/s]
+ 33%|███▎      | 331/1000 [01:04<02:42,  4.11it/s]
+ 36%|███▌      | 355/1000 [01:04<00:53, 12.15it/s]
+ 36%|███▌      | 357/1000 [01:07<01:54,  5.61it/s]
+ 36%|███▌      | 359/1000 [01:08<02:17,  4.65it/s]
+ 36%|███▌      | 361/1000 [01:09<02:24,  4.41it/s]
+ 36%|███▋      | 363/1000 [01:10<02:53,  3.67it/s]
+ 38%|███▊      | 380/1000 [01:10<01:06,  9.28it/s]
+ 39%|███▉      | 389/1000 [01:12<01:36,  6.31it/s]
+ 39%|███▉      | 391/1000 [01:13<01:57,  5.18it/s]
+ 39%|███▉      | 393/1000 [01:14<02:06,  4.79it/s]
+ 40%|███▉      | 395/1000 [01:15<02:49,  3.56it/s]
+ 40%|███▉      | 399/1000 [01:16<02:05,  4.81it/s]
+ 42%|████▏     | 421/1000 [01:18<01:17,  7.43it/s]
+ 42%|████▏     | 423/1000 [01:19<01:35,  6.05it/s]
+ 42%|████▎     | 425/1000 [01:20<01:45,  5.43it/s]
+ 43%|████▎     | 427/1000 [01:21<02:23,  4.00it/s]
+ 43%|████▎     | 430/1000 [01:21<02:12,  4.30it/s]
+ 45%|████▌     | 453/1000 [01:23<01:09,  7.84it/s]
+ 46%|████▌     | 455/1000 [01:24<01:25,  6.40it/s]
+ 46%|████▌     | 457/1000 [01:25<01:36,  5.64it/s]
+ 46%|████▌     | 459/1000 [01:26<02:10,  4.14it/s]
+ 46%|████▌     | 462/1000 [01:27<02:18,  3.88it/s]
+ 47%|████▋     | 469/1000 [01:28<01:24,  6.27it/s]
+ 48%|████▊     | 485/1000 [01:29<01:00,  8.53it/s]
+ 49%|████▊     | 487/1000 [01:30<01:16,  6.67it/s]
+ 49%|████▉     | 489/1000 [01:31<01:30,  5.65it/s]
+ 49%|████▉     | 491/1000 [01:32<02:04,  4.08it/s]
+ 49%|████▉     | 494/1000 [01:33<02:18,  3.66it/s]
+ 50%|█████     | 501/1000 [01:33<01:26,  5.80it/s]
+ 52%|█████▏    | 517/1000 [01:34<00:54,  8.90it/s]
+ 52%|█████▏    | 519/1000 [01:35<01:09,  6.93it/s]
+ 52%|█████▏    | 521/1000 [01:36<01:23,  5.71it/s]
+ 52%|█████▏    | 523/1000 [01:37<01:55,  4.13it/s]
+ 53%|█████▎    | 526/1000 [01:39<02:12,  3.56it/s]
+ 53%|█████▎    | 533/1000 [01:39<01:28,  5.26it/s]
+ 55%|█████▍    | 549/1000 [01:40<00:49,  9.18it/s]
+ 55%|█████▌    | 551/1000 [01:41<01:02,  7.19it/s]
+ 55%|█████▌    | 553/1000 [01:42<01:17,  5.79it/s]
+ 56%|█████▌    | 555/1000 [01:43<01:45,  4.22it/s]
+ 56%|█████▌    | 558/1000 [01:44<02:06,  3.50it/s]
+ 56%|█████▋    | 565/1000 [01:45<01:30,  4.83it/s]
+ 58%|█████▊    | 581/1000 [01:46<00:44,  9.50it/s]
+ 58%|█████▊    | 583/1000 [01:46<00:55,  7.48it/s]
+ 58%|█████▊    | 585/1000 [01:47<01:10,  5.89it/s]
+ 59%|█████▊    | 587/1000 [01:48<01:35,  4.31it/s]
+ 59%|█████▉    | 590/1000 [01:50<01:58,  3.45it/s]
+ 60%|█████▉    | 597/1000 [01:51<01:29,  4.48it/s]
+ 61%|██████▏   | 613/1000 [01:51<00:39,  9.74it/s]
+ 62%|██████▏   | 615/1000 [01:52<00:47,  8.06it/s]
+ 62%|██████▏   | 617/1000 [01:53<01:02,  6.12it/s]
+ 62%|██████▏   | 619/1000 [01:54<01:25,  4.46it/s]
+ 62%|██████▏   | 622/1000 [01:55<01:50,  3.41it/s]
+ 63%|██████▎   | 629/1000 [01:57<01:29,  4.12it/s]
+ 65%|██████▍   | 647/1000 [01:57<00:41,  8.61it/s]
+ 65%|██████▍   | 649/1000 [01:58<00:51,  6.80it/s]
+ 65%|██████▌   | 651/1000 [01:59<01:07,  5.16it/s]
+ 65%|██████▌   | 654/1000 [02:01<01:31,  3.76it/s]
+ 66%|██████▌   | 661/1000 [02:02<01:21,  4.16it/s]
+ 68%|██████▊   | 679/1000 [02:03<00:35,  9.06it/s]
+ 68%|██████▊   | 681/1000 [02:04<00:44,  7.24it/s]
+ 68%|██████▊   | 683/1000 [02:05<00:57,  5.50it/s]
+ 69%|██████▊   | 686/1000 [02:07<01:21,  3.83it/s]
+ 69%|██████▉   | 693/1000 [02:08<01:11,  4.27it/s]
+ 69%|██████▉   | 694/1000 [02:08<01:14,  4.13it/s]
+ 70%|██████▉   | 699/1000 [02:08<00:50,  5.96it/s]
+ 71%|███████▏  | 713/1000 [02:09<00:30,  9.47it/s]
+ 72%|███████▏  | 715/1000 [02:10<00:42,  6.71it/s]
+ 72%|███████▏  | 718/1000 [02:12<01:07,  4.18it/s]
+ 72%|███████▎  | 725/1000 [02:13<00:59,  4.65it/s]
+ 73%|███████▎  | 726/1000 [02:14<01:03,  4.30it/s]
+ 73%|███████▎  | 731/1000 [02:14<00:43,  6.13it/s]
+ 73%|███████▎  | 733/1000 [02:14<00:39,  6.82it/s]
+ 74%|███████▍  | 745/1000 [02:15<00:23, 10.73it/s]
+ 75%|███████▍  | 747/1000 [02:16<00:36,  7.02it/s]
+ 75%|███████▌  | 750/1000 [02:18<01:03,  3.97it/s]
+ 76%|███████▌  | 757/1000 [02:19<00:53,  4.56it/s]
+ 76%|███████▌  | 758/1000 [02:19<00:57,  4.21it/s]
+ 76%|███████▋  | 765/1000 [02:20<00:38,  6.09it/s]
+ 78%|███████▊  | 777/1000 [02:20<00:21, 10.20it/s]
+ 78%|███████▊  | 779/1000 [02:21<00:29,  7.37it/s]
+ 78%|███████▊  | 782/1000 [02:23<00:51,  4.25it/s]
+ 79%|███████▉  | 788/1000 [02:23<00:34,  6.21it/s]
+ 79%|███████▉  | 790/1000 [02:25<00:48,  4.31it/s]
+ 79%|███████▉  | 793/1000 [02:25<00:38,  5.37it/s]
+ 80%|███████▉  | 797/1000 [02:25<00:33,  6.13it/s]
+ 81%|████████  | 809/1000 [02:25<00:15, 12.22it/s]
+ 81%|████████  | 812/1000 [02:26<00:22,  8.44it/s]
+ 81%|████████▏ | 814/1000 [02:28<00:45,  4.10it/s]
+ 82%|████████▏ | 821/1000 [02:29<00:35,  5.08it/s]
+ 82%|████████▏ | 823/1000 [02:30<00:36,  4.84it/s]
+ 83%|████████▎ | 829/1000 [02:31<00:29,  5.79it/s]
+ 84%|████████▍ | 843/1000 [02:31<00:17,  8.97it/s]
+ 85%|████████▍ | 846/1000 [02:34<00:31,  4.95it/s]
+ 85%|████████▌ | 852/1000 [02:34<00:22,  6.68it/s]
+ 85%|████████▌ | 854/1000 [02:35<00:29,  5.03it/s]
+ 86%|████████▌ | 857/1000 [02:35<00:24,  5.94it/s]
+ 86%|████████▌ | 861/1000 [02:36<00:23,  5.97it/s]
+ 86%|████████▋ | 863/1000 [02:36<00:21,  6.30it/s]
+ 87%|████████▋ | 874/1000 [02:36<00:10, 12.53it/s]
+ 88%|████████▊ | 877/1000 [02:37<00:11, 10.70it/s]
+ 88%|████████▊ | 879/1000 [02:39<00:29,  4.09it/s]
+ 88%|████████▊ | 883/1000 [02:39<00:21,  5.51it/s]
+ 88%|████████▊ | 885/1000 [02:40<00:22,  5.04it/s]
+ 89%|████████▊ | 887/1000 [02:40<00:23,  4.74it/s]
+ 89%|████████▉ | 893/1000 [02:41<00:18,  5.91it/s]
+ 90%|████████▉ | 895/1000 [02:41<00:18,  5.64it/s]
+ 91%|█████████ | 907/1000 [02:42<00:08, 11.14it/s]
+ 91%|█████████ | 910/1000 [02:44<00:19,  4.66it/s]
+ 92%|█████████▏| 917/1000 [02:45<00:13,  5.97it/s]
+ 92%|█████████▏| 919/1000 [02:45<00:14,  5.57it/s]
+ 92%|█████████▏| 923/1000 [02:45<00:10,  7.15it/s]
+ 92%|█████████▎| 925/1000 [02:46<00:12,  5.96it/s]
+ 93%|█████████▎| 927/1000 [02:46<00:14,  5.18it/s]
+ 94%|█████████▍| 939/1000 [02:47<00:05, 11.60it/s]
+ 94%|█████████▍| 942/1000 [02:49<00:12,  4.62it/s]
+ 95%|█████████▍| 949/1000 [02:50<00:08,  6.02it/s]
+ 95%|█████████▌| 951/1000 [02:50<00:08,  5.60it/s]
+ 96%|█████████▌| 957/1000 [02:51<00:06,  6.19it/s]
+ 96%|█████████▌| 959/1000 [02:52<00:08,  5.12it/s]
+ 97%|█████████▋| 974/1000 [02:54<00:04,  5.74it/s]
+ 98%|█████████▊| 981/1000 [02:55<00:02,  7.09it/s]
+ 98%|█████████▊| 983/1000 [02:55<00:02,  6.58it/s]
+ 99%|█████████▉| 989/1000 [02:56<00:01,  7.17it/s]
+ 99%|█████████▉| 991/1000 [02:56<00:01,  6.05it/s]
+ 99%|█████████▉| 993/1000 [02:57<00:01,  6.73it/s]
+100%|██████████| 1000/1000 [02:57<00:00,  5.65it/s]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     1000      
+Maximum request concurrency:             32        
+Benchmark duration (s):                  177.11    
+Total input tokens:                      127981    
+Total generated tokens:                  128000    
+Request throughput (req/s):              5.65      
+Output token throughput (tok/s):         722.72    
+Peak output token throughput (tok/s):    927.00    
+Peak concurrent requests:                64.00     
+Total Token throughput (tok/s):          1445.33   
+---------------Time to First Token----------------
+Mean TTFT (ms):                          539.44    
+Median TTFT (ms):                        547.68    
+P95 TTFT (ms):                           994.08    
+P99 TTFT (ms):                           1006.26   
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          39.90     
+Median TPOT (ms):                        39.96     
+P95 TPOT (ms):                           41.89     
+P99 TPOT (ms):                           42.34     
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           40.89     
+Median ITL (ms):                         36.87     
+P95 ITL (ms):                            74.92     
+P99 ITL (ms):                            126.23    
+==================================================

@@ -1,0 +1,167 @@
+/home/workspace/poc/16-kh/llmtest/IFBench
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: /data2/data_shared/Kimi-K2.5_int4_2
+API: http://127.0.0.1:8000/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 8192
+WORKERS: 32
+Generating responses for 300 prompts...
+Generating: 100%|██████████| 300/300 [21:12<00:00,  4.24s/it]
+
+Saved 300 responses to data/kimi25-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/kimi25-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 0 responses (0.0%)
+Output: data/kimi25-clean.jsonl
+I0429 17:19:38.312425 140209885374272 run_eval.py:56] Generating eval_results_strict...
+I0429 17:19:38.643719 140209885374272 run_eval.py:62] Accuracy: 0.606667
+I0429 17:19:38.648412 140209885374272 run_eval.py:76] Generated: eval/kimi25-clean-eval_results_strict.jsonl
+I0429 17:19:38.648849 140209885374272 run_eval.py:56] Generating eval_results_loose...
+I0429 17:19:39.322378 140209885374272 run_eval.py:62] Accuracy: 0.660000
+I0429 17:19:39.327024 140209885374272 run_eval.py:76] Generated: eval/kimi25-clean-eval_results_loose.jsonl
+================================================================
+eval/kimi25-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.6066666666666667
+instruction-level: 0.6162790697674418
+
+count 0.7230769230769231
+custom 0.7272727272727273
+format 0.7755102040816326
+ratio 0.5
+repeat 0.4444444444444444
+sentence 0.4642857142857143
+words 0.47191011235955055
+
+count:conjunctions 1.0
+count:keywords_multiple 0.4
+count:numbers 0.875
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 0.5
+count:unique_word_count 0.7777777777777778
+count:word_count_range 0.5454545454545454
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 0.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.8888888888888888
+format:line_indent 0.8888888888888888
+format:list 1.0
+format:newline 0.5
+format:no_bullets_bullets 0.6
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 1.0
+format:quotes 0.75
+format:sub-bullets 0.3333333333333333
+format:thesis 0.8888888888888888
+format:title_case 0.5
+ratio:overlap 0.0
+ratio:sentence_balance 0.5714285714285714
+ratio:sentence_type 0.5
+ratio:sentence_words 0.42857142857142855
+ratio:stop_words 1.0
+repeat:repeat_change 1.0
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.2
+sentence:increment 0.0
+sentence:keyword 0.8
+words:alphabet 0.3333333333333333
+words:consonants 0.2
+words:keywords_specific_position 0.25
+words:last_first 0.6
+words:no_consecutive 0.875
+words:odd_even_syllables 0.0
+words:palindrome 0.8571428571428571
+words:paragraph_last_first 1.0
+words:prime_lengths 0.6
+words:repeats 0.8
+words:start_verb 0.3333333333333333
+words:vowel 0.2
+words:words_position 1.0
+================================================================
+eval/kimi25-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.66
+instruction-level: 0.6627906976744186
+
+count 0.7538461538461538
+custom 0.7272727272727273
+format 0.8571428571428571
+ratio 0.5
+repeat 0.4444444444444444
+sentence 0.5357142857142857
+words 0.5168539325842697
+
+count:conjunctions 1.0
+count:keywords_multiple 0.8
+count:numbers 0.875
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 0.5
+count:unique_word_count 0.7777777777777778
+count:word_count_range 0.5454545454545454
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 0.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.8888888888888888
+format:line_indent 0.8888888888888888
+format:list 1.0
+format:newline 0.5
+format:no_bullets_bullets 0.6
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 1.0
+format:quotes 0.75
+format:sub-bullets 1.0
+format:thesis 0.8888888888888888
+format:title_case 0.5
+ratio:overlap 0.0
+ratio:sentence_balance 0.5714285714285714
+ratio:sentence_type 0.5
+ratio:sentence_words 0.42857142857142855
+ratio:stop_words 1.0
+repeat:repeat_change 1.0
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.2
+sentence:increment 0.25
+sentence:keyword 0.8
+words:alphabet 0.3333333333333333
+words:consonants 0.2
+words:keywords_specific_position 0.25
+words:last_first 0.8
+words:no_consecutive 0.875
+words:odd_even_syllables 0.0
+words:palindrome 0.8571428571428571
+words:paragraph_last_first 1.0
+words:prime_lengths 0.6
+words:repeats 0.8
+words:start_verb 0.3333333333333333
+words:vowel 0.5
+words:words_position 1.0

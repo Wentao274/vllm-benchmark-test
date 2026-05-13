@@ -1,0 +1,23 @@
+2026-04-30:10:08:37 INFO     [_cli.run:378] Selected Tasks: ['gsm_plus']
+2026-04-30:10:08:38 INFO     [evaluator:213] Setting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234 | Setting fewshot manual seed to 1234
+2026-04-30:10:08:38 WARNING  [evaluator:225] generation_kwargs: {'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40} specified through cli, these settings will update set parameters in yaml tasks. Ensure 'do_sample=True' for non-greedy decoding!
+2026-04-30:10:08:38 INFO     [evaluator:238] Initializing local-completions model, with arguments: {'model': 'kimi-k2.5', 'base_url': 'http://127.0.0.1:8000/v1/completions', 'max_length': 131072, 'tokenizer': '/data2/data_shared/Kimi-K2.5_int4_2', 'trust_remote_code': True, 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}
+2026-04-30:10:08:38 INFO     [models.openai_completions:42] Remote tokenizer not supported. Using huggingface tokenizer backend.
+2026-04-30:10:08:38 WARNING  [models.api_models:160] Automatic batch size is not supported for API models. Defaulting to batch size 1.
+2026-04-30:10:08:38 INFO     [models.api_models:172] Using max length 131072 - 1
+2026-04-30:10:08:38 INFO     [models.api_models:193] Using tokenizer huggingface
+Generating test split: 10552 examples [00:00, 870215.61 examples/s]
+2026-04-30:10:08:41 INFO     [evaluator_utils:446] Selected tasks:
+2026-04-30:10:08:41 INFO     [evaluator_utils:480] Task: gsm_plus (gsm_plus/gsm_plus.yaml)
+2026-04-30:10:08:41 INFO     [evaluator:307] gsm_plus: Using gen_kwargs: {'until': ['Question:', '</s>', '<|im_end|>'], 'do_sample': False, 'temperature': 0.0, 'max_gen_toks': 8192, 'top_p': 0.95, 'top_k': 40}
+2026-04-30:10:08:41 INFO     [api.task:312] Building contexts for gsm_plus on rank 0...
+100%|██████████| 10552/10552 [00:32<00:00, 320.99it/s]
+2026-04-30:10:09:14 INFO     [evaluator:575] Running generate_until requests
+2026-04-30:10:09:14 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 10552/10552 [1:01:07<00:00,  2.88it/s]
+2026-04-30:11:10:34 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'kimi-k2.5', 'base_url': 'http://127.0.0.1:8000/v1/completions', 'max_length': 131072, 'tokenizer': '/data2/data_shared/Kimi-K2.5_int4_2', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.7514|±  |0.0042|
+|        |       |strict-match    |     5|exact_match|↑  |0.7510|±  |0.0042|

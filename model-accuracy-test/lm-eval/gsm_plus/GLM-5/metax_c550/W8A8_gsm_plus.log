@@ -1,0 +1,15 @@
+Generating test split: 10552 examples [00:00, 791386.60 examples/s]
+2026-05-09:18:07:59 INFO     [evaluator_utils:446] Selected tasks:
+2026-05-09:18:07:59 INFO     [evaluator_utils:480] Task: gsm_plus (gsm_plus/gsm_plus.yaml)
+2026-05-09:18:07:59 INFO     [evaluator:307] gsm_plus: Using gen_kwargs: {'until': ['Question:', '</s>', '<|im_end|>'], 'do_sample': False, 'temperature': 0.0, 'max_gen_toks': 8192, 'top_p': 0.95, 'top_k': 40}
+2026-05-09:18:07:59 INFO     [api.task:312] Building contexts for gsm_plus on rank 0...
+100%|██████████| 10552/10552 [00:32<00:00, 324.28it/s]
+2026-05-09:18:08:32 INFO     [evaluator:575] Running generate_until requests
+2026-05-09:18:08:33 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 10552/10552 [2:04:12<00:00,  1.42it/s]
+2026-05-09:20:12:56 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'glm-5', 'base_url': 'http://127.0.0.1:8000/v1/completions', 'max_length': 131072, 'tokenizer': '/var_docker/data_shared/GLM-5-W8A8', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.7651|±  |0.0041|
+|        |       |strict-match    |     5|exact_match|↑  |0.7656|±  |0.0041|

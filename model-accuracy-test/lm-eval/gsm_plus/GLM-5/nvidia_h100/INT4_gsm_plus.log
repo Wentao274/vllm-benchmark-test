@@ -1,0 +1,23 @@
+2026-04-18:20:45:07 INFO     [_cli.run:378] Selected Tasks: ['gsm_plus']
+2026-04-18:20:45:09 INFO     [evaluator:213] Setting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234 | Setting fewshot manual seed to 1234
+2026-04-18:20:45:09 WARNING  [evaluator:225] generation_kwargs: {'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40} specified through cli, these settings will update set parameters in yaml tasks. Ensure 'do_sample=True' for non-greedy decoding!
+2026-04-18:20:45:09 INFO     [evaluator:238] Initializing local-completions model, with arguments: {'model': 'glm-5', 'base_url': 'http://172.16.30.38:8080/v1/completions', 'max_length': 131072, 'trust_remote_code': True, 'num_concurrent': 512, 'max_retries': 3, 'timeout': 12000, 'tokenizer_backend': 'none', 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}
+2026-04-18:20:45:09 WARNING  [models.api_models:160] Automatic batch size is not supported for API models. Defaulting to batch size 1.
+2026-04-18:20:45:09 INFO     [models.api_models:172] Using max length 131072 - 1
+2026-04-18:20:45:09 INFO     [models.api_models:193] Using tokenizer None
+Generating test split: 10552 examples [00:00, 110149.24 examples/s]
+Generating testmini split: 2400 examples [00:00, 118334.13 examples/s]
+2026-04-18:20:45:29 INFO     [evaluator_utils:446] Selected tasks:
+2026-04-18:20:45:29 INFO     [evaluator_utils:480] Task: gsm_plus (gsm_plus/gsm_plus.yaml)
+2026-04-18:20:45:29 INFO     [evaluator:307] gsm_plus: Using gen_kwargs: {'until': ['Question:', '</s>', '<|im_end|>'], 'do_sample': False, 'temperature': 0.0, 'max_gen_toks': 8192, 'top_p': 0.95, 'top_k': 40}
+2026-04-18:20:45:29 INFO     [api.task:312] Building contexts for gsm_plus on rank 0...
+100%|██████████| 10552/10552 [00:32<00:00, 328.81it/s]]
+2026-04-18:20:46:02 INFO     [evaluator:575] Running generate_until requests
+2026-04-18:20:46:02 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 10552/10552 [40:31<00:00,  4.34it/s]s]
+2026-04-18:21:26:43 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'glm-5', 'base_url': 'http://172.16.30.38:8080/v1/completions', 'max_length': 131072, 'num_concurrent': 512, 'max_retries': 3, 'timeout': 12000, 'tokenizer_backend': 'none', 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.7634|±  |0.0041|
+|        |       |strict-match    |     5|exact_match|↑  |0.7637|±  |0.0041|

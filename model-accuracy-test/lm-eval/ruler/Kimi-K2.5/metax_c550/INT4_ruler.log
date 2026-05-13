@@ -1,0 +1,23 @@
+26-05-06:18:10:41 INFO     [evaluator:575] Running generate_until requests
+2026-05-06:18:10:41 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 416/416 [6:30:53<00:00, 56.38s/it]
+2026-05-07:00:41:37 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'kimi-k2.5', 'base_url': 'http://127.0.0.1:8000/v1/completions', 'max_length': 192512, 'tokenizer': '/data2/data_shared/Kimi-K2.5_int4_2', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: 32.0, num_fewshot: None, batch_size: auto
+|      Tasks       |Version|Filter|n-shot|Metric|   |Value |   |Stderr|
+|------------------|------:|------|-----:|-----:|---|-----:|---|------|
+| - niah_multikey_1|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multikey_2|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multikey_3|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multiquery|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multivalue|      1|none  |     0|131072|↑  |0.9922|±  |   N/A|
+| - niah_single_1  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_single_2  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_single_3  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - ruler_cwe      |      1|none  |     0|131072|↑  |0.9719|±  |   N/A|
+| - ruler_fwe      |      1|none  |     0|131072|↑  |0.9896|±  |   N/A|
+| - ruler_qa_hotpot|      1|none  |     0|131072|↑  |0.8438|±  |   N/A|
+| - ruler_qa_squad |      1|none  |     0|131072|↑  |0.7760|±  |   N/A|
+| - ruler_vt       |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+
+|Groups|Version|Filter|n-shot|Metric|   |Value|   |Stderr|
+|------|-------|------|------|------|---|-----|---|------|

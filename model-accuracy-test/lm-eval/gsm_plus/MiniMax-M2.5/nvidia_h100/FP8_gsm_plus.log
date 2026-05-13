@@ -1,0 +1,27 @@
+2026-05-04:23:18:30 INFO     [_cli.run:378] Selected Tasks: ['gsm_plus']
+2026-05-04:23:18:33 INFO     [evaluator:213] Setting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234 | Setting fewshot manual seed to 1234
+2026-05-04:23:18:33 WARNING  [evaluator:225] generation_kwargs: {'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40} specified through cli, these settings will update set parameters in yaml tasks. Ensure 'do_sample=True' for non-
+greedy decoding!
+2026-05-04:23:18:33 INFO     [evaluator:238] Initializing local-completions model, with arguments: {'model': 'minimax-m2.5', 'base_url': 'http://127.0.0.1:8080/v1/completions', 'max_length': 131072, 'tokenizer': '/userdata/llms/MiniMax/MiniMax-M2.5', 'trust_remote_co
+de': True, 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}
+2026-05-04:23:18:33 INFO     [models.openai_completions:42] Remote tokenizer not supported. Using huggingface tokenizer backend.
+2026-05-04:23:18:33 WARNING  [models.api_models:160] Automatic batch size is not supported for API models. Defaulting to batch size 1.
+2026-05-04:23:18:33 INFO     [models.api_models:172] Using max length 131072 - 1
+2026-05-04:23:18:33 INFO     [models.api_models:193] Using tokenizer huggingface
+Using the latest cached version of the dataset since qintongli/GSM-Plus couldn't be found on the Hugging Face Hub (offline mode is enabled).
+Found the latest cached dataset configuration 'default' at /root/.cache/huggingface/datasets/qintongli___gsm-plus/default/0.0.0/3b708db57b96a16e8e3368ed2956990c0809440e (last modified on Sun May  3 10:49:08 2026).
+2026-05-04:23:18:41 INFO     [evaluator_utils:446] Selected tasks:
+2026-05-04:23:18:41 INFO     [evaluator_utils:480] Task: gsm_plus (gsm_plus/gsm_plus.yaml)
+2026-05-04:23:18:41 INFO     [evaluator:307] gsm_plus: Using gen_kwargs: {'until': ['Question:', '</s>', '<|im_end|>'], 'do_sample': False, 'temperature': 0.0, 'max_gen_toks': 8192, 'top_p': 0.95, 'top_k': 40}
+2026-05-04:23:18:41 INFO     [api.task:312] Building contexts for gsm_plus on rank 0...
+100%|██████████| 10552/10552 [00:33<00:00, 311.62it/s]
+2026-05-04:23:19:15 INFO     [evaluator:575] Running generate_until requests
+2026-05-04:23:19:15 INFO     [models.api_models:734] Tokenized requests are disabled. Context + generation length is not checked.
+Requesting API: 100%|██████████| 10552/10552 [2:03:56<00:00,  1.42it/s]
+2026-05-05:01:23:24 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': 'minimax-m2.5', 'base_url': 'http://127.0.0.1:8080/v1/completions', 'max_length': 131072, 'tokenizer': '/userdata/llms/MiniMax/MiniMax-M2.5', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers'
+: {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.6863|±  |0.0045|
+|        |       |strict-match    |     5|exact_match|↑  |0.7307|±  |0.0043|

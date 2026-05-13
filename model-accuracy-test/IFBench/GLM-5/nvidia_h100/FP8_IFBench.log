@@ -1,0 +1,167 @@
+/root/liwt/gittest/IFBench
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: glm-5
+API: http://172.16.251.206:8080/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 8192
+WORKERS: 32
+Generating responses for 300 prompts...
+Generating: 100%|██████████| 300/300 [35:10<00:00,  7.03s/it]
+
+Saved 300 responses to data/glm-5-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/glm-5-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 0 responses (0.0%)
+Output: data/glm-5-clean.jsonl
+I0420 19:52:36.915224 139938392831808 run_eval.py:56] Generating eval_results_strict...
+I0420 19:52:37.229493 139938392831808 run_eval.py:62] Accuracy: 0.666667
+I0420 19:52:37.236010 139938392831808 run_eval.py:76] Generated: eval/glm-5-clean-eval_results_strict.jsonl
+I0420 19:52:37.236601 139938392831808 run_eval.py:56] Generating eval_results_loose...
+I0420 19:52:37.636073 139938392831808 run_eval.py:62] Accuracy: 0.713333
+I0420 19:52:37.642466 139938392831808 run_eval.py:76] Generated: eval/glm-5-clean-eval_results_loose.jsonl
+================================================================
+eval/glm-5-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.6666666666666666
+instruction-level: 0.6802325581395349
+
+count 0.8
+custom 0.8181818181818182
+format 0.7755102040816326
+ratio 0.6136363636363636
+repeat 0.5555555555555556
+sentence 0.5357142857142857
+words 0.5617977528089888
+
+count:conjunctions 1.0
+count:keywords_multiple 0.6
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 0.5
+count:unique_word_count 0.8888888888888888
+count:word_count_range 0.7272727272727273
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 1.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.6666666666666666
+format:line_indent 0.8888888888888888
+format:list 0.8888888888888888
+format:newline 0.8333333333333334
+format:no_bullets_bullets 1.0
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 0.6
+format:quotes 0.75
+format:sub-bullets 0.5
+format:thesis 1.0
+format:title_case 0.0
+ratio:overlap 0.08333333333333333
+ratio:sentence_balance 0.5714285714285714
+ratio:sentence_type 0.8333333333333334
+ratio:sentence_words 0.7142857142857143
+ratio:stop_words 1.0
+repeat:repeat_change 1.0
+repeat:repeat_simple 1.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.2
+sentence:increment 0.375
+sentence:keyword 0.7333333333333333
+words:alphabet 0.5
+words:consonants 0.6666666666666666
+words:keywords_specific_position 0.0
+words:last_first 0.6
+words:no_consecutive 0.375
+words:odd_even_syllables 0.2222222222222222
+words:palindrome 1.0
+words:paragraph_last_first 0.8333333333333334
+words:prime_lengths 0.4
+words:repeats 0.8
+words:start_verb 0.6666666666666666
+words:vowel 0.5
+words:words_position 0.6666666666666666
+================================================================
+eval/glm-5-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.7133333333333334
+instruction-level: 0.7209302325581395
+
+count 0.8
+custom 0.8181818181818182
+format 0.8571428571428571
+ratio 0.6363636363636364
+repeat 0.5555555555555556
+sentence 0.6071428571428571
+words 0.5955056179775281
+
+count:conjunctions 1.0
+count:keywords_multiple 0.6
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 0.875
+count:punctuation 0.5
+count:unique_word_count 0.8888888888888888
+count:word_count_range 0.7272727272727273
+count:words_japanese 0.4
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 1.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 1.0
+custom:multiples 1.0
+custom:reverse_newline 1.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.6666666666666666
+format:line_indent 1.0
+format:list 0.8888888888888888
+format:newline 0.8333333333333334
+format:no_bullets_bullets 1.0
+format:no_whitespace 1.0
+format:options 0.8333333333333334
+format:output_template 1.0
+format:parentheses 0.875
+format:quote_unquote 0.8
+format:quotes 0.75
+format:sub-bullets 1.0
+format:thesis 1.0
+format:title_case 0.0
+ratio:overlap 0.08333333333333333
+ratio:sentence_balance 0.7142857142857143
+ratio:sentence_type 0.8333333333333334
+ratio:sentence_words 0.7142857142857143
+ratio:stop_words 1.0
+repeat:repeat_change 1.0
+repeat:repeat_simple 1.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.4
+sentence:increment 0.5
+sentence:keyword 0.7333333333333333
+words:alphabet 0.5
+words:consonants 0.6666666666666666
+words:keywords_specific_position 0.0
+words:last_first 0.6
+words:no_consecutive 0.375
+words:odd_even_syllables 0.2222222222222222
+words:palindrome 1.0
+words:paragraph_last_first 1.0
+words:prime_lengths 0.4
+words:repeats 0.8
+words:start_verb 0.6666666666666666
+words:vowel 0.7
+words:words_position 0.6666666666666666

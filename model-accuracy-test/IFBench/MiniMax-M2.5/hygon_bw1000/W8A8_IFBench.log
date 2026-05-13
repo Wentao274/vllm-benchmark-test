@@ -1,0 +1,167 @@
+(IFBench) root@a01r2n01:/data/models/gittest/IFBench# tail -f ./output/ifb_mm25_hygon_20250505.log
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: minimax-m2.5
+API: http://127.0.0.1:8080/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 8192
+WORKERS: 32
+Generating responses for 300 prompts...
+Generating: 100%|██████████| 300/300 [24:35<00:00,  4.92s/it]
+
+Saved 300 responses to data/mm25-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/mm25-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 7 responses (2.3%)
+Output: data/mm25-clean.jsonl
+I0505 20:49:28.570060 140399870703424 run_eval.py:56] Generating eval_results_strict...
+I0505 20:49:33.778767 140399870703424 run_eval.py:62] Accuracy: 0.246667
+I0505 20:49:33.827041 140399870703424 run_eval.py:76] Generated: eval/mm25-clean-eval_results_strict.jsonl
+I0505 20:49:33.827883 140399870703424 run_eval.py:56] Generating eval_results_loose...
+I0505 20:49:50.994755 140399870703424 run_eval.py:62] Accuracy: 0.276667
+I0505 20:49:51.041391 140399870703424 run_eval.py:76] Generated: eval/mm25-clean-eval_results_loose.jsonl
+================================================================
+eval/mm25-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.24666666666666667
+instruction-level: 0.2819767441860465
+
+count 0.5538461538461539
+custom 0.18181818181818182
+format 0.41836734693877553
+ratio 0.1590909090909091
+repeat 0.0
+sentence 0.14285714285714285
+words 0.07865168539325842
+
+count:conjunctions 1.0
+count:keywords_multiple 0.0
+count:numbers 0.0
+count:person_names 1.0
+count:pronouns 1.0
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.0
+count:words_japanese 0.0
+custom:character_reverse 1.0
+custom:csv_city 0.0
+custom:csv_quotes 0.0
+custom:csv_special_character 0.0
+custom:date_format_list 0.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 0.0
+custom:multiples 0.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.0
+format:line_indent 0.0
+format:list 1.0
+format:newline 0.0
+format:no_bullets_bullets 0.0
+format:no_whitespace 0.0
+format:options 0.0
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 0.4
+format:quotes 1.0
+format:sub-bullets 0.08333333333333333
+format:thesis 1.0
+format:title_case 0.0
+ratio:overlap 0.0
+ratio:sentence_balance 0.0
+ratio:sentence_type 0.0
+ratio:sentence_words 0.0
+ratio:stop_words 0.5833333333333334
+repeat:repeat_change 0.0
+repeat:repeat_simple 0.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.0
+sentence:increment 0.0
+sentence:keyword 0.26666666666666666
+words:alphabet 0.0
+words:consonants 0.0
+words:keywords_specific_position 0.0
+words:last_first 0.0
+words:no_consecutive 0.0
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 0.0
+words:prime_lengths 0.0
+words:repeats 0.0
+words:start_verb 0.0
+words:vowel 0.0
+words:words_position 0.0
+================================================================
+eval/mm25-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.27666666666666667
+instruction-level: 0.31976744186046513
+
+count 0.5538461538461539
+custom 0.18181818181818182
+format 0.5306122448979592
+ratio 0.1590909090909091
+repeat 0.0
+sentence 0.21428571428571427
+words 0.07865168539325842
+
+count:conjunctions 1.0
+count:keywords_multiple 0.0
+count:numbers 0.0
+count:person_names 1.0
+count:pronouns 1.0
+count:punctuation 1.0
+count:unique_word_count 1.0
+count:word_count_range 0.0
+count:words_japanese 0.0
+custom:character_reverse 1.0
+custom:csv_city 0.0
+custom:csv_quotes 0.0
+custom:csv_special_character 0.0
+custom:date_format_list 0.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 0.0
+custom:multiples 0.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 0.0
+custom:word_reverse 1.0
+format:emoji 0.0
+format:line_indent 0.0
+format:list 1.0
+format:newline 0.0
+format:no_bullets_bullets 0.0
+format:no_whitespace 0.0
+format:options 0.0
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 0.4
+format:quotes 1.0
+format:sub-bullets 1.0
+format:thesis 1.0
+format:title_case 0.0
+ratio:overlap 0.0
+ratio:sentence_balance 0.0
+ratio:sentence_type 0.0
+ratio:sentence_words 0.0
+ratio:stop_words 0.5833333333333334
+repeat:repeat_change 0.0
+repeat:repeat_simple 0.0
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.0
+sentence:increment 0.0
+sentence:keyword 0.4
+words:alphabet 0.0
+words:consonants 0.0
+words:keywords_specific_position 0.0
+words:last_first 0.0
+words:no_consecutive 0.0
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 0.0
+words:prime_lengths 0.0
+words:repeats 0.0
+words:start_verb 0.0
+words:vowel 0.0
+words:words_position 0.0
