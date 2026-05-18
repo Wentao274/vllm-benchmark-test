@@ -1,0 +1,27 @@
+Metric,32 并发,32 并发,32 并发
+[[Serving Benchmark Result]],,,,
+Successful requests,1000,1000,1000
+Failed requests,0,0,
+Benchmark duration (s),657.40,1984.29,1207.69
+Total input tokens,8231000,8192000,8189832
+Total generated tokens,1024000,1024000,425192
+Request throughput (req/s),1.52,0.50,0.83
+Output token throughput (tok/s),1557.65,516.05,352.07
+Peak output token throughput (tok/s),2016.00,960.00,736.00
+Peak concurrent requests,43.00,49.00,36.00
+Total token throughput (tok/s),14078.15,4644.47,7133.48
+[[Time to First Token]],,,,
+Mean TTFT (ms),932.96,7231.83,1323.88
+Median TTFT (ms),944.24,5865.37,803.93
+P95 TTFT (ms),1107.73,16689.00,1936.13
+P99 TTFT (ms),4184.75,19688.71,13748.61
+[[Time per Output Token]],,,,
+Mean TPOT (ms),19.40,54.49,86.88
+Median TPOT (ms),19.48,54.71,87.55
+P95 TPOT (ms),19.99,60.20,96.66
+P99 TPOT (ms),20.26,61.36,102.33
+[[Inter-token Latency]],,,,
+Mean ITL (ms),24.93,54.44,86.70
+Median ITL (ms),16.18,36.40,46.01
+P95 ITL (ms),32.38,41.93,597.01
+P99 ITL (ms),159.35,64.07,602.78

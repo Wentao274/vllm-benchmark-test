@@ -1,0 +1,27 @@
+Metric,1,2,4,8,10
+[[Serving Benchmark Result]],,,,,,,,
+Successful requests,100,100,100,100,100
+Failed requests,0,0,0,0,0
+Benchmark duration (s),14207.97,14168.11,15215.04,16951.44,17832.87
+Total input tokens,19456000,19456000,19456000,19456000,19456000
+Total generated tokens,102400,102400,102400,102400,102400
+Request throughput (req/s),0.01,0.01,0.01,0.01,0.01
+Output token throughput (tok/s),7.21,7.23,6.73,6.04,5.74
+Peak output token throughput (tok/s),39.00,37.00,42.00,39.00,39.00
+Peak concurrent requests,2.00,3.00,5.00,9.00,11.00
+Total token throughput (tok/s),1376.58,1380.45,1285.46,1153.79,1096.76
+[[Time to First Token]],,,,,,,,
+Mean TTFT (ms),111977.70,240896.75,554725.24,1274250.30,1675058.97
+Median TTFT (ms),113467.99,244527.82,566598.23,1333646.74,1774448.89
+P95 TTFT (ms),113900.00,246067.80,570672.93,1338261.01,1780264.33
+P99 TTFT (ms),114142.41,246419.91,571594.19,1338975.40,1781035.71
+[[Time per Output Token]],,,,,,,,
+Mean TPOT (ms),29.42,40.32,44.79,40.41,40.36
+Median TPOT (ms),29.42,40.12,40.22,40.06,40.01
+P95 TPOT (ms),29.55,40.50,45.51,40.52,40.51
+P99 TPOT (ms),29.56,45.59,47.96,45.71,45.57
+[[Inter-token Latency]],,,,,,,,
+Mean ITL (ms),29.51,40.49,44.91,40.48,40.48
+Median ITL (ms),29.42,29.48,29.44,29.44,29.39
+P95 ITL (ms),32.11,32.30,32.20,31.47,31.93
+P99 ITL (ms),53.91,57.04,56.06,51.77,55.14
