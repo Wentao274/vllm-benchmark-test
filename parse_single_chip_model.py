@@ -115,6 +115,9 @@ def parse_benchmark_log(log_file):
                 if key != key_normalized:
                     metrics[key_normalized] = value
 
+    if "Failed requests" not in metrics:
+        metrics["Failed requests"] = "0"
+
     return metrics
 
 
@@ -123,6 +126,13 @@ def extract_concurrency_from_dir(dir_name):
     if match:
         return match.group(1)
     return None
+
+
+def extract_input_output_from_dir(dir_name):
+    match = re.search(r"-i(\d+)-o(\d+)", dir_name)
+    if match:
+        return int(match.group(1)), int(match.group(2))
+    return None, None
 
 
 def get_all_concurrencies(chip_config):
@@ -142,11 +152,34 @@ def get_all_concurrencies(chip_config):
     return sorted(concurrency_set, key=lambda x: int(x))
 
 
-def get_chip_metrics(chip_config, concurrency):
+def get_all_input_output_pairs(chip_config):
+    io_pairs = set()
+    base_path = chip_config["base_path"]
+
+    if not os.path.exists(base_path):
+        return []
+
+    for item in os.listdir(base_path):
+        item_path = os.path.join(base_path, item)
+        if os.path.isdir(item_path):
+            input_len, output_len = extract_input_output_from_dir(item)
+            if input_len and output_len:
+                io_pairs.add((input_len, output_len))
+
+    return sorted(io_pairs, key=lambda x: (x[0], x[1]))
+
+
+def get_chip_metrics(chip_config, concurrency, input_len=None, output_len=None):
     base_path = chip_config["base_path"]
     chip_name = chip_config["name"]
 
-    dir_pattern = os.path.join(base_path, f"{concurrency}-*")
+    if input_len is not None and output_len is not None:
+        dir_pattern = os.path.join(
+            base_path, f"{concurrency}-*-i{input_len}-o{output_len}"
+        )
+    else:
+        dir_pattern = os.path.join(base_path, f"{concurrency}-*")
+
     matching_dirs = glob.glob(dir_pattern)
 
     if not matching_dirs:
@@ -592,6 +625,171 @@ def generate_performance_trends_csv(chip_data, concurrencies, output_dir, chip_n
     return csv_file
 
 
+def generate_io_comparison_csv(chip_data, io_labels, output_dir, chip_name):
+    metric_names = [
+        ("[Serving Benchmark Result]", ""),
+        ("Request throughput (req/s)", "Request throughput (req/s)"),
+        ("Output token throughput (tok/s)", "Output token throughput (tok/s)"),
+        ("Total token throughput (tok/s)", "Total token throughput (tok/s)"),
+        ("[Time to First Token]", ""),
+        ("Mean TTFT (ms)", "Mean TTFT (ms)"),
+        ("P99 TTFT (ms)", "P99 TTFT (ms)"),
+        ("[Time per Output Token]", ""),
+        ("Mean TPOT (ms)", "Mean TPOT (ms)"),
+        ("P99 TPOT (ms)", "P99 TPOT (ms)"),
+        ("[Inter-token Latency]", ""),
+        ("Mean ITL (ms)", "Mean ITL (ms)"),
+        ("P99 ITL (ms)", "P99 ITL (ms)"),
+    ]
+
+    csv_lines = []
+    header = ["Metric"] + io_labels
+    csv_lines.append(",".join(header))
+
+    for display_name, key_name in metric_names:
+        if not key_name:
+            csv_lines.append(f"[{display_name}]" + ",," * (len(io_labels) - 1))
+            continue
+
+        row = [display_name]
+        for io_key in io_labels:
+            value = chip_data.get(chip_name, {}).get(io_key, {}).get(key_name, "")
+            row.append(value)
+        csv_lines.append(",".join(row))
+
+    csv_file = os.path.join(output_dir, "io_comparison.csv")
+    with open(csv_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(csv_lines))
+
+    print(f"Generated: {csv_file}")
+    return [csv_file]
+
+
+def generate_io_comparison_charts(
+    chip_data, io_labels, output_dir, chip_name, model_name=None, fixed_conc="32"
+):
+    if not HAS_MATPLOTLIB:
+        return None
+
+    actual_model_name = model_name if model_name else MODEL_NAME
+    x = range(len(io_labels))
+
+    def get_values(key):
+        values = []
+        for io_key in io_labels:
+            val = chip_data.get(chip_name, {}).get(io_key, {}).get(key, "0")
+            try:
+                values.append(float(val))
+            except:
+                values.append(0)
+        return values
+
+    colors = ["#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6", "#1abc9c"]
+
+    req_throughput = get_values("Request throughput (req/s)")
+    output_tput = get_values("Output token throughput (tok/s)")
+    total_tput = get_values("Total token throughput (tok/s)")
+    ttft_p99 = get_values("P99 TTFT (ms)")
+    tpot_p99 = get_values("P99 TPOT (ms)")
+    itl_p99 = get_values("P99 ITL (ms)")
+
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10), constrained_layout=True)
+    fig.suptitle(
+        f"{actual_model_name} on {chip_name} - I/O Comparison (Concurrency={fixed_conc})",
+        fontsize=14,
+        fontweight="bold",
+    )
+
+    def safe_bar_with_labels(ax, data, title, xlabel, ylabel, value_format):
+        max_val = max(data) if data else 0
+        ax.bar(x, data, color=colors[: len(io_labels)], alpha=0.8)
+        ax.set_title(title, fontsize=11)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(x)
+        ax.set_xticklabels(io_labels, rotation=45, ha="right")
+
+        if max_val > 0:
+            for i, v in enumerate(data):
+                if v > 0:
+                    ax.text(
+                        i,
+                        v + 0.02 * max_val,
+                        value_format.format(v),
+                        ha="center",
+                        va="bottom",
+                        fontsize=9,
+                    )
+        else:
+            ax.text(
+                0.5,
+                0.5,
+                "No Data",
+                ha="center",
+                va="center",
+                transform=ax.transAxes,
+                fontsize=12,
+                color="gray",
+            )
+            ax.set_ylim(0, 1)
+
+        ax.grid(axis="y", alpha=0.3)
+
+    safe_bar_with_labels(
+        axes[0, 0],
+        req_throughput,
+        "Request Throughput (req/s)",
+        "Input/Output Length",
+        "req/s",
+        "{:.2f}",
+    )
+    safe_bar_with_labels(
+        axes[0, 1],
+        output_tput,
+        "Output Token Throughput (tok/s)",
+        "Input/Output Length",
+        "tok/s",
+        "{:.0f}",
+    )
+    safe_bar_with_labels(
+        axes[0, 2],
+        total_tput,
+        "Total Token Throughput (tok/s)",
+        "Input/Output Length",
+        "tok/s",
+        "{:.0f}",
+    )
+    safe_bar_with_labels(
+        axes[1, 0],
+        ttft_p99,
+        "TTFT P99 (ms)",
+        "Input/Output Length",
+        "ms",
+        "{:.0f}",
+    )
+    safe_bar_with_labels(
+        axes[1, 1], tpot_p99, "TPOT P99 (ms)", "Input/Output Length", "ms", "{:.2f}"
+    )
+    safe_bar_with_labels(
+        axes[1, 2], itl_p99, "ITL P99 (ms)", "Input/Output Length", "ms", "{:.2f}"
+    )
+
+    for ax in axes.flat:
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    fig.set_facecolor("#f0f0f0")
+    for ax in axes.flat:
+        ax.set_facecolor("white")
+
+    chart_file = os.path.join(output_dir, "io_comparison.png")
+    plt.savefig(chart_file, dpi=150, bbox_inches="tight")
+    plt.close()
+
+    print(f"Generated chart: {chart_file}")
+    return [chart_file]
+
+
 def generate_analysis_content(chip_data, chip_name, concurrencies):
     analysis_lines = []
 
@@ -870,6 +1068,38 @@ def generate_markdown_report(
         [f"| {name} | {make_table_for_metric(key)} |" for name, key in itl_metrics]
     )
 
+    summary_table_rows = [
+        "| 并发数 | 请求吞吐量 (req/s) | 输出Token吞吐量 (tok/s) | 总Token吞吐量 (tok/s) | TTFT P99 (ms) | TPOT P99 (ms) | ITL P99 (ms) |"
+    ]
+    summary_table_rows.append("| " + " | ".join(["-----------"] * 7) + " |")
+    for conc in concurrencies:
+        req_tp = (
+            chip_data.get(chip_name, {})
+            .get(conc, {})
+            .get("Request throughput (req/s)", "N/A")
+        )
+        out_tp = (
+            chip_data.get(chip_name, {})
+            .get(conc, {})
+            .get("Output token throughput (tok/s)", "N/A")
+        )
+        total_tp = (
+            chip_data.get(chip_name, {})
+            .get(conc, {})
+            .get("Total token throughput (tok/s)", "N/A")
+        )
+        ttft_p99 = (
+            chip_data.get(chip_name, {}).get(conc, {}).get("P99 TTFT (ms)", "N/A")
+        )
+        tpot_p99 = (
+            chip_data.get(chip_name, {}).get(conc, {}).get("P99 TPOT (ms)", "N/A")
+        )
+        itl_p99 = chip_data.get(chip_name, {}).get(conc, {}).get("P99 ITL (ms)", "N/A")
+        summary_table_rows.append(
+            f"| {conc} | {req_tp} | {out_tp} | {total_tp} | {ttft_p99} | {tpot_p99} | {itl_p99} |"
+        )
+    summary_table = "\n".join(summary_table_rows)
+
     analysis_content = generate_analysis_content(chip_data, chip_name, concurrencies)
 
     concurrency_comparison_img = (
@@ -904,49 +1134,29 @@ def generate_markdown_report(
     input_ctx = format_tokens(input_len[0]) if input_len else "N/A"
     output_ctx = format_tokens(output_len[0]) if output_len else "N/A"
 
-    chip_info = chips_info
-    chip_param_names = [
-        "model_name",
-        "quantization_config",
-        "model_size",
-        "max_position_embeddings",
-        "temperature",
-        "top_k",
-        "top_p",
-        "transformers_version",
-        "vllm_version",
-        "python_version",
-    ]
     chip_table_rows = []
-    for param in chip_param_names:
-        val = chip_info.get(param, "N/A")
+    for param, val in chips_info.items():
+        if param == "remark":
+            continue
+        if val is None:
+            val = "N/A"
         chip_table_rows.append(f"| **{param}** | {val} |")
     chip_table = "\n".join(chip_table_rows)
 
-    vllm_param_names = [
-        "model_name",
-        "max-model-len",
-        "max-num-seqs",
-        "max-num-batched-tokens",
-        "gpu-memory-utilization",
-        "dtype",
-        "block_size",
-        "dp",
-        "tp",
-        "pp",
-        "enable-export-parallel",
-        "enable-auto-tool-choice",
-        "tool-call-parser",
-        "reasoning-parser",
-    ]
     vllm_table_rows = []
-    for param in vllm_param_names:
-        val = vllm_cfg.get(param, "N/A")
-        vllm_table_rows.append(f"| {param} | {val} |")
+    for param, val in vllm_cfg.items():
+        if param == "remarks":
+            continue
+        if val is None:
+            val = "N/A"
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        vllm_table_rows.append(f"| **{display_name}** | {val} |")
     vllm_table = "\n".join(vllm_table_rows)
 
     remark = vllm_cfg.get("remarks", "")
     remarks_section = f"- **{chip_name}**: {remark}" if remark else ""
+
+    vllm_version = scenarios_config.get("vllm_version", "N/A")
 
     md_content = f"""# {actual_model_name}模型在{chip_name}上的Benchmark基准测试报告
 
@@ -958,17 +1168,34 @@ def generate_markdown_report(
 ---
 
 ## 测试场景
-在固定请求数，输入上下文和输出上下文长度下，使用vllm bench serve工具对并发数逐级增加场景的性能基准验证。分析同一芯片同一模型在不同并发级别下的性能指标变化趋势。
+使用vllm bench serve基准测试工具对不同并发数，请求上下文长度下的性能变化趋势。
 
 **主要采集指标**：
 
 | 指标                  | 单位         | 含义                                 |
 |---------------------|------------|------------------------------------|
+| Request throughput  | req/s      | 请求吞吐量                              |
+| Output token throughput | tok/s  | 输出token吞吐量                        |
+| Total token throughput | tok/s   | 总token吞吐量                         |
 | TTFT                | ms         | Time To First Token，首 token 延迟     |
 | TPOT                | ms/token   | Time Per Output Token，每 token 生成时间 |
-| Throughput          | tokens/s   | 系统总吞吐                              |
-| QPS                 | requests/s | 请求吞吐                               |
-| P50/P95/P99 Latency | ms         | 延迟分位数                              |
+| ITL                 | ms         | Inter-Token Latency，token间延迟       |
+
+
+## 🤖 芯片和模型配置信息
+
+| 参数名称                    | {chip_name} |
+|------------------------|-------------|
+{chip_table}
+
+
+## 🤖 vLLM启动配置信息
+
+| 参数名称                   | {chip_name} |
+|------------------------|-------------|
+{vllm_table}
+
+{remarks_section}
 
 
 ## 📊 测试概览
@@ -985,65 +1212,48 @@ def generate_markdown_report(
 
 ---
 
-## 🤖 芯片和模型配置信息
+## 📋 测试结果汇总
 
-| 参数名称                    | {chip_name} |
-|------------------------|-------------|
-{chip_table}
+{summary_table}
 
----
-
-## 🤖 vLLM启动配置信息
-
-| 参数名称                   | {chip_name} |
-|------------------------|-------------|
-{vllm_table}
-
-{remarks_section}
-
----
-
-## 🎯 服务基准结果
-
-| 指标 | {header} |
-|------|{separator}|
-{serving_table}
-
----
-
-## ⏱️ 首Token延迟 (TTFT)
-
-| 指标 | {header} |
-|------|{separator}|
-{ttft_table}
-
----
-
-## ⚡ 每Token生成时间 (TPOT)
-
-| 指标 | {header} |
-|------|{separator}|
-{tpot_table}
-
----
-
-## 🔄 Token间延迟 (ITL)
-
-| 指标 | {header} |
-|------|{separator}|
-{itl_table}
-
----
 
 ## 📊 各并发级别性能柱状图
 
 {concurrency_comparison_img}
 
----
 
 ## 📈 性能趋势分析
 
 {performance_trends_img}
+
+---
+
+### 🎯 服务基准结果详情
+
+| 指标 | {header} |
+|------|{separator}|
+{serving_table}
+
+
+### ⏱️ 首Token延迟 (TTFT)
+
+| 指标 | {header} |
+|------|{separator}|
+{ttft_table}
+
+
+### ⚡ 每Token生成时间 (TPOT)
+
+| 指标 | {header} |
+|------|{separator}|
+{tpot_table}
+
+
+### 🔄 Token间延迟 (ITL)
+
+| 指标 | {header} |
+|------|{separator}|
+{itl_table}
 
 ---
 
@@ -1060,6 +1270,388 @@ def generate_markdown_report(
 
     md_file = os.path.join(
         output_dir, f"{actual_model_name}_{chip_name}_concurrency.md"
+    )
+    with open(md_file, "w", encoding="utf-8") as f:
+        f.write(md_content)
+
+    print(f"Generated: {md_file}")
+    return md_file
+
+
+def generate_multi_io_markdown_report(
+    all_chip_data,
+    io_pairs,
+    concurrencies,
+    output_dir,
+    test_suite,
+    chip_name,
+    model_name=None,
+    scenarios_config=None,
+):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    actual_model_name = model_name if model_name else MODEL_NAME
+
+    chip_config = load_chip_config()
+    vllm_config = load_vllm_config()
+    chips_raw = chip_config.get("chips", {})
+    vllm_configs_raw = vllm_config.get("vllm_configs", {})
+    chip_configs_list = chips_raw.get(chip_name, [])
+    if isinstance(chip_configs_list, list):
+        chips_info = None
+        for cfg in chip_configs_list:
+            if cfg.get("model_name") == actual_model_name:
+                chips_info = cfg
+                break
+        if chips_info is None:
+            chips_info = chip_configs_list[0] if chip_configs_list else {}
+    else:
+        chips_info = chip_configs_list if chip_configs_list else {}
+    vllm_cfg_list = vllm_configs_raw.get(chip_name, [])
+    if isinstance(vllm_cfg_list, list):
+        vllm_cfg = None
+        for cfg in vllm_cfg_list:
+            if cfg.get("model_name") == actual_model_name:
+                vllm_cfg = cfg
+                break
+        if vllm_cfg is None:
+            vllm_cfg = vllm_cfg_list[0] if vllm_cfg_list else {}
+    else:
+        vllm_cfg = vllm_cfg_list if vllm_cfg_list else {}
+
+    test_cfg = (
+        scenarios_config.get("base_config", {}).get("params", {}).get(test_suite, {})
+    )
+    num_prompts = test_cfg.get("num-prompts", [])
+    input_output_lens = test_cfg.get("random-input-output-len", [])
+    config_concurrencies = test_cfg.get("max-concurrency", [])
+    display_concurrencies = (
+        [str(c) for c in config_concurrencies]
+        if config_concurrencies
+        else concurrencies
+    )
+
+    def format_tokens(val):
+        try:
+            v = int(val)
+            if v >= 1024:
+                return f"{v // 1024}k"
+            else:
+                return f"{v / 1024:.2f}k"
+        except:
+            return str(val)
+
+    if input_output_lens and isinstance(input_output_lens[0], list):
+        input_len = [input_output_lens[0][0]]
+        output_len = [input_output_lens[0][1]]
+    else:
+        input_len = test_cfg.get("random-input-len", [])
+        output_len = test_cfg.get("random-output-len", [])
+
+    input_ctx = format_tokens(input_len[0]) if input_len else "N/A"
+    output_ctx = format_tokens(output_len[0]) if output_len else "N/A"
+
+    chip_table_rows = []
+    for param, val in chips_info.items():
+        if param == "remark":
+            continue
+        if val is None:
+            val = "N/A"
+        chip_table_rows.append(f"| **{param}** | {val} |")
+    chip_table = "\n".join(chip_table_rows)
+
+    vllm_table_rows = []
+    for param, val in vllm_cfg.items():
+        if param == "remarks":
+            continue
+        if val is None:
+            val = "N/A"
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        vllm_table_rows.append(f"| **{display_name}** | {val} |")
+    vllm_table = "\n".join(vllm_table_rows)
+
+    remark = vllm_cfg.get("remarks", "")
+    remarks_section = f"- **{chip_name}**: {remark}" if remark else ""
+
+    vllm_version = scenarios_config.get("vllm_version", "N/A")
+    fixed_conc_list = concurrencies
+
+    def get_value(chip_data, conc, key):
+        return chip_data.get(chip_name, {}).get(conc, {}).get(key, "N/A")
+
+    if HAS_MATPLOTLIB:
+        for io_key, io_info in all_chip_data.items():
+            input_len_io = io_info["input_len"]
+            output_len_io = io_info["output_len"]
+            chip_data = io_info["data"]
+            io_dir = os.path.join(output_dir, f"i{input_len_io}_o{output_len_io}")
+            Path(io_dir).mkdir(parents=True, exist_ok=True)
+            generate_comparison_charts(
+                chip_data,
+                concurrencies,
+                io_dir,
+                chip_name,
+                f"{actual_model_name} (input:{input_len_io}, output:{output_len_io})",
+            )
+
+        chip_data_by_io_fixed_conc = defaultdict(lambda: defaultdict(dict))
+        for fixed_conc in fixed_conc_list:
+            for io_key, io_info in all_chip_data.items():
+                input_len_io = io_info["input_len"]
+                output_len_io = io_info["output_len"]
+                chip_data = io_info["data"]
+                io_key_label = f"i{input_len_io}_o{output_len_io}"
+                chip_data_by_io_fixed_conc[fixed_conc][chip_name][io_key_label] = (
+                    chip_data.get(chip_name, {}).get(fixed_conc, {})
+                )
+
+            if chip_data_by_io_fixed_conc[fixed_conc].get(chip_name):
+                io_labels = [
+                    f"i{io_info['input_len']}_o{io_info['output_len']}"
+                    for io_info in all_chip_data.values()
+                ]
+                io_comparison_dir = os.path.join(
+                    output_dir, f"compare_by_io_conc{fixed_conc}"
+                )
+                Path(io_comparison_dir).mkdir(parents=True, exist_ok=True)
+                generate_io_comparison_charts(
+                    chip_data_by_io_fixed_conc[fixed_conc],
+                    io_labels,
+                    io_comparison_dir,
+                    chip_name,
+                    actual_model_name,
+                    fixed_conc,
+                )
+
+    io_sections = []
+    for io_key, io_info in all_chip_data.items():
+        input_len_io = io_info["input_len"]
+        output_len_io = io_info["output_len"]
+        io_label = io_info["io_label"]
+        chip_data = io_info["data"]
+
+        summary_rows = [
+            "| 并发数 | 请求吞吐量 (req/s) | 输出Token吞吐量 (tok/s) | 总Token吞吐量 (tok/s) | TTFT P99 (ms) | TPOT P99 (ms) | ITL P99 (ms) |"
+        ]
+        summary_rows.append("| " + " | ".join(["---------------"] * 7) + " |")
+
+        for conc in concurrencies:
+            req_tp = get_value(chip_data, conc, "Request throughput (req/s)")
+            out_tp = get_value(chip_data, conc, "Output token throughput (tok/s)")
+            total_tp = get_value(chip_data, conc, "Total token throughput (tok/s)")
+            ttft_p99 = get_value(chip_data, conc, "P99 TTFT (ms)")
+            tpot_p99 = get_value(chip_data, conc, "P99 TPOT (ms)")
+            itl_p99 = get_value(chip_data, conc, "P99 ITL (ms)")
+            summary_rows.append(
+                f"| {conc} | {req_tp} | {out_tp} | {total_tp} | {ttft_p99} | {tpot_p99} | {itl_p99} |"
+            )
+
+        header = " | ".join([f"{conc} 并发" for conc in display_concurrencies])
+        separator = "----------- | " + " | ".join(
+            ["-----------"] * len(display_concurrencies)
+        )
+
+        serving_table_rows = [f"| 指标 | {header} |"]
+        serving_table_rows.append(f"| {separator} |")
+
+        serving_metrics = [
+            ("成功请求数", "Successful requests"),
+            ("失败请求数", "Failed requests"),
+            ("测试持续时间 (s)", "Benchmark duration (s)"),
+            ("总输入 tokens", "Total input tokens"),
+            ("总生成 tokens", "Total generated tokens"),
+            ("**请求吞吐量 (req/s)**", "Request throughput (req/s)"),
+            ("**输出 token 吞吐量 (tok/s)**", "Output token throughput (tok/s)"),
+            ("峰值输出 token 吞吐量 (tok/s)", "Peak output token throughput (tok/s)"),
+            ("峰值并发请求数", "Peak concurrent requests"),
+            ("**总 token 吞吐量 (tok/s)**", "Total token throughput (tok/s)"),
+        ]
+        for display_name, key_name in serving_metrics:
+            row = [f"| {display_name} |"]
+            for conc in concurrencies:
+                row.append(f" {get_value(chip_data, conc, key_name)} |")
+            serving_table_rows.append("".join(row))
+
+        ttft_table_rows = [f"| 指标 | {header} |"]
+        ttft_table_rows.append(f"|{separator}|")
+        ttft_metrics = [
+            ("平均 TTFT (ms)", "Mean TTFT (ms)"),
+            ("中位 TTFT (ms)", "Median TTFT (ms)"),
+            ("P95 TTFT (ms)", "P95 TTFT (ms)"),
+            ("P99 TTFT (ms)", "P99 TTFT (ms)"),
+        ]
+        for display_name, key_name in ttft_metrics:
+            row = [f"| {display_name} |"]
+            for conc in concurrencies:
+                row.append(f" {get_value(chip_data, conc, key_name)} |")
+            ttft_table_rows.append("".join(row))
+
+        tpot_table_rows = [f"| 指标 | {header} |"]
+        tpot_table_rows.append(f"|{separator}|")
+        tpot_metrics = [
+            ("平均 TPOT (ms)", "Mean TPOT (ms)"),
+            ("中位 TPOT (ms)", "Median TPOT (ms)"),
+            ("P95 TPOT (ms)", "P95 TPOT (ms)"),
+            ("P99 TPOT (ms)", "P99 TPOT (ms)"),
+        ]
+        for display_name, key_name in tpot_metrics:
+            row = [f"| {display_name} |"]
+            for conc in concurrencies:
+                row.append(f" {get_value(chip_data, conc, key_name)} |")
+            tpot_table_rows.append("".join(row))
+
+        itl_table_rows = [f"| 指标 | {header} |"]
+        itl_table_rows.append(f"|{separator}|")
+        itl_metrics = [
+            ("平均 ITL (ms)", "Mean ITL (ms)"),
+            ("中位 ITL (ms)", "Median ITL (ms)"),
+            ("P95 ITL (ms)", "P95 ITL (ms)"),
+            ("P99 ITL (ms)", "P99 ITL (ms)"),
+        ]
+        for display_name, key_name in itl_metrics:
+            row = [f"| {display_name} |"]
+            for conc in concurrencies:
+                row.append(f" {get_value(chip_data, conc, key_name)} |")
+            itl_table_rows.append("".join(row))
+
+        io_sections.append(
+            {
+                "io_label": io_label,
+                "input_len": input_len_io,
+                "output_len": output_len_io,
+                "summary_table": "\n".join(summary_rows),
+                "serving_table": "\n".join(serving_table_rows),
+                "ttft_table": "\n".join(ttft_table_rows),
+                "tpot_table": "\n".join(tpot_table_rows),
+                "itl_table": "\n".join(itl_table_rows),
+                "chip_data": chip_data,
+            }
+        )
+
+    md_content = f"""# {actual_model_name}模型在{chip_name}上的多I/O测试报告
+
+<div align="center">
+**测试日期：** {current_date}
+</div>
+
+---
+
+## 测试场景
+测试不同输入输出长度和并发级别下的性能表现，分析同一芯片同一模型在不同输入输出长度和并发级别下的性能指标变化趋势。
+
+**主要采集指标**：
+
+| 指标                  | 单位         | 含义                                 |
+|---------------------|------------|------------------------------------|
+| Request throughput  | req/s      | 请求吞吐量                              |
+| Output token throughput | tok/s  | 输出token吞吐量                        |
+| Total token throughput | tok/s   | 总token吞吐量                         |
+| TTFT                | ms         | Time To First Token，首 token 延迟     |
+| TPOT                | ms/token   | Time Per Output Token，每 token 生成时间 |
+| ITL                 | ms         | Inter-Token Latency，token间延迟       |
+
+
+## 🤖 芯片和模型配置信息
+
+| 参数名称                    | {chip_name} |
+|------------------------|-------------|
+{chip_table}
+
+
+## 🤖 vLLM启动配置信息
+
+| 参数名称                   | {chip_name} |
+|------------------------|-------------|
+{vllm_table}
+
+{remarks_section}
+
+
+## 📊 测试概览
+
+| 项目            | 配置                                     | 备注  |
+|---------------|----------------------------------------|-----|
+| **数据集**       | random                                 |     |
+| **并发数**       | {", ".join(display_concurrencies)}    |     |
+| **总请求数**      | {num_prompts[0] if num_prompts else "N/A"}                                    |     |
+| **输入输出长度** | {", ".join([f"({p[0]}, {p[1]})" for p in io_pairs])} |     |
+| **模型**        | {actual_model_name}                           |     |
+| **被测芯片**      | {chip_name} |     |
+
+---
+
+## 📋 各I/O测试汇总（固定上下文长度，随并发变化）
+
+"""
+
+    for io_sec in io_sections:
+        md_content += f"### {io_sec['io_label']}\n\n"
+        md_content += io_sec["summary_table"] + "\n\n"
+        md_content += f"![性能图表](./i{io_sec['input_len']}_o{io_sec['output_len']}/concurrency_comparison.png)\n\n"
+        md_content += "---\n\n"
+
+    md_content += "## 📊 I/O对比（固定并发数，随上下文长度变化）\n\n"
+
+    for fixed_conc in fixed_conc_list:
+        io_labels = [
+            f"i{io_info['input_len']}_o{io_info['output_len']}"
+            for io_info in all_chip_data.values()
+        ]
+
+        io_header = " | ".join(io_labels)
+        io_sep = "--- | " + " | ".join(["---"] * len(io_labels))
+
+        comp_rows = [f"| 指标 | {io_header} |"]
+        comp_rows.append(f"| {io_sep} |")
+
+        comp_metrics = [
+            ("请求吞吐量 (req/s)", "Request throughput (req/s)"),
+            ("输出Token吞吐量 (tok/s)", "Output token throughput (tok/s)"),
+            ("总Token吞吐量 (tok/s)", "Total token throughput (tok/s)"),
+            ("TTFT P99 (ms)", "P99 TTFT (ms)"),
+            ("TPOT P99 (ms)", "P99 TPOT (ms)"),
+            ("ITL P99 (ms)", "P99 ITL (ms)"),
+        ]
+
+        for display_name, key_name in comp_metrics:
+            row = [f"| {display_name} |"]
+            for io_info in io_sections:
+                chip_data = io_info["chip_data"]
+                value = get_value(chip_data, fixed_conc, key_name)
+                row.append(f" {value} |")
+            comp_rows.append("".join(row))
+
+        md_content += f"### 并发数 = {fixed_conc}\n\n"
+        md_content += "\n".join(comp_rows) + "\n\n"
+        md_content += (
+            f"![I/O对比](./compare_by_io_conc{fixed_conc}/io_comparison.png)\n\n"
+        )
+        md_content += "---\n\n"
+
+    md_content += f"""## 📝 详细性能数据
+
+"""
+
+    for io_sec in io_sections:
+        md_content += f"### {io_sec['io_label']}\n\n"
+
+        md_content += f"#### 服务基准结果\n\n{io_sec['serving_table']}\n\n"
+
+        md_content += f"#### TTFT\n\n{io_sec['ttft_table']}\n\n"
+
+        md_content += f"#### TPOT\n\n{io_sec['tpot_table']}\n\n"
+
+        md_content += f"#### ITL\n\n{io_sec['itl_table']}\n\n"
+
+        md_content += "---\n\n"
+
+    md_content += f"""
+<div align="center">
+*报告生成时间: {current_date}*
+</div>
+"""
+
+    md_file = os.path.join(
+        output_dir, f"{actual_model_name}_{chip_name}_multi_io_report.md"
     )
     with open(md_file, "w", encoding="utf-8") as f:
         f.write(md_content)
@@ -1163,78 +1755,164 @@ def main():
         chip_name = chip["name"]
         output_base = f"analysis/single_chip/{chip_name}/{model_to_use}/{test_suite_to_use}/{run_id_to_use}"
 
-        all_concurrencies = set()
-        concs = get_all_concurrencies(chip)
-        all_concurrencies.update(concs)
+        test_cfg = (
+            scenarios_config.get("base_config", {})
+            .get("params", {})
+            .get(test_suite_to_use, {})
+        )
+        input_output_lens = test_cfg.get("random-input-output-len", [])
+        is_multi_io = len(input_output_lens) > 1
 
-        if not all_concurrencies:
+        if is_multi_io:
+            io_pairs = get_all_input_output_pairs(chip)
+            print(f"Detected multi input/output scenario: {len(io_pairs)} pairs")
+
+            all_concurrencies = set()
+            for io_pair in io_pairs:
+                for conc in range(1, 129):
+                    metrics = get_chip_metrics(chip, str(conc), io_pair[0], io_pair[1])
+                    if metrics:
+                        all_concurrencies.add(str(conc))
+
+            concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+
+            if concurrency_filter:
+                filtered_concs = [c for c in concurrencies if c in concurrency_filter]
+                if filtered_concs:
+                    concurrencies = filtered_concs
+                    print(
+                        f"Using specified concurrency levels: {', '.join(concurrencies)}"
+                    )
+                else:
+                    print(
+                        f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                    )
+
             print(
-                f"No concurrency configurations found for {chip_name} / {test_suite_to_use}!"
+                f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
             )
-            continue
 
-        concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+            Path(output_base).mkdir(parents=True, exist_ok=True)
 
-        if concurrency_filter:
-            filtered_concs = [c for c in concurrencies if c in concurrency_filter]
-            if filtered_concs:
-                concurrencies = filtered_concs
-                print(f"Using specified concurrency levels: {', '.join(concurrencies)}")
-            else:
+            all_chip_data = {}
+
+            for io_pair in io_pairs:
+                input_len_io, output_len_io = io_pair
+                io_label = f"input: {input_len_io}, output: {output_len_io}"
+                io_key = f"i{input_len_io}_o{output_len_io}"
+                print(f"\nProcessing I/O pair: {io_label}")
+
+                chip_data = defaultdict(lambda: defaultdict(dict))
+
+                for conc in concurrencies:
+                    metrics = get_chip_metrics(chip, conc, input_len_io, output_len_io)
+                    if metrics:
+                        chip_data[chip_name][conc] = metrics
+                        print(f"  - {conc}并发: OK")
+                    else:
+                        print(f"  - {conc}并发: No data")
+
+                if chip_data[chip_name]:
+                    all_chip_data[io_key] = {
+                        "input_len": input_len_io,
+                        "output_len": output_len_io,
+                        "io_label": io_label,
+                        "data": chip_data,
+                    }
+
+            generate_multi_io_markdown_report(
+                all_chip_data,
+                io_pairs,
+                concurrencies,
+                output_base,
+                test_suite_to_use,
+                chip_name,
+                model_name=model_to_use,
+                scenarios_config=scenarios_config,
+            )
+
+            print(f"\n{'=' * 50}")
+            print(
+                f"Multi-I/O analysis for {chip_name} - {test_suite_to_use} generated successfully!"
+            )
+            print(f"Output directory: {output_base}")
+            print(f"{'=' * 50}")
+
+        else:
+            all_concurrencies = set()
+            concs = get_all_concurrencies(chip)
+            all_concurrencies.update(concs)
+
+            if not all_concurrencies:
                 print(
-                    f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                    f"No concurrency configurations found for {chip_name} / {test_suite_to_use}!"
+                )
+                continue
+
+            concurrencies = sorted(all_concurrencies, key=lambda x: int(x))
+
+            if concurrency_filter:
+                filtered_concs = [c for c in concurrencies if c in concurrency_filter]
+                if filtered_concs:
+                    concurrencies = filtered_concs
+                    print(
+                        f"Using specified concurrency levels: {', '.join(concurrencies)}"
+                    )
+                else:
+                    print(
+                        f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                    )
+
+            print(
+                f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
+            )
+
+            Path(output_base).mkdir(parents=True, exist_ok=True)
+
+            chip_data = defaultdict(lambda: defaultdict(dict))
+
+            print(f"\nProcessing chip: {chip_name}")
+
+            for conc in concurrencies:
+                metrics = get_chip_metrics(chip, conc)
+                if metrics:
+                    chip_data[chip_name][conc] = metrics
+                    print(f"  - {conc}并发: OK")
+                else:
+                    print(f"  - {conc}并发: No data")
+
+            print("\nGenerating comparison reports...")
+
+            generate_comparison_csv(chip_data, concurrencies, output_base, chip_name)
+
+            if HAS_MATPLOTLIB:
+                generate_comparison_charts(
+                    chip_data, concurrencies, output_base, chip_name, model_to_use
+                )
+                generate_performance_trends(
+                    chip_data, concurrencies, output_base, chip_name, model_to_use
                 )
 
-        print(
-            f"Found {len(concurrencies)} concurrency levels: {', '.join(concurrencies)}"
-        )
-
-        Path(output_base).mkdir(parents=True, exist_ok=True)
-
-        chip_data = defaultdict(lambda: defaultdict(dict))
-
-        print(f"\nProcessing chip: {chip_name}")
-
-        for conc in concurrencies:
-            metrics = get_chip_metrics(chip, conc)
-            if metrics:
-                chip_data[chip_name][conc] = metrics
-                print(f"  - {conc}并发: OK")
-            else:
-                print(f"  - {conc}并发: No data")
-
-        print("\nGenerating comparison reports...")
-
-        generate_comparison_csv(chip_data, concurrencies, output_base, chip_name)
-
-        if HAS_MATPLOTLIB:
-            generate_comparison_charts(
-                chip_data, concurrencies, output_base, chip_name, model_to_use
-            )
-            generate_performance_trends(
-                chip_data, concurrencies, output_base, chip_name, model_to_use
+            generate_performance_trends_csv(
+                chip_data, concurrencies, output_base, chip_name
             )
 
-        generate_performance_trends_csv(
-            chip_data, concurrencies, output_base, chip_name
-        )
+            generate_markdown_report(
+                chip_data,
+                concurrencies,
+                output_base,
+                test_suite_to_use,
+                chip_name,
+                model_name=model_to_use,
+                scenarios_config=scenarios_config,
+            )
 
-        generate_markdown_report(
-            chip_data,
-            concurrencies,
-            output_base,
-            test_suite_to_use,
-            chip_name,
-            model_name=model_to_use,
-            scenarios_config=scenarios_config,
-        )
-
-        print(f"\n{'=' * 50}")
-        print(
-            f"Single chip analysis for {chip_name} - {test_suite_to_use} generated successfully!"
-        )
-        print(f"Output directory: {output_base}")
-        print(f"{'=' * 50}")
+            print(f"\n{'=' * 50}")
+            print(
+                f"Single chip analysis for {chip_name} - {test_suite_to_use} generated successfully!"
+            )
+            print(f"Output directory: {output_base}")
+            print(f"{'=' * 50}")
 
 
 if __name__ == "__main__":

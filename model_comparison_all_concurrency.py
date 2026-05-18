@@ -125,6 +125,13 @@ def extract_concurrency_from_config(config):
     return None
 
 
+def extract_input_len_from_config(config):
+    match = re.match(r"^\d+-i(\d+)-o\d+$", config)
+    if match:
+        return int(match.group(1))
+    return 0
+
+
 def parse_run_ids(run_ids_str, num_models):
     if not run_ids_str:
         return None
@@ -152,7 +159,7 @@ def get_test_params_from_yaml(test_suite):
 
     input_output_lens = test_suite_params.get("random-input-output-len", [])
 
-    test_configs = set()
+    test_configs = []
     for np in num_prompts:
         for io in input_output_lens:
             if isinstance(io, list) and len(io) >= 2:
@@ -160,11 +167,12 @@ def get_test_params_from_yaml(test_suite):
             else:
                 continue
             config = f"{np}-i{ni}-o{no}"
-            test_configs.add(config)
+            if config not in test_configs:
+                test_configs.append(config)
 
     return {
         "test_configs": sorted(
-            test_configs, key=lambda x: int(extract_concurrency_from_config(x) or 0)
+            test_configs, key=lambda x: extract_input_len_from_config(x)
         ),
         "concurrency_list": sorted([int(c) for c in max_concurrency], key=lambda x: x),
     }
@@ -414,20 +422,13 @@ def generate_comparison_markdown(
     separator = " | ".join(["-----------"] * len(sorted_models))
 
     chip_table_rows = []
-    chip_info_map = {}
-    chip_param_names = [
-        "model_name",
-        "quantization_config",
-        "model_size",
-        "max_position_embeddings",
-        "temperature",
-        "top_k",
-        "top_p",
-        "transformers_version",
-        "vllm_version",
-        "python_version",
-    ]
-    for param in chip_param_names:
+    all_params = set()
+    for model in sorted_models:
+        cfg = load_chip_config_by_model(chip_name, model)
+        all_params.update(cfg.keys())
+    all_params = sorted([p for p in all_params if p != "remark"])
+
+    for param in all_params:
         row = f"| **{param}** |"
         for model in sorted_models:
             cfg = load_chip_config_by_model(chip_name, model)
@@ -437,24 +438,15 @@ def generate_comparison_markdown(
     chip_table = "\n".join(chip_table_rows)
 
     vllm_table_rows = []
-    vllm_param_names = [
-        "model_name",
-        "max-model-len",
-        "max-num-seqs",
-        "max-num-batched-tokens",
-        "gpu-memory-utilization",
-        "dtype",
-        "block_size",
-        "dp",
-        "tp",
-        "pp",
-        "enable-export-parallel",
-        "enable-auto-tool-choice",
-        "tool-call-parser",
-        "reasoning-parser",
-    ]
-    for param in vllm_param_names:
-        row = f"| {param} |"
+    all_vllm_params = set()
+    for model in sorted_models:
+        cfg = load_vllm_config_by_model(chip_name, model)
+        all_vllm_params.update(cfg.keys())
+    all_vllm_params = sorted([p for p in all_vllm_params if p != "remarks"])
+
+    for param in all_vllm_params:
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        row = f"| **{display_name}** |"
         for model in sorted_models:
             cfg = load_vllm_config_by_model(chip_name, model)
             val = cfg.get(param, "N/A")
@@ -483,79 +475,20 @@ def generate_comparison_markdown(
         pct_str = f"{sign}{pct:.1f}%"
         return diff_str, pct_str
 
-    def make_row(key_name):
-        cells = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            cells.append(value if value else "0")
-        return " | ".join(cells)
-
-    def make_row_with_diff(key_name, is_throughput=True):
-        """生成包含差异和百分比的行，以第一个模型为基准"""
+    def make_row_with_diff(key_name):
         baseline_model = sorted_models[0]
-        baseline_val = models_data[baseline_model].get(key_name.lower(), "")
+        baseline_val = models_data[baseline_model].get(key_name.lower(), "") or "0"
 
-        cells = [baseline_val]  # 基准模型的值
+        cells = [baseline_val]
 
-        # 其他模型与基准的差异
         for model in sorted_models[1:]:
-            other_val = models_data[model].get(key_name.lower(), "")
+            other_val = models_data[model].get(key_name.lower(), "") or "0"
             diff, pct = calculate_diff(baseline_val, other_val)
             diff_str, pct_str = format_diff(diff, pct)
             cells.append(other_val if other_val else "0")
             cells.append(diff_str)
             cells.append(pct_str)
 
-        return " | ".join(cells)
-
-    def make_throughput_row(key_name, highlight_max=True):
-        cells = []
-        values = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            values.append((model, value))
-        cells = []
-        if highlight_max:
-            try:
-                numeric = [(m, float(v)) for m, v in values if v]
-                if numeric:
-                    max_val = max(numeric, key=lambda x: x[1])
-                    for m, v in values:
-                        if v and float(v) == max_val[1]:
-                            cells.append(f"**{v}** ⭐")
-                        else:
-                            cells.append(v)
-                else:
-                    cells = [v for _, v in values]
-            except:
-                cells = [v for _, v in values]
-        else:
-            cells = [v for _, v in values]
-        return " | ".join(cells)
-
-    def make_latency_row(key_name, highlight_min=True):
-        cells = []
-        values = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            values.append((model, value))
-        cells = []
-        if highlight_min:
-            try:
-                numeric = [(m, float(v)) for m, v in values if v]
-                if numeric:
-                    min_val = min(numeric, key=lambda x: x[1])
-                    for m, v in values:
-                        if v and float(v) == min_val[1]:
-                            cells.append(f"**{v}** ⭐")
-                        else:
-                            cells.append(v)
-                else:
-                    cells = [v for _, v in values]
-            except:
-                cells = [v for _, v in values]
-        else:
-            cells = [v for _, v in values]
         return " | ".join(cells)
 
     # 生成表头和分隔行（根据模型数量）
@@ -668,6 +601,38 @@ def generate_comparison_markdown(
 
     run_id_display = ", ".join(run_ids) if run_ids else "N/A"
 
+    yaml_config = load_yaml_config()
+    base_config = yaml_config.get("base_config", {})
+    params = base_config.get("params", {})
+    test_cfg = params.get(test_suite, {})
+
+    dataset = test_cfg.get("dataset-name", "random")
+    num_prompts = test_cfg.get("num-prompts", [])
+    input_output_lens = test_cfg.get("random-input-output-len", [])
+
+    if (
+        input_output_lens
+        and isinstance(input_output_lens[0], list)
+        and len(input_output_lens[0]) >= 2
+    ):
+        io_str = ", ".join([f"({p[0]}, {p[1]})" for p in input_output_lens])
+    else:
+        input_len = test_cfg.get("random-input-len", [])
+        output_len = test_cfg.get("random-output-len", [])
+        if input_len and output_len:
+            io_str = f"({input_len[0] if input_len else 'N/A'}, {output_len[0] if output_len else 'N/A'})"
+        else:
+            io_str = "N/A"
+
+    config_concurrencies = test_cfg.get("max-concurrency", [])
+    conc_str = (
+        ", ".join([str(c) for c in config_concurrencies])
+        if config_concurrencies
+        else "N/A"
+    )
+    num_prompts_str = str(num_prompts[0]) if num_prompts else "N/A"
+    vllm_version = yaml_config.get("vllm_version", "N/A")
+
     md_content = f"""# 多模型性能对比报告
 
 <div>
@@ -690,16 +655,16 @@ def generate_comparison_markdown(
 
 ## 🤖 芯片和模型配置信息
 
-| 芯片名称                        | **{"** | **".join(sorted_models)}** |
-|-----------------------------|{("-------------------------------|") * len(sorted_models)}
+| 参数名称 | **{"** | **".join(sorted_models)}** |
+|----------|{"----------|" * len(sorted_models)}
 {chip_table}
 
 ---
 
-## 🤖 vLLM启动配置信息
+## ⚙️ vLLM 启动配置信息
 
-| 参数名称                    | **{"** | **".join(sorted_models)}** |
-|-------------------------|{("-------------------|") * len(sorted_models)}
+| 参数名称 | **{"** | **".join(sorted_models)}** |
+|----------|{"----------|" * len(sorted_models)}
 {vllm_table}
 
 ---
@@ -715,6 +680,20 @@ def generate_comparison_markdown(
         md_content += f"| {model} | {rid} | [OK] |\n"
 
     md_content += f"""
+---
+
+## 📊 测试概览
+
+| 项目            | 配置                                     | 备注  |
+|---------------|----------------------------------------|-----|
+| **数据集**       | {dataset}                                 |     |
+| **并发数**       | {conc_str}    |     |
+| **总请求数**      | {num_prompts_str}                                    |     |
+| **输入输出长度** | {io_str} |     |
+| **测试套件**     | {test_suite}                           |     |
+| **被测芯片**      | {chip} |     |
+| **vLLM版本**   | {vllm_version}                           |     |
+
 ---
 
 ## 📈 服务基准结果对比
@@ -751,7 +730,7 @@ def generate_comparison_markdown(
 
 ## 📊 模型性能对比
 
-![Model Performance Comparison](./concurrency{concurrency}_comparison.png)
+<img src="concurrency{concurrency}_comparison.png" width="1000" />
 
 ---
 
@@ -882,9 +861,21 @@ def main():
         return
 
     print(f"Found {len(test_configs)} test configs from YAML")
-    print(f"Concurrency list: {concurrency_list}")
+    print(f"Test configs (sorted by input length): {test_configs}")
+    print(
+        f"Last config (should be highest input length): {test_configs[-1] if test_configs else 'N/A'}"
+    )
 
-    output_base = f"analysis/{chip}_comparison_all_concurrency"
+    final_test_config = test_configs[-1] if test_configs else "N/A"
+    if len(test_configs) > 1:
+        print(f"\n[INFO] Multiple I/O pairs detected ({len(test_configs)} pairs)")
+        print(f"[INFO] Using last I/O pair for comparison: {final_test_config}")
+        print(f"[INFO] To compare other I/O pairs, please run separately")
+        test_configs = [final_test_config]
+
+    print(f"[DEBUG] Final selected test_config: {final_test_config}")
+
+    output_base = f"analysis/{chip}_comparison_all_concurrency/{test_suite}"
     Path(output_base).mkdir(parents=True, exist_ok=True)
 
     # 收集所有并发级别的数据
@@ -920,29 +911,38 @@ def main():
                     print(f"    - {model_name} (run-id: {rid}): [OK]")
                 else:
                     print(f"    - {model_name} (run-id: {rid}): [NOT FOUND]")
+                    models_data[model_name] = {}
 
-            if not models_data:
-                print(f"    No data found for concurrency {concurrency}")
+            if all(not data for data in models_data.values()):
+                print(f"    No data found for ALL models at concurrency {concurrency}")
                 continue
 
-            # 存储每个并发级别的数据
             all_concurrency_data[concurrency] = models_data
+            valid_models = [m for m in models if models_data.get(m)]
             print(
-                f"    Collected data for {len(models_data)} models at concurrency {concurrency}"
+                f"    Collected data for {len(valid_models)}/{len(models)} models at concurrency {concurrency}"
             )
 
     if not all_concurrency_data:
-        print("\nError: No data collected for any concurrency level!")
+        print("\nWarning: No data collected for any concurrency level!")
+        print("Generating report with available data...")
+
+    valid_concs = [
+        c
+        for c, data in all_concurrency_data.items()
+        if any(v for v in data.values() if v)
+    ]
+    if not valid_concs:
+        print("\nError: No valid data found for any model at any concurrency level!")
         return
 
     print(
-        f"\n=== Generating combined report for all {len(all_concurrency_data)} concurrency levels ==="
+        f"\n=== Generating combined report for {len(valid_concs)} valid concurrency levels ==="
     )
 
-    # 生成合并的CSV和报告
     generate_combined_csv(
         all_concurrency_data,
-        test_config,
+        final_test_config,
         output_base,
         concurrency_list,
         chip,
@@ -951,7 +951,7 @@ def main():
     )
     generate_combined_markdown(
         all_concurrency_data,
-        test_config,
+        final_test_config,
         output_base,
         chip,
         test_suite,
@@ -1011,7 +1011,7 @@ def generate_combined_charts(
         for i, model in enumerate(ordered_models):
             values = get_values(model, key)
             offset = (i - (num_models - 1) / 2) * bar_width
-            ax.bar(
+            bars = ax.bar(
                 [xi + offset for xi in x],
                 values,
                 bar_width,
@@ -1020,13 +1020,39 @@ def generate_combined_charts(
                 alpha=0.8,
             )
 
+            max_val = max(values) if values else 1
+            for j, (bar, val) in enumerate(zip(bars, values)):
+                if val > 0:
+                    if "Throughput" in title and "tok/s" in title:
+                        label_text = f"{val:.0f}"
+                    elif "Throughput" in title and "req/s" in title:
+                        label_text = f"{val:.2f}"
+                    else:
+                        label_text = f"{val:.1f}"
+                    ax.text(
+                        bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() + 0.02 * max_val,
+                        label_text,
+                        ha="center",
+                        va="bottom",
+                        fontsize=7,
+                        fontweight="bold",
+                    )
+
         ax.set_title(title, fontsize=11)
         ax.set_xlabel("Concurrency")
         ax.set_ylabel(title.split("(")[-1].replace(")", "") if "(" in title else "")
         ax.set_xticks(x)
         ax.set_xticklabels(concurrency_list, rotation=45)
-        ax.legend()
+        ax.legend(loc="upper left", fontsize=8)
         ax.grid(axis="y", alpha=0.3)
+
+        max_all = 0
+        for i, model in enumerate(ordered_models):
+            values = get_values(model, key)
+            max_all = max(max_all, max(values)) if values else max_all
+        if max_all > 0:
+            ax.set_ylim(0, max_all * 1.15)
 
     for ax in axes.flat:
         ax.spines["top"].set_visible(False)
@@ -1099,22 +1125,37 @@ def generate_combined_csv(
     if not ordered_models:
         ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
 
+    valid_models = []
+    for model in ordered_models:
+        has_data = False
+        for conc in all_concurrency_data:
+            if all_concurrency_data[conc].get(model, {}):
+                has_data = True
+                break
+        if has_data:
+            valid_models.append(model)
+
+    if not valid_models:
+        valid_models = ordered_models
+
+    display_models = valid_models
+
     for conc in sorted_conc:
-        for model in ordered_models:
+        for model in display_models:
             header_parts.append(f"{conc}-{model}")
     csv_lines.append(",".join(header_parts))
 
     for display_name, key_name in metric_names:
         if not key_name:
             csv_lines.append(
-                f"[{display_name}]" + ",," * (len(sorted_conc) * len(ordered_models))
+                f"[{display_name}]" + ",," * (len(sorted_conc) * len(display_models))
             )
             continue
 
         row = [display_name]
         for conc in sorted_conc:
             models_data = all_concurrency_data[conc]
-            for model in ordered_models:
+            for model in display_models:
                 value = models_data.get(model, {}).get(key_name, "")
                 row.append(value if value else "0")
         csv_lines.append(",".join(row))
@@ -1141,16 +1182,61 @@ def generate_combined_markdown(
     """生成合并所有并发级别的Markdown报告"""
     current_date = datetime.now().strftime("%Y-%m-%d")
 
-    # 按用户输入顺序排列模型
+    yaml_config = load_yaml_config()
+    base_config = yaml_config.get("base_config", {})
+    params = base_config.get("params", {})
+    test_cfg = params.get(test_suite, {})
+
+    dataset = test_cfg.get("dataset-name", "random")
+    num_prompts = test_cfg.get("num-prompts", [])
+    input_output_lens = test_cfg.get("random-input-output-len", [])
+
+    if (
+        input_output_lens
+        and isinstance(input_output_lens[0], list)
+        and len(input_output_lens[0]) >= 2
+    ):
+        io_str = ", ".join([f"({p[0]}, {p[1]})" for p in input_output_lens])
+    else:
+        input_len = test_cfg.get("random-input-len", [])
+        output_len = test_cfg.get("random-output-len", [])
+        if input_len and output_len:
+            io_str = f"({input_len[0] if input_len else 'N/A'}, {output_len[0] if output_len else 'N/A'})"
+        else:
+            io_str = "N/A"
+
+    config_concurrencies = test_cfg.get("max-concurrency", [])
+    conc_str = (
+        ", ".join([str(c) for c in config_concurrencies])
+        if config_concurrencies
+        else "N/A"
+    )
+    num_prompts_str = str(num_prompts[0]) if num_prompts else "N/A"
+    vllm_version = yaml_config.get("vllm_version", "N/A")
+
     ordered_models = [
         m for m in model_names if m in list(all_concurrency_data.values())[0].keys()
     ]
     if not ordered_models:
         ordered_models = sorted(list(all_concurrency_data.values())[0].keys())
 
+    valid_models = []
+    for model in ordered_models:
+        has_data = False
+        for conc in all_concurrency_data:
+            if all_concurrency_data[conc].get(model, {}):
+                has_data = True
+                break
+        if has_data:
+            valid_models.append(model)
+
+    if not valid_models:
+        valid_models = ordered_models
+
+    display_models = valid_models
+
     sorted_conc = sorted(all_concurrency_data.keys())
 
-    # 计算差异和百分比的函数
     def calculate_diff(baseline_val, other_val):
         try:
             v1 = float(baseline_val)
@@ -1172,13 +1258,13 @@ def generate_combined_markdown(
         return diff_str, pct_str
 
     def make_row_for_conc(conc, key_name):
-        baseline_model = ordered_models[0]
+        baseline_model = display_models[0]
         models_data = all_concurrency_data[conc]
-        baseline_val = models_data[baseline_model].get(key_name.lower(), "")
+        baseline_val = models_data[baseline_model].get(key_name.lower(), "") or "0"
 
         cells = [baseline_val]
-        for model in ordered_models[1:]:
-            other_val = models_data[model].get(key_name.lower(), "")
+        for model in display_models[1:]:
+            other_val = models_data[model].get(key_name.lower(), "") or "0"
             diff, pct = calculate_diff(baseline_val, other_val)
             diff_str, pct_str = format_diff(diff, pct)
             cells.append(other_val if other_val else "0")
@@ -1186,7 +1272,6 @@ def generate_combined_markdown(
             cells.append(pct_str)
         return " | ".join(cells)
 
-    # 生成各并发级别的表格
     metric_keys = [
         ("成功请求数", "successful requests"),
         ("失败请求数", "failed requests"),
@@ -1222,18 +1307,18 @@ def generate_combined_markdown(
     ]
 
     # 表头
-    if len(ordered_models) == 2:
+    if len(display_models) == 2:
         headers = (
-            f"| 指标 | {ordered_models[0]} (基准) | {ordered_models[1]} | 差异 | % |"
+            f"| 指标 | {display_models[0]} (基准) | {display_models[1]} | 差异 | % |"
         )
         separator = "|------|--------------- | --------- | ------- | -------|"
     else:
-        header_parts = ["| 指标", f"{ordered_models[0]} (基准)"]
-        for model in ordered_models[1:]:
+        header_parts = ["| 指标", f"{display_models[0]} (基准)"]
+        for model in display_models[1:]:
             header_parts.extend([model, "差异", "%"])
         headers = " | ".join(header_parts) + " |"
         sep_parts = ["|------", "---------------"]
-        for _ in ordered_models[1:]:
+        for _ in display_models[1:]:
             sep_parts.extend(["---------", "-------", "-------"])
         separator = " | ".join(sep_parts) + " |"
 
@@ -1291,11 +1376,7 @@ def generate_combined_markdown(
 
 """
 
-    # 生成分析小结
-    analysis_lines = []
-
-    # 计算每个模型在各并发级别的平均性能
-    avg_perf = {model: {} for model in ordered_models}
+    avg_perf = {model: {} for model in display_models}
 
     for key in [
         "request throughput (req/s)",
@@ -1303,7 +1384,7 @@ def generate_combined_markdown(
         "p99 ttft (ms)",
         "p99 tpot (ms)",
     ]:
-        for model in ordered_models:
+        for model in display_models:
             values = []
             for conc in sorted_conc:
                 val = all_concurrency_data[conc].get(model, {}).get(key, "0")
@@ -1313,99 +1394,105 @@ def generate_combined_markdown(
                     pass
             avg_perf[model][key] = sum(values) / len(values) if values else 0
 
-    baseline_model = ordered_models[0]
+    baseline_model = display_models[0]
 
-    # 请求吞吐量分析
-    try:
-        baseline_tp = avg_perf[baseline_model]["request throughput (req/s)"]
-        for model in ordered_models[1:]:
-            other_tp = avg_perf[model]["request throughput (req/s)"]
-            if baseline_tp > 0:
-                pct = ((other_tp - baseline_tp) / baseline_tp) * 100
-                if pct > 0:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均提升 **{pct:.1f}%**"
-                    )
+    def safe_analysis(perf_key, metric_name, higher_is_better=True):
+        try:
+            baseline_val = avg_perf[baseline_model][perf_key]
+            if baseline_val == 0:
+                return []
+            lines = []
+            for model in display_models[1:]:
+                other_val = avg_perf[model][perf_key]
+                if other_val == 0:
+                    lines.append(f"- **{model}** 无可用数据")
                 else:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** 请求吞吐量平均变化 **{pct:.1f}%**"
-                    )
-    except:
-        pass
+                    pct = ((other_val - baseline_val) / baseline_val) * 100
+                    if higher_is_better:
+                        if pct > 0:
+                            lines.append(
+                                f"- **{model}** 相比 **{baseline_model}** {metric_name}平均提升 **{pct:.1f}%**"
+                            )
+                        elif pct < 0:
+                            lines.append(
+                                f"- **{model}** 相比 **{baseline_model}** {metric_name}平均变化 **{pct:.1f}%**"
+                            )
+                    else:
+                        if pct < 0:
+                            lines.append(
+                                f"- **{model}** 相比 **{baseline_model}** {metric_name}平均改善 **{abs(pct):.1f}%** (延迟降低)"
+                            )
+                        elif pct > 0:
+                            lines.append(
+                                f"- **{model}** 相比 **{baseline_model}** {metric_name}平均增加 **{pct:.1f}%** (延迟增加)"
+                            )
+            return lines
+        except:
+            return []
 
-    # 总token吞吐量分析
-    try:
-        baseline_tp = avg_perf[baseline_model]["total token throughput (tok/s)"]
-        for model in ordered_models[1:]:
-            other_tp = avg_perf[model]["total token throughput (tok/s)"]
-            if baseline_tp > 0:
-                pct = ((other_tp - baseline_tp) / baseline_tp) * 100
-                if pct > 0:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均提升 **{pct:.1f}%**"
-                    )
-                else:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** 总token吞吐量平均变化 **{pct:.1f}%**"
-                    )
-    except:
-        pass
-
-    # TTFT延迟分析
-    try:
-        baseline_ttft = avg_perf[baseline_model]["p99 ttft (ms)"]
-        for model in ordered_models[1:]:
-            other_ttft = avg_perf[model]["p99 ttft (ms)"]
-            if baseline_ttft > 0:
-                pct = ((other_ttft - baseline_ttft) / baseline_ttft) * 100
-                if pct < 0:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)"
-                    )
-                else:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** TTFT P99 平均增加 **{pct:.1f}%** (延迟增加)"
-                    )
-    except:
-        pass
-
-    # TPOT延迟分析
-    try:
-        baseline_tpot = avg_perf[baseline_model]["p99 tpot (ms)"]
-        for model in ordered_models[1:]:
-            other_tpot = avg_perf[model]["p99 tpot (ms)"]
-            if baseline_tpot > 0:
-                pct = ((other_tpot - baseline_tpot) / baseline_tpot) * 100
-                if pct < 0:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均改善 **{abs(pct):.1f}%** (延迟降低)"
-                    )
-                else:
-                    analysis_lines.append(
-                        f"- **{model}** 相比 **{baseline_model}** TPOT P99 平均增加 **{pct:.1f}%** (延迟增加)"
-                    )
-    except:
-        pass
+    analysis_lines = []
+    analysis_lines.extend(safe_analysis("request throughput (req/s)", "请求吞吐量"))
+    analysis_lines.extend(
+        safe_analysis("total token throughput (tok/s)", "总token吞吐量")
+    )
+    analysis_lines.extend(
+        safe_analysis("p99 ttft (ms)", "TTFT P99", higher_is_better=False)
+    )
+    analysis_lines.extend(
+        safe_analysis("p99 tpot (ms)", "TPOT P99", higher_is_better=False)
+    )
 
     analysis_content = (
         "\n".join(analysis_lines) if analysis_lines else "- 各模型性能表现待分析"
     )
 
-    # 生成柱状图
     chart_file = None
     if HAS_MATPLOTLIB:
         chart_file = generate_combined_charts(
-            all_concurrency_data, sorted_conc, ordered_models, output_dir
+            all_concurrency_data, sorted_conc, display_models, output_dir
         )
 
     chart_html = (
-        f"![Model Performance Comparison](./{os.path.basename(chart_file)})"
+        f'<img src="{os.path.basename(chart_file)}" width="1200" />'
         if chart_file
         else ""
     )
 
     run_id_display = ", ".join(run_ids) if run_ids else "N/A"
-    model_display = ", ".join(ordered_models)
+    model_display = ", ".join(display_models)
+
+    chip_table_rows = []
+    all_params = set()
+    for model in display_models:
+        cfg = load_chip_config_by_model(chip_name, model)
+        all_params.update(cfg.keys())
+    all_params = sorted([p for p in all_params if p != "remark"])
+
+    for param in all_params:
+        row = f"| **{param}** |"
+        for model in display_models:
+            cfg = load_chip_config_by_model(chip_name, model)
+            val = cfg.get(param, "N/A")
+            row += f" {val} |"
+        chip_table_rows.append(row)
+    chip_table = "\n".join(chip_table_rows)
+
+    vllm_table_rows = []
+    all_vllm_params = set()
+    for model in display_models:
+        cfg = load_vllm_config_by_model(chip_name, model)
+        all_vllm_params.update(cfg.keys())
+    all_vllm_params = sorted([p for p in all_vllm_params if p != "remarks"])
+
+    for param in all_vllm_params:
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        row = f"| **{display_name}** |"
+        for model in display_models:
+            cfg = load_vllm_config_by_model(chip_name, model)
+            val = cfg.get(param, "N/A")
+            row += f" {val} |"
+        vllm_table_rows.append(row)
+    vllm_table = "\n".join(vllm_table_rows)
 
     md_content = f"""# 多模型性能对比报告 (全并发级别)
 
@@ -1426,6 +1513,49 @@ def generate_combined_markdown(
 **对比模型：** {model_display}
 
 </div>
+
+---
+
+## 🤖 芯片和模型配置信息
+
+| 参数名称 | **{"** | **".join(display_models)}** |
+|----------|{"----------|" * len(display_models)}
+{chip_table}
+
+---
+
+## ⚙️ vLLM 启动配置信息
+
+| 参数名称 | **{"** | **".join(display_models)}** |
+|----------|{"----------|" * len(display_models)}
+{vllm_table}
+
+---
+
+## 📊 模型列表
+
+| 模型名称 | Run ID | 状态 |
+|----------|--------|------|
+"""
+
+    for i, model in enumerate(display_models):
+        rid = run_ids[i] if i < len(run_ids) else "N/A"
+        md_content += f"| {model} | {rid} | [OK] |\n"
+
+    md_content += f"""
+---
+
+## 📊 测试概览
+
+| 项目            | 配置                                     | 备注  |
+|---------------|----------------------------------------|-----|
+| **数据集**       | {dataset}                                 |     |
+| **并发数**       | {conc_str}    |     |
+| **总请求数**      | {num_prompts_str}                                    |     |
+| **输入输出长度** | {io_str} |     |
+| **测试套件**     | {test_suite}                           |     |
+| **被测芯片**      | {chip} |     |
+| **vLLM版本**   | {vllm_version}                           |     |
 
 ---
 

@@ -20,20 +20,18 @@ except ImportError:
     print("matplotlib not available, skipping chart generation")
 
 
-TEST_SUITES = ["test_01"]
-
 RUN_IDS = ["01", "02"]
 
 MODEL_NAME = "MiniMax-M2.5-W8A8"
 
-# 可用的芯片和对应的默认模型目录
-CHIP_MODEL_PATHS = {
-    "Hygon_BW1000": "MiniMax-M2.5-W8A8",
-    "Kunlun_P800": "MiniMax-M2.5-W8A8-INT8-Dynamic",
-    "NVIDIA_H100": "MiniMax-M2.5",
-}
-
 CHIP_BASE_PATHS = {}
+
+
+def load_yaml_config(config_path="config/models_scenarios.yaml"):
+    if os.path.exists(config_path):
+        with open(config_path, "r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
+    return {}
 
 
 def load_chip_config(config_path="config/chip_conf.yaml"):
@@ -54,11 +52,14 @@ def load_chip_config_by_model(chip_name, model_name):
     chip_config = load_chip_config()
     chips_raw = chip_config.get("chips", {})
 
-    base_path = CHIP_BASE_PATHS.get(chip_name, "")
-    if base_path:
-        model_name = Path(base_path).name
+    chip_key_map = {
+        "hygon_bw1000": "Hygon_BW1000",
+        "kunlun_p800": "Kunlun_P800",
+        "nvidia_h100": "NVIDIA_H100",
+    }
+    chip_key = chip_key_map.get(chip_name.lower(), chip_name)
 
-    chip_configs = chips_raw.get(chip_name, [])
+    chip_configs = chips_raw.get(chip_key, [])
     if isinstance(chip_configs, list):
         for cfg in chip_configs:
             if cfg.get("model_name") == model_name:
@@ -73,11 +74,14 @@ def load_vllm_config_by_model(chip_name, model_name):
     vllm_config = load_vllm_config()
     vllm_configs_raw = vllm_config.get("vllm_configs", {})
 
-    base_path = CHIP_BASE_PATHS.get(chip_name, "")
-    if base_path:
-        model_name = Path(base_path).name
+    chip_key_map = {
+        "hygon_bw1000": "Hygon_BW1000",
+        "kunlun_p800": "Kunlun_P800",
+        "nvidia_h100": "NVIDIA_H100",
+    }
+    chip_key = chip_key_map.get(chip_name.lower(), chip_name)
 
-    config_list = vllm_configs_raw.get(chip_name, [])
+    config_list = vllm_configs_raw.get(chip_key, [])
     if isinstance(config_list, list):
         for cfg in config_list:
             if cfg.get("model_name") == model_name:
@@ -88,30 +92,8 @@ def load_vllm_config_by_model(chip_name, model_name):
     return {}
 
 
-VLLM_CONFIG = {
-    "max-model-len": {"01": "196608", "02": "196608"},
-    "max-num-seqs": {"01": "64", "02": "64"},
-    "max-num-batched-tokens": {"01": "8192", "02": "N/A"},
-    "gpu-memory-utilization": {"01": "0.95", "02": "0.9"},
-    "dp": {"01": "1", "02": "1"},
-    "tp": {"01": "8", "02": "8"},
-    "pp": {"01": "1", "02": "1"},
-    "enable-export-parallel": {"01": "False", "02": "N/A"},
-    "tool-call-parser": {"01": "minimax_m2", "02": "minimax_m2"},
-    "reasoning-parser": {"01": "minimax_m2", "02": "N/A"},
-    "-cc": {"01": "N/A", "02": '{"pass_config": {"fuse_act_quant": false}}'},
-}
-
-
-def load_test_config(config_path="config/models_scenarios.yaml"):
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    return {}
-
-
 def get_test_overview(test_suite):
-    config = load_test_config()
+    config = load_yaml_config()
     params = config.get("base_config", {}).get("params", {}).get(test_suite, {})
 
     input_output_lens = params.get("random-input-output-len", [])
@@ -162,22 +144,36 @@ def parse_benchmark_log(log_file):
     lines = content.split("\n")
     metrics = {}
 
-    in_results = False
+    section = None
+    section_patterns = {
+        "Serving Benchmark Result": "=========== Serving Benchmark Result",
+        "End-to-End Latency": "----------------End-to-End Latency",
+        "Time to First Token": "---------------Time to First Token",
+        "Time per Output Token": "-----Time per Output Token",
+        "Inter-Token Latency": "---------------Inter-Token Latency",
+    }
+
     for line in lines:
-        if "=========== Serving Benchmark Result" in line:
-            in_results = True
+        found_section = None
+        for sec_name, sec_pattern in section_patterns.items():
+            if sec_pattern in line:
+                found_section = sec_name
+                break
+
+        if found_section:
+            section = found_section
             continue
-        if in_results and line.strip().startswith("==========="):
-            break
-        if in_results:
+
+        if section and line.strip().startswith("==========="):
+            section = None
+            continue
+
+        if section:
             match = re.match(r"(.+?):\s+(.+)$", line.strip())
             if match:
                 key = match.group(1).strip()
                 value = match.group(2).strip()
-                key_normalized = key.replace("Token ", "token ")
                 metrics[key] = value
-                if key != key_normalized:
-                    metrics[key_normalized] = value
 
     if "Failed requests" not in metrics:
         metrics["Failed requests"] = "0"
@@ -190,6 +186,13 @@ def extract_concurrency_from_dir(dir_name):
     if match:
         return match.group(1)
     return None
+
+
+def extract_io_pair_from_dir(dir_name):
+    match = re.search(r"-i(\d+)-o(\d+)", dir_name)
+    if match:
+        return match.group(1), match.group(2)
+    return None, None
 
 
 def get_all_concurrencies(base_path, run_id):
@@ -209,10 +212,35 @@ def get_all_concurrencies(base_path, run_id):
     return sorted(concurrency_set, key=lambda x: int(x))
 
 
-def get_chip_metrics(base_path, run_id, concurrency):
+def get_all_io_pairs(base_path, run_id, concurrency):
+    io_pairs = set()
     full_path = os.path.join(base_path, run_id)
 
-    dir_pattern = os.path.join(full_path, f"{concurrency}-*")
+    if not os.path.exists(full_path):
+        return []
+
+    for item in os.listdir(full_path):
+        item_path = os.path.join(full_path, item)
+        if os.path.isdir(item_path):
+            dir_concurrency = extract_concurrency_from_dir(item)
+            if dir_concurrency == concurrency:
+                input_len, output_len = extract_io_pair_from_dir(item)
+                if input_len and output_len:
+                    io_pairs.add((input_len, output_len))
+
+    return sorted(io_pairs, key=lambda x: (int(x[0]), int(x[1])))
+
+
+def get_chip_metrics(base_path, run_id, concurrency, io_pair=None):
+    full_path = os.path.join(base_path, run_id)
+
+    if io_pair:
+        dir_pattern = os.path.join(
+            full_path, f"{concurrency}-*-i{io_pair[0]}-o{io_pair[1]}"
+        )
+    else:
+        dir_pattern = os.path.join(full_path, f"{concurrency}-*")
+
     matching_dirs = glob.glob(dir_pattern)
 
     if not matching_dirs:
@@ -319,13 +347,13 @@ def generate_comparison_csv(
                     runid_data.get(run_id1, {})
                     .get(chip_name, {})
                     .get(conc, {})
-                    .get(key_name, "")
+                    .get(key_name.lower(), "")
                 )
                 val2 = (
                     runid_data.get(run_id2, {})
                     .get(chip_name, {})
                     .get(conc, {})
-                    .get(key_name, "")
+                    .get(key_name.lower(), "")
                 )
 
                 row.append(val1)
@@ -456,7 +484,7 @@ def generate_comparison_charts(
                 runid_data.get(run_id, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key, "0")
+                .get(key.lower(), "0")
             )
             try:
                 values.append(float(val))
@@ -476,7 +504,6 @@ def generate_comparison_charts(
             "itl": get_values(run_id, "P99 ITL (ms)"),
         }
 
-    # 绘制每个指标
     metrics = [
         ("Request Throughput (req/s)", "req_tp", axes[0, 0]),
         ("Output Token Throughput (tok/s)", "output_tp", axes[0, 1]),
@@ -487,7 +514,6 @@ def generate_comparison_charts(
     ]
 
     for title, data_key, ax in metrics:
-        # 计算每个 RUN-ID 柱子的起始位置
         for i, run_id in enumerate(run_ids):
             offset = (i - (num_run_ids - 1) / 2) * bar_width
             values = all_run_ids_data[run_id][data_key]
@@ -500,19 +526,24 @@ def generate_comparison_charts(
                 alpha=0.8,
             )
 
-            # 在柱子上方显示数值
+            max_val = max(values) if values else 1
             for bar, val in zip(bars, values):
                 height = bar.get_height()
                 if height > 0:
-                    ax.annotate(
-                        f"{val:.2f}",
-                        xy=(bar.get_x() + bar.get_width() / 2, height),
-                        xytext=(0, 3),
-                        textcoords="offset points",
+                    if "Throughput" in title and "tok/s" in title:
+                        label_text = f"{val:.0f}"
+                    elif "Throughput" in title:
+                        label_text = f"{val:.2f}"
+                    else:
+                        label_text = f"{val:.1f}"
+                    ax.text(
+                        bar.get_x() + bar.get_width() / 2,
+                        height + 0.02 * max_val,
+                        label_text,
                         ha="center",
                         va="bottom",
-                        fontsize=11,
-                        rotation=0,
+                        fontsize=8,
+                        fontweight="bold",
                     )
 
         ax.set_title(title, fontsize=13)
@@ -525,181 +556,12 @@ def generate_comparison_charts(
         ax.legend(fontsize=11)
         ax.grid(axis="y", alpha=0.3)
 
-    for ax in axes.flat:
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-
-    fig.set_facecolor("#f0f0f0")
-    for ax in axes.flat:
-        ax.set_facecolor("white")
-
-    plt.tight_layout()
-
-    chart_file = os.path.join(output_dir, "runid_comparison.png")
-    plt.savefig(chart_file, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    print(f"Generated chart: {chart_file}")
-    return [chart_file]
-
-    axes[0, 0].bar(
-        [i - width / 2 for i in x],
-        req_throughput_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[0, 0].bar(
-        [i + width / 2 for i in x],
-        req_throughput_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[0, 0].set_title("Request Throughput (req/s)", fontsize=11)
-    axes[0, 0].set_xlabel("Concurrency")
-    axes[0, 0].set_ylabel("req/s")
-    axes[0, 0].set_xticks(x)
-    axes[0, 0].set_xticklabels(concurrencies, rotation=45)
-    axes[0, 0].legend()
-    axes[0, 0].grid(axis="y", alpha=0.3)
-
-    output_tput_1 = get_values(run_id1, "Output token throughput (tok/s)")
-    output_tput_2 = get_values(run_id2, "Output token throughput (tok/s)")
-
-    axes[0, 1].bar(
-        [i - width / 2 for i in x],
-        output_tput_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[0, 1].bar(
-        [i + width / 2 for i in x],
-        output_tput_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[0, 1].set_title("Output Token Throughput (tok/s)", fontsize=11)
-    axes[0, 1].set_xlabel("Concurrency")
-    axes[0, 1].set_ylabel("tok/s")
-    axes[0, 1].set_xticks(x)
-    axes[0, 1].set_xticklabels(concurrencies, rotation=45)
-    axes[0, 1].legend()
-    axes[0, 1].grid(axis="y", alpha=0.3)
-
-    total_tput_1 = get_values(run_id1, "Total token throughput (tok/s)")
-    total_tput_2 = get_values(run_id2, "Total token throughput (tok/s)")
-
-    axes[0, 2].bar(
-        [i - width / 2 for i in x],
-        total_tput_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[0, 2].bar(
-        [i + width / 2 for i in x],
-        total_tput_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[0, 2].set_title("Total Token Throughput (tok/s)", fontsize=11)
-    axes[0, 2].set_xlabel("Concurrency")
-    axes[0, 2].set_ylabel("tok/s")
-    axes[0, 2].set_xticks(x)
-    axes[0, 2].set_xticklabels(concurrencies, rotation=45)
-    axes[0, 2].legend()
-    axes[0, 2].grid(axis="y", alpha=0.3)
-
-    ttft_p99_1 = get_values(run_id1, "P99 TTFT (ms)")
-    ttft_p99_2 = get_values(run_id2, "P99 TTFT (ms)")
-
-    axes[1, 0].bar(
-        [i - width / 2 for i in x],
-        ttft_p99_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[1, 0].bar(
-        [i + width / 2 for i in x],
-        ttft_p99_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[1, 0].set_title("TTFT P99 (ms)", fontsize=11)
-    axes[1, 0].set_xlabel("Concurrency")
-    axes[1, 0].set_ylabel("ms")
-    axes[1, 0].set_xticks(x)
-    axes[1, 0].set_xticklabels(concurrencies, rotation=45)
-    axes[1, 0].legend()
-    axes[1, 0].grid(axis="y", alpha=0.3)
-
-    tpot_p99_1 = get_values(run_id1, "P99 TPOT (ms)")
-    tpot_p99_2 = get_values(run_id2, "P99 TPOT (ms)")
-
-    axes[1, 1].bar(
-        [i - width / 2 for i in x],
-        tpot_p99_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[1, 1].bar(
-        [i + width / 2 for i in x],
-        tpot_p99_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[1, 1].set_title("TPOT P99 (ms)", fontsize=11)
-    axes[1, 1].set_xlabel("Concurrency")
-    axes[1, 1].set_ylabel("ms")
-    axes[1, 1].set_xticks(x)
-    axes[1, 1].set_xticklabels(concurrencies, rotation=45)
-    axes[1, 1].legend()
-    axes[1, 1].grid(axis="y", alpha=0.3)
-
-    itl_p99_1 = get_values(run_id1, "P99 ITL (ms)")
-    itl_p99_2 = get_values(run_id2, "P99 ITL (ms)")
-
-    axes[1, 2].bar(
-        [i - width / 2 for i in x],
-        itl_p99_1,
-        width,
-        label=run_id1,
-        color=colors[0],
-        alpha=0.8,
-    )
-    axes[1, 2].bar(
-        [i + width / 2 for i in x],
-        itl_p99_2,
-        width,
-        label=run_id2,
-        color=colors[1],
-        alpha=0.8,
-    )
-    axes[1, 2].set_title("ITL P99 (ms)", fontsize=11)
-    axes[1, 2].set_xlabel("Concurrency")
-    axes[1, 2].set_ylabel("ms")
-    axes[1, 2].set_xticks(x)
-    axes[1, 2].set_xticklabels(concurrencies, rotation=45)
-    axes[1, 2].legend()
-    axes[1, 2].grid(axis="y", alpha=0.3)
+        max_all = 0
+        for run_id in run_ids:
+            vals = all_run_ids_data[run_id][data_key]
+            max_all = max(max_all, max(vals)) if vals else max_all
+        if max_all > 0:
+            ax.set_ylim(0, max_all * 1.15)
 
     for ax in axes.flat:
         ax.spines["top"].set_visible(False)
@@ -727,8 +589,8 @@ def generate_markdown_report(
     chip_name,
     model_name=None,
     run_ids=None,
-    vllm_config=None,
     test_overview=None,
+    io_pair=None,
 ):
     current_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -740,25 +602,25 @@ def generate_markdown_report(
 
     actual_model_name = model_name if model_name else MODEL_NAME
 
-    if vllm_config is None:
-        vllm_config = {}
     if test_overview is None:
         test_overview = {}
 
+    yaml_config = load_yaml_config()
+    vllm_version = yaml_config.get("vllm_version", "N/A")
+
     def make_table_for_conc(conc, key_name):
         if len(run_ids) == 2:
-            # 两个 RUN-ID: 原有逻辑
             val1 = (
                 runid_data.get(run_id1, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key_name, "")
+                .get(key_name.lower(), "")
             )
             val2 = (
                 runid_data.get(run_id2, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key_name, "")
+                .get(key_name.lower(), "")
             )
 
             diff, pct = calculate_diff(val1, val2)
@@ -766,13 +628,12 @@ def generate_markdown_report(
 
             return val1, val2, diff_str, pct_str
         else:
-            # 多个 RUN-ID: 以第一个为基准
             baseline_id = run_ids[0]
             baseline_val = (
                 runid_data.get(baseline_id, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key_name, "")
+                .get(key_name.lower(), "")
             )
 
             result = [baseline_val]
@@ -781,7 +642,7 @@ def generate_markdown_report(
                     runid_data.get(other_id, {})
                     .get(chip_name, {})
                     .get(conc, {})
-                    .get(key_name, "")
+                    .get(key_name.lower(), "")
                 )
                 diff, pct = calculate_diff(baseline_val, other_val)
                 diff_str, pct_str = format_diff(diff, pct)
@@ -795,10 +656,10 @@ def generate_markdown_report(
         ("测试持续时间 (s)", "Benchmark duration (s)"),
         ("总输入 tokens", "Total input tokens"),
         ("总生成 tokens", "Total generated tokens"),
+        ("峰值并发请求数", "Peak concurrent requests"),
         ("**请求吞吐量 (req/s)**", "Request throughput (req/s)"),
         ("**输出 token 吞吐量 (tok/s)**", "Output token throughput (tok/s)"),
         ("峰值输出 token 吞吐量 (tok/s)", "Peak output token throughput (tok/s)"),
-        ("峰值并发请求数", "Peak concurrent requests"),
         ("**总 token 吞吐量 (tok/s)**", "Total token throughput (tok/s)"),
     ]
 
@@ -826,12 +687,10 @@ def generate_markdown_report(
     tables_html = ""
 
     for conc in concurrencies:
-        # 根据 RUN-ID 数量决定表格格式
         if len(run_ids) == 2:
             header = f"| 指标 | RUN-{run_id1} | RUN-{run_id2} | 差异 | 百分比 |"
             separator = "|------|----------|---------|---------|---------|"
         else:
-            # 多个 RUN-ID: 基准 + (值, 差异, %) * (n-1)
             baseline_id = run_ids[0]
             other_ids = run_ids[1:]
             header_parts = ["| 指标", f"RUN-{baseline_id} (基准)"]
@@ -839,12 +698,11 @@ def generate_markdown_report(
                 header_parts.extend([f"RUN-{other_id}", "差异", "%"])
             header = " | ".join(header_parts) + " |"
 
-            # 计算列数：基准 1 列 + 每个其他 RUN-ID 3 列（值、差异、%）
             num_cols = 1 + 3 * len(other_ids)
             sep_parts = ["|------"]
-            sep_parts.append("---------------")  # 基准列
+            sep_parts.append("---------------")
             for _ in other_ids:
-                sep_parts.extend(["---------", "-------", "-------"])  # 值、差异、%
+                sep_parts.extend(["---------", "-------", "-------"])
             separator = " | ".join(sep_parts) + " |"
 
         serving_table = "\n".join(
@@ -905,20 +763,19 @@ def generate_markdown_report(
 """
 
     def calc_avg_improvement(key_name, other_id):
-        """计算指定 other_id 相对于基准的改进百分比"""
         improvements = []
         for conc in concurrencies:
             baseline_val = (
                 runid_data.get(run_id1, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key_name, "")
+                .get(key_name.lower(), "")
             )
             other_val = (
                 runid_data.get(other_id, {})
                 .get(chip_name, {})
                 .get(conc, {})
-                .get(key_name, "")
+                .get(key_name.lower(), "")
             )
             try:
                 v1 = float(baseline_val)
@@ -930,7 +787,6 @@ def generate_markdown_report(
                 pass
         return sum(improvements) / len(improvements) if improvements else 0
 
-    # 计算每个其他 RUN-ID 相对于基准的改进
     other_run_ids = run_ids[1:]
     improvements_data = {}
 
@@ -940,6 +796,9 @@ def generate_markdown_report(
             "output_tp": calc_avg_improvement(
                 "Output token throughput (tok/s)", other_id
             ),
+            "total_tp": calc_avg_improvement(
+                "Total token throughput (tok/s)", other_id
+            ),
             "ttft": calc_avg_improvement("P99 TTFT (ms)", other_id),
             "tpot": calc_avg_improvement("P99 TPOT (ms)", other_id),
             "itl": calc_avg_improvement("P99 ITL (ms)", other_id),
@@ -947,7 +806,6 @@ def generate_markdown_report(
 
     analysis_lines = []
 
-    # 吞吐量对比
     analysis_lines.append("### 吞吐量对比\n")
     for other_id in other_run_ids:
         imp = improvements_data[other_id]
@@ -969,7 +827,15 @@ def generate_markdown_report(
                 f"**输出Token吞吐量**: RUN-{other_id} 相比 RUN-{run_id1} 平均变化 **{imp['output_tp']:.1f}%**\n"
             )
 
-    # 延迟对比
+        if imp["total_tp"] > 0:
+            analysis_lines.append(
+                f"**总Token吞吐量**: RUN-{other_id} 相比 RUN-{run_id1} 平均提升 **{imp['total_tp']:.1f}%**\n"
+            )
+        else:
+            analysis_lines.append(
+                f"**总Token吞吐量**: RUN-{other_id} 相比 RUN-{run_id1} 平均变化 **{imp['total_tp']:.1f}%**\n"
+            )
+
     analysis_lines.append("### 延迟对比\n")
     for other_id in other_run_ids:
         imp = improvements_data[other_id]
@@ -1006,7 +872,7 @@ def generate_markdown_report(
 
     dataset = test_overview.get("dataset", "random")
     concurrency_list = test_overview.get("concurrency", concurrencies)
-    concurrency = (
+    concurrency_str = (
         str(concurrency_list) if concurrency_list else ", ".join(concurrencies)
     )
     total_requests_list = test_overview.get("total_requests", [])
@@ -1019,54 +885,37 @@ def generate_markdown_report(
     chip = test_overview.get("chip", chip_name)
 
     chip_info = load_chip_config_by_model(chip_name, actual_model_name)
-    chip_param_names = [
-        "model_name",
-        "quantization_config",
-        "model_size",
-        "max_position_embeddings",
-        "temperature",
-        "top_k",
-        "top_p",
-        "transformers_version",
-        "vllm_version",
-        "python_version",
-    ]
     chip_table_rows = []
-    for param in chip_param_names:
-        val = chip_info.get(param, "N/A")
+    for param, val in chip_info.items():
+        if param == "remark":
+            continue
+        if val is None:
+            val = "N/A"
         chip_table_rows.append(f"| **{param}** | {val} |")
     chip_table = "\n".join(chip_table_rows)
 
     vllm_info = load_vllm_config_by_model(chip_name, actual_model_name)
-    vllm_param_names = [
-        "model_name",
-        "max-model-len",
-        "max-num-seqs",
-        "max-num-batched-tokens",
-        "gpu-memory-utilization",
-        "dtype",
-        "block_size",
-        "dp",
-        "tp",
-        "pp",
-        "enable-export-parallel",
-        "enable-auto-tool-choice",
-        "tool-call-parser",
-        "reasoning-parser",
-    ]
     vllm_table_rows = []
-    for param in vllm_param_names:
-        val = vllm_info.get(param, "N/A")
-        vllm_table_rows.append(f"| {param} | {val} |")
+    for param, val in vllm_info.items():
+        if param == "remarks":
+            continue
+        if val is None:
+            val = "N/A"
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        vllm_table_rows.append(f"| **{display_name}** | {val} |")
     vllm_table = "\n".join(vllm_table_rows)
 
-    # 生成 RUN-ID 显示字符串
     if len(run_ids) == 2:
         run_ids_display = f"{run_ids[0]} vs {run_ids[1]}"
     else:
         run_ids_display = ", ".join(run_ids)
 
-    md_content = f"""# {actual_model_name}模型在{chip_name}上多次运行结果对比报告
+    if io_pair:
+        title_suffix = f"多I/O测试报告 ({io_pair})"
+    else:
+        title_suffix = "多次运行结果对比报告"
+
+    md_content = f"""# {actual_model_name}模型在{chip_name}上{title_suffix}
 
 <div align="center">
 **测试日期：** {current_date}
@@ -1091,7 +940,7 @@ def generate_markdown_report(
 
 ---
 
-## 🤖 vLLM启动配置信息
+## ⚙️ vLLM启动配置信息
 
 | 参数名称                    | {chip_name} |
 |------------------------|-------------|
@@ -1103,13 +952,15 @@ def generate_markdown_report(
 
 | 项目            | 配置                                    | 备注  |
 |---------------|---------------------------------------|-----|
+| **测试套件**     | {test_suite}                           |     |
 | **数据集**       | {dataset}                                |     |
-| **并发数**       | {concurrency} |     |
+| **并发数**       | {concurrency_str} |     |
 | **总请求数**      | {total_requests}                                 |     |
 | **请求输入上下文长度** | {input_ctx}                               |     |
 | **请求输出上下文长度** | {output_ctx}                               |     |
 | **模型**        | {model}                          |     |
 | **被测芯片**      | {chip}                          |     |
+| **测试场景**      | {"多I/O测试" if io_pair else "单I/O测试"}                          |     |
 
 
 **主要采集指标**：
@@ -1147,7 +998,6 @@ def generate_markdown_report(
 </div>
 """
 
-    # 生成 RUN-ID 列表字符串
     run_ids_str = "_".join(run_ids)
 
     md_file = os.path.join(
@@ -1168,18 +1018,21 @@ def main():
     parser.add_argument(
         "--chip",
         type=str,
-        default=None,
+        required=True,
         help="Chip name (e.g., Hygon_BW1000, Kunlun_P800)",
     )
-    parser.add_argument("--model", type=str, default=None, help="Model name")
+    parser.add_argument("--model", type=str, required=True, help="Model name")
     parser.add_argument(
-        "--test-suite", type=str, default=None, help="Test suite name (e.g., test_01)"
+        "--test-suite",
+        type=str,
+        default="test_01",
+        help="Test suite name (e.g., test_01)",
     )
     parser.add_argument(
         "--run-id",
         type=str,
-        default=None,
-        help="Run IDs to compare, can be '01,02' or '01' '02' or '01','02'",
+        required=True,
+        help="Run IDs to compare, separated by comma (e.g., 01,02 or 01,02,03)",
     )
     parser.add_argument(
         "--concurrency",
@@ -1189,53 +1042,42 @@ def main():
     )
     args = parser.parse_args()
 
-    global TEST_SUITES, RUN_IDS, CHIP_BASE_PATHS, MODEL_NAME
+    global RUN_IDS, CHIP_BASE_PATHS, MODEL_NAME
+
+    args.chip = args.chip.lower()
+    args.test_suite = args.test_suite.lower()
 
     concurrency_filter = None
     if args.concurrency:
         concurrency_filter = [s.strip() for s in args.concurrency.split(",")]
 
-    if args.test_suite:
-        TEST_SUITES = [args.test_suite]
+    run_ids_list = []
+    for part in args.run_id.replace("'", "").split(","):
+        part = part.strip()
+        if part:
+            run_ids_list.append(part)
+    RUN_IDS = run_ids_list
 
-    if args.run_id:
-        run_ids_list = []
-        for part in args.run_id.replace("'", "").split(","):
-            part = part.strip()
-            if part:
-                run_ids_list.append(part)
-        RUN_IDS = run_ids_list
-
-    # 检查 RUN_IDS 数量是否足够
     if len(RUN_IDS) < 2:
         print(f"\nError: At least 2 RUN-IDs are required for comparison")
         print(f"Provided: {len(RUN_IDS)} ({', '.join(RUN_IDS) if RUN_IDS else 'none'})")
         print(f'Usage: --run-id 01,02 or --run-id "01, 02"')
         return
 
-    # 确定 chip 名称
-    chip_name = None
-    if args.chip:
-        chip_key = args.chip.lower()
-        chip_key_map = {
-            "hygon_bw1000": "Hygon_BW1000",
-            "kunlun_p800": "Kunlun_P800",
-            "nvidia_h100": "NVIDIA_H100",
-        }
-        chip_name = chip_key_map.get(chip_key, args.chip)
-    else:
-        # 默认使用第一个芯片
-        chip_name = list(CHIP_MODEL_PATHS.keys())[0]
+    chip_name = args.chip
+    model_input = args.model
+    MODEL_NAME = model_input
 
-    # 确定模型名：优先使用参数值，否则使用默认模型
-    if args.model:
-        model_input = args.model
-    else:
-        model_input = CHIP_MODEL_PATHS.get(chip_name, MODEL_NAME)
+    print(f"\n{'=' * 60}")
+    print(f"Run ID Comparison Configuration")
+    print(f"{'=' * 60}")
+    print(f"Chip: {chip_name}")
+    print(f"Model: {MODEL_NAME}")
+    print(f"Test Suite: {args.test_suite}")
+    print(f"RUN IDs: {', '.join(RUN_IDS)}")
+    print(f"{'=' * 60}\n")
 
-    # 验证模型目录是否存在
-    chip_key_for_path = chip_name.lower().replace("_", "_")
-    benchmark_path = f"reports/benchmark/{chip_name.lower()}"
+    benchmark_path = f"reports/benchmark/{chip_name}"
 
     if not os.path.exists(benchmark_path):
         print(f"\nError: Benchmark path not found: {benchmark_path}")
@@ -1256,114 +1098,194 @@ def main():
             print(f"  - {m}")
         return
 
-    MODEL_NAME = model_input
-    CHIP_BASE_PATHS = {chip_name: f"reports/benchmark/{chip_name.lower()}/{MODEL_NAME}"}
+    CHIP_BASE_PATHS = {chip_name: f"reports/benchmark/{chip_name}/{MODEL_NAME}"}
 
-    run_id1 = RUN_IDS[0]
-    run_id2 = RUN_IDS[1] if len(RUN_IDS) > 1 else RUN_IDS[0]
-    # 生成 RUN-ID 文件夹名称：支持多个 ID
-    runid_folder = "run_" + "_".join(RUN_IDS)
+    test_suite = args.test_suite
 
-    for test_suite in TEST_SUITES:
-        print(f"\n{'#' * 60}")
-        print(f"Processing test suite: {test_suite}")
-        print(f"Comparing RUN-IDs: {', '.join(RUN_IDS)}")
-        print(f"Chip: {chip_name}, Model: {MODEL_NAME}")
-        print(f"{'#' * 60}\n")
+    print(f"\n{'#' * 60}")
+    print(f"Processing test suite: {test_suite}")
+    print(f"Comparing RUN-IDs: {', '.join(RUN_IDS)}")
+    print(f"Chip: {chip_name}, Model: {MODEL_NAME}")
+    print(f"{'#' * 60}\n")
 
-        chip_configs = get_chip_configs(test_suite)
+    chip_configs = get_chip_configs(test_suite)
 
-        for chip in chip_configs:
-            chip_name = chip["name"]
-            base_path = chip["base_path"]
+    for chip in chip_configs:
+        chip_name = chip["name"]
+        base_path = chip["base_path"]
 
-            # 检查每个 RUN_ID 的目录是否存在
-            missing_run_ids = []
-            for run_id in RUN_IDS:
-                run_id_path = os.path.join(base_path, run_id)
-                if not os.path.exists(run_id_path):
-                    missing_run_ids.append(run_id)
+        missing_run_ids = []
+        for run_id in RUN_IDS:
+            run_id_path = os.path.join(base_path, run_id)
+            if not os.path.exists(run_id_path):
+                missing_run_ids.append(run_id)
 
-            if missing_run_ids:
-                print(
-                    f"\nError: Missing RUN-ID directories for {chip_name} / {MODEL_NAME} / {test_suite}"
-                )
-                print(f"Expected RUN-IDs: {', '.join(RUN_IDS)}")
-                print(f"Missing: {', '.join(missing_run_ids)}")
-
-                # 显示可用的 RUN-ID
-                available_run_ids = [
-                    d
-                    for d in os.listdir(base_path)
-                    if os.path.isdir(os.path.join(base_path, d))
-                ]
-                print(
-                    f"Available RUN-IDs: {', '.join(available_run_ids) if available_run_ids else 'None'}"
-                )
-                continue
-
-            # 只有在所有 RUN-ID 都存在时才创建输出目录
-            output_base = f"analysis/single_chip/{chip_name}/{MODEL_NAME}/compare_run/{test_suite}/{runid_folder}"
-            Path(output_base).mkdir(parents=True, exist_ok=True)
-
-            all_concurrencies = set()
-            run_id_concurrencies = {}
-
-            for run_id in RUN_IDS:
-                concs = get_all_concurrencies(base_path, run_id)
-                run_id_concurrencies[run_id] = set(concs)
-                all_concurrencies.update(concs)
-
-            common_concurrencies = set()
-            for run_id in RUN_IDS:
-                if not common_concurrencies:
-                    common_concurrencies = run_id_concurrencies[run_id].copy()
-                else:
-                    common_concurrencies = common_concurrencies.intersection(
-                        run_id_concurrencies[run_id]
-                    )
-
-            if not all_concurrencies:
-                print(
-                    f"No concurrency configurations found for {chip_name} / {test_suite}!"
-                )
-                continue
-
-            concurrencies = sorted(common_concurrencies, key=lambda x: int(x))
-
-            if concurrency_filter:
-                filtered_concs = [c for c in concurrencies if c in concurrency_filter]
-                if filtered_concs:
-                    concurrencies = filtered_concs
-                    print(
-                        f"Using specified concurrency levels: {', '.join(concurrencies)}"
-                    )
-                else:
-                    print(
-                        f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
-                    )
-
+        if missing_run_ids:
             print(
-                f"Found {len(concurrencies)} common concurrency levels: {', '.join(concurrencies)}"
+                f"\nError: Missing RUN-ID directories for {chip_name} / {MODEL_NAME} / {test_suite}"
             )
-            print(f"All levels per run_id: {run_id_concurrencies}")
+            print(f"Expected RUN-IDs: {', '.join(RUN_IDS)}")
+            print(f"Missing: {', '.join(missing_run_ids)}")
 
-            runid_data = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+            available_run_ids = [
+                d
+                for d in os.listdir(base_path)
+                if os.path.isdir(os.path.join(base_path, d))
+            ]
+            print(
+                f"Available RUN-IDs: {', '.join(available_run_ids) if available_run_ids else 'None'}"
+            )
+            continue
 
-            print(f"\nProcessing chip: {chip_name}")
+        runid_folder = "run_" + "_".join(RUN_IDS)
+        output_base = f"analysis/single_chip/{chip_name}/{MODEL_NAME}/compare_run/{test_suite}/{runid_folder}"
+        Path(output_base).mkdir(parents=True, exist_ok=True)
 
+        all_concurrencies = set()
+        run_id_concurrencies = {}
+
+        for run_id in RUN_IDS:
+            concs = get_all_concurrencies(base_path, run_id)
+            run_id_concurrencies[run_id] = set(concs)
+            all_concurrencies.update(concs)
+
+        common_concurrencies = set()
+        for run_id in RUN_IDS:
+            if not common_concurrencies:
+                common_concurrencies = run_id_concurrencies[run_id].copy()
+            else:
+                common_concurrencies = common_concurrencies.intersection(
+                    run_id_concurrencies[run_id]
+                )
+
+        if not all_concurrencies:
+            print(
+                f"No concurrency configurations found for {chip_name} / {test_suite}!"
+            )
+            continue
+
+        concurrencies = sorted(common_concurrencies, key=lambda x: int(x))
+
+        if concurrency_filter:
+            filtered_concs = [c for c in concurrencies if c in concurrency_filter]
+            if filtered_concs:
+                concurrencies = filtered_concs
+                print(f"Using specified concurrency levels: {', '.join(concurrencies)}")
+            else:
+                print(
+                    f"Warning: None of the specified concurrency levels {concurrency_filter} found, using all"
+                )
+
+        print(
+            f"Found {len(concurrencies)} common concurrency levels: {', '.join(concurrencies)}"
+        )
+        print(f"All levels per run_id: {run_id_concurrencies}")
+
+        runid_data = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+
+        is_multi_io = test_suite == "test_05"
+        all_io_pairs = set()
+
+        if is_multi_io:
             for run_id in RUN_IDS:
-                print(f"\n  Processing RUN-ID: {run_id}")
                 for conc in concurrencies:
+                    io_pairs = get_all_io_pairs(base_path, run_id, conc)
+                    all_io_pairs.update(io_pairs)
+
+            all_io_pairs = sorted(all_io_pairs, key=lambda x: (int(x[0]), int(x[1])))
+            print(f"Detected multi-I/O scenario: {len(all_io_pairs)} I/O pairs")
+            print(f"I/O pairs: {all_io_pairs}")
+
+            if not all_io_pairs:
+                print(f"No I/O pairs found for {chip_name} / {test_suite}!")
+                return
+
+        print(f"\nProcessing chip: {chip_name}")
+
+        for run_id in RUN_IDS:
+            print(f"\n  Processing RUN-ID: {run_id}")
+            for conc in concurrencies:
+                if is_multi_io:
+                    for io_pair in all_io_pairs:
+                        io_key = f"i{io_pair[0]}-o{io_pair[1]}"
+                        metrics = get_chip_metrics(base_path, run_id, conc, io_pair)
+                        if metrics:
+                            normalized_metrics = {}
+                            for key, value in metrics.items():
+                                normalized_metrics[key.lower()] = value
+                            runid_data[run_id][chip_name][(conc, io_key)] = (
+                                normalized_metrics
+                            )
+                            print(f"    - {conc}并发/{io_key}: OK")
+                        else:
+                            print(f"    - {conc}并发/{io_key}: No data")
+                else:
                     metrics = get_chip_metrics(base_path, run_id, conc)
                     if metrics:
-                        runid_data[run_id][chip_name][conc] = metrics
+                        normalized_metrics = {}
+                        for key, value in metrics.items():
+                            normalized_metrics[key.lower()] = value
+                        runid_data[run_id][chip_name][conc] = normalized_metrics
                         print(f"    - {conc}并发: OK")
                     else:
                         print(f"    - {conc}并发: No data")
 
-            test_overview = get_test_overview(test_suite)
+        test_overview = get_test_overview(test_suite)
 
+        if is_multi_io:
+            for io_pair in all_io_pairs:
+                io_key = f"i{io_pair[0]}-o{io_pair[1]}"
+                io_output_base = f"{output_base}/{io_key}"
+                Path(io_output_base).mkdir(parents=True, exist_ok=True)
+
+                io_runid_data = defaultdict(
+                    lambda: defaultdict(lambda: defaultdict(dict))
+                )
+                for run_id in RUN_IDS:
+                    for conc in concurrencies:
+                        if (conc, io_key) in runid_data[run_id][chip_name]:
+                            io_runid_data[run_id][chip_name][conc] = runid_data[run_id][
+                                chip_name
+                            ][(conc, io_key)]
+
+                io_test_overview = test_overview.copy()
+                io_test_overview["input_context_length"] = [int(io_pair[0])]
+                io_test_overview["output_context_length"] = [int(io_pair[1])]
+
+                print(f"\nGenerating comparison reports for I/O pair: {io_key}...")
+
+                generate_comparison_csv(
+                    io_runid_data,
+                    concurrencies,
+                    io_output_base,
+                    chip_name,
+                    run_ids=RUN_IDS,
+                )
+
+                if HAS_MATPLOTLIB:
+                    generate_comparison_charts(
+                        io_runid_data,
+                        concurrencies,
+                        io_output_base,
+                        chip_name,
+                        MODEL_NAME,
+                        run_ids=RUN_IDS,
+                    )
+
+                generate_markdown_report(
+                    io_runid_data,
+                    concurrencies,
+                    io_output_base,
+                    test_suite,
+                    chip_name,
+                    model_name=MODEL_NAME,
+                    run_ids=RUN_IDS,
+                    test_overview=io_test_overview,
+                    io_pair=io_key,
+                )
+
+            print(f"\nMulti-I/O reports generated for {chip_name} - {test_suite}")
+        else:
             print("\nGenerating comparison reports...")
 
             generate_comparison_csv(
@@ -1388,16 +1310,15 @@ def main():
                 chip_name,
                 model_name=MODEL_NAME,
                 run_ids=RUN_IDS,
-                vllm_config=VLLM_CONFIG,
                 test_overview=test_overview,
             )
 
-            print(f"\n{'=' * 50}")
-            print(
-                f"Run ID comparison for {chip_name} - {test_suite} generated successfully!"
-            )
-            print(f"Output directory: {output_base}")
-            print(f"{'=' * 50}")
+        print(f"\n{'=' * 50}")
+        print(
+            f"Run ID comparison for {chip_name} - {test_suite} generated successfully!"
+        )
+        print(f"Output directory: {output_base}")
+        print(f"{'=' * 50}")
 
 
 if __name__ == "__main__":

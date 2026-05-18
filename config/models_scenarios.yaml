@@ -53,6 +53,9 @@ models:
   - name: "MiniMax-M2.5"
     served-model-name: "minimax-m2.5"
     model_path: "/userdata/llms/MiniMax/MiniMax-M2.5"
+  - name: "DeepSeek-V4-Flash"
+    served-model-name: "deepseek-v4-pro"
+    model_path: "/userdata/dsv4/DeepSeek-V4-Flash"
 
 # vLLM 版本
 #vllm_version: "0.17.0"  # 如 "0.17.0"

@@ -234,6 +234,22 @@ def get_chip_metrics(chip_config, concurrency):
     return metrics
 
 
+COMPARISON_METRICS = [
+    ("请求吞吐量（Request throughput (req/s)）", "Request throughput (req/s)"),
+    (
+        "输出token吞吐量（Output token throughput (tok/s)）",
+        "Output token throughput (tok/s)",
+    ),
+    (
+        "总token吞吐量（Total token throughput (tok/s)）",
+        "Total token throughput (tok/s)",
+    ),
+    ("首token延迟（P99 TTFT (ms)）", "P99 TTFT (ms)"),
+    ("每token生成时间（P99 TPOT (ms)）", "P99 TPOT (ms)"),
+    ("token间延迟（P99 ITL (ms)）", "P99 ITL (ms)"),
+]
+
+
 def generate_comparison_csv(
     chip_data, concurrencies, output_dir, test_suite, chip_names
 ):
@@ -1217,41 +1233,86 @@ def generate_markdown_report(
                 f"| {conc} | {max_tt[0]} | {max_tt[1]:.0f} tok/s |"
             )
 
-    throughput_table = (
-        "\n".join(throughput_table_rows) if throughput_table_rows else "| - | - | - |"
-    )
-    ttft_table = "\n".join(ttft_table_rows) if ttft_table_rows else "| - | - | - |"
-    tpot_table = "\n".join(tpot_table_rows) if tpot_table_rows else "| - | - | - |"
-    total_tput_table = (
-        "\n".join(total_tput_table_rows) if total_tput_table_rows else "| - | - | - |"
-    )
-
     analysis_content = generate_analysis_content(chip_data, chip_names, concurrencies)
+
+    metric_trends_section = ""
+
+    for display_name, key_name in COMPARISON_METRICS:
+        is_throughput = key_name in [
+            "Request throughput (req/s)",
+            "Output token throughput (tok/s)",
+            "Total token throughput (tok/s)",
+        ]
+        find_max = is_throughput
+
+        chip_header = " | ".join(chip_names)
+        chip_separator = " | ".join(["-----------"] * len(chip_names))
+        header = f"{chip_header} | 差值 | 百分比"
+        separator = f"{chip_separator} | ----------- | -----------"
+
+        metric_rows = []
+        for conc in concurrencies:
+            base_value = None
+            values = []
+            best_chip = None
+            for chip in chip_names:
+                value = chip_data.get(chip, {}).get(conc, {}).get(key_name, "")
+                if value == "" or value is None:
+                    value = "N/A"
+                values.append(value)
+
+                if chip == chip_names[0] and value != "N/A":
+                    try:
+                        base_value = float(value)
+                    except:
+                        base_value = None
+
+            if len(chip_names) > 1 and base_value is not None and base_value != 0:
+                last_value_str = values[-1] if values[-1] != "N/A" else None
+                if last_value_str:
+                    try:
+                        last_value = float(last_value_str)
+                        diff = last_value - base_value
+                        pct = (diff / base_value) * 100
+                        diff_str = f"+{diff:.2f}" if diff >= 0 else f"{diff:.2f}"
+                        pct_str = f"+{pct:.1f}%" if pct >= 0 else f"{pct:.1f}%"
+                        extra_cols = f" | {diff_str} | {pct_str}"
+                    except:
+                        extra_cols = " | N/A | N/A"
+                else:
+                    extra_cols = " | N/A | N/A"
+            else:
+                extra_cols = " | N/A | N/A"
+
+            metric_rows.append(f"| {conc}   | {' | '.join(values)}{extra_cols} |")
+
+        metric_trends_section += f"""
+#### {display_name}
+
+| 并发数 | {header} |
+|-----|{separator}|
+{chr(10).join(metric_rows)}
+
+"""
 
     chart_images = "\n".join(
         [
-            f'<img src="./chip_comparison_c{conc}_{test_suite}_{chip_suffix}.png" width="800" />'
+            f'\n**{conc}并发**\n\n<img src="./chip_comparison_c{conc}_{test_suite}_{chip_suffix}.png" width="1000" />'
             for conc in concurrencies
         ]
     )
 
     performance_trends_img = f'<img src="./performance_trends_{test_suite}_{chip_suffix}.png" width="1000" />'
 
-    chip_table_rows = []
     chip_info_map = load_chip_config_by_model()
-    param_names = [
-        "model_name",
-        "quantization_config",
-        "model_size",
-        "max_position_embeddings",
-        "temperature",
-        "top_k",
-        "top_p",
-        "transformers_version",
-        "vllm_version",
-        "python_version",
-    ]
-    for param in param_names:
+    chip_table_rows = []
+    all_params = set()
+    for chip in chip_names:
+        cfg = chip_info_map.get(chip, {})
+        all_params.update(cfg.keys())
+    all_params = sorted([p for p in all_params if p != "remark"])
+
+    for param in all_params:
         row = f"| **{param}** |"
         for chip in chip_names:
             chip_info = chip_info_map.get(chip, {})
@@ -1261,25 +1322,16 @@ def generate_markdown_report(
     chip_table = "\n".join(chip_table_rows)
 
     vllm_info_map = load_vllm_config_by_model()
-    param_names = [
-        "model_name",
-        "max-model-len",
-        "max-num-seqs",
-        "max-num-batched-tokens",
-        "gpu-memory-utilization",
-        "dtype",
-        "block_size",
-        "dp",
-        "tp",
-        "pp",
-        "enable-export-parallel",
-        "enable-auto-tool-choice",
-        "tool-call-parser",
-        "reasoning-parser",
-    ]
+    all_sglang_params = set()
+    for chip in chip_names:
+        cfg = vllm_info_map.get(chip, {})
+        all_sglang_params.update(cfg.keys())
+    all_sglang_params = sorted([p for p in all_sglang_params if p != "remarks"])
+
     param_rows = []
-    for param in param_names:
-        row = f"| {param} |"
+    for param in all_sglang_params:
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        row = f"| **{display_name}** |"
         for chip_name in chip_names:
             cfg = vllm_info_map.get(chip_name, {})
             val = cfg.get(param, "N/A")
@@ -1328,7 +1380,7 @@ def generate_markdown_report(
 | QPS                 | requests/s | 请求吞吐                               |
 | P50/P95/P99 Latency | ms         | 延迟分位数                              |
     
-## 📊 测试概览
+### 📊 测试概览
 
 | 项目            | 配置                                     | 备注  |
 |---------------|----------------------------------------|-----|
@@ -1337,74 +1389,47 @@ def generate_markdown_report(
 | **总请求数**      | {total_requests}                                    |     |
 | **请求输入上下文长度** | {input_len_val}（{input_ctx}）                             |     |
 | **请求输出上下文长度** | {output_len_val}（{output_ctx}）                             |     |
-| **模型**        | {MODEL_NAME}                           |     |
 | **被测芯片**      | {", ".join(chip_names)} |     |
+| **被测模型**      | {MODEL_NAME} |     |
 
 ---
 
-## 🤖 芯片和模型配置信息
+### 🤖 芯片和模型配置信息
 
-| 芯片名称                        | **{"** | **".join(chip_names)}** |
-|-----------------------------|{("-------------------------------|") * len(chip_names)}
+| 参数名称 | **{"** | **".join(chip_names)}** |
+|----------|{"----------|" * len(chip_names)}
 {chip_table}
 
 ---
 
-## 🤖 vLLM启动配置信息
+### ⚙️ vLLM启动配置信息
 
-| 参数名称                   | **{"** | **".join(chip_names)}** |
-|------------------------|{"------------------|" * len(chip_names)}
+| 参数名称 | **{"** | **".join(chip_names)}** |
+|----------|{"----------|" * len(chip_names)}
 {vllm_table}
 
 {remarks_section}
 
 ---
 
-## 📊 芯片性能对比柱状图
+### 📊 芯片性能对比柱状图
 
 {chart_images}
 
----
 
-## 📈 性能趋势对比图 (所有芯片)
+### 📈 性能趋势对比图 (所有芯片)
 
 {performance_trends_img}
 
 ---
 
-## 📈 各并发级别性能对比详情
+### 📈 各指标随并发级别性能对比详情
+
+{metric_trends_section}
+
+### 📈 各并发级别性能对比详情
 
 {concurrency_tables}
-
----
-
-## 📝 分析总结
-
-{analysis_content}
-
-### 请求吞吐量 (Request Throughput) - 各并发最优
-
-| Concurrency | Best Chip | Performance |
-|-------------|-----------|-------------|
-{throughput_table}
-
-### Token总吞吐量 (Total Token Throughput) - 各并发最优
-
-| Concurrency | Best Chip | Performance |
-|-------------|-----------|-------------|
-{total_tput_table}
-
-### TTFT P99 - 各并发最优
-
-| Concurrency | Best Chip | Latency |
-|-------------|-----------|---------|
-{ttft_table}
-
-### TPOT P99 - 各并发最优
-
-| Concurrency | Best Chip | Latency |
-|-------------|-----------|---------|
-{tpot_table}
 
 ---
 

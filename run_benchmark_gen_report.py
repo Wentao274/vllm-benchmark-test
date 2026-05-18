@@ -12,7 +12,7 @@ from pathlib import Path
 
 API_KEY = os.environ.get("API_KEY", "abc123")
 
-TEST_SUITES = ["test_01", "test_03", "test_05", "test_06", "test_07"]
+TEST_SUITES = ["test_01"]
 
 RUN_ID = "01"
 
@@ -236,7 +236,7 @@ def run_runid_comparison(chip_name, model_name, test_suite, run_ids, concurrency
 
     cmd = [
         sys.executable,
-        "parse_single_chip_model_runid.py",
+        "compare_runids.py",
         "--chip",
         chip_key,
         "--model",

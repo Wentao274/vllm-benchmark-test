@@ -125,6 +125,13 @@ def extract_concurrency_from_config(config):
     return None
 
 
+def extract_input_len_from_config(config):
+    match = re.match(r"^\d+-i(\d+)-o\d+$", config)
+    if match:
+        return int(match.group(1))
+    return 0
+
+
 def parse_run_ids(run_ids_str, num_models):
     if not run_ids_str:
         return None
@@ -164,7 +171,7 @@ def get_test_params_from_yaml(test_suite):
 
     return {
         "test_configs": sorted(
-            test_configs, key=lambda x: int(extract_concurrency_from_config(x) or 0)
+            test_configs, key=lambda x: extract_input_len_from_config(x)
         ),
         "concurrency_list": sorted([int(c) for c in max_concurrency], key=lambda x: x),
     }
@@ -414,20 +421,13 @@ def generate_comparison_markdown(
     separator = " | ".join(["-----------"] * len(sorted_models))
 
     chip_table_rows = []
-    chip_info_map = {}
-    chip_param_names = [
-        "model_name",
-        "quantization_config",
-        "model_size",
-        "max_position_embeddings",
-        "temperature",
-        "top_k",
-        "top_p",
-        "transformers_version",
-        "vllm_version",
-        "python_version",
-    ]
-    for param in chip_param_names:
+    all_params = set()
+    for model in sorted_models:
+        cfg = load_chip_config_by_model(chip_name, model)
+        all_params.update(cfg.keys())
+    all_params = sorted([p for p in all_params if p != "remark"])
+
+    for param in all_params:
         row = f"| **{param}** |"
         for model in sorted_models:
             cfg = load_chip_config_by_model(chip_name, model)
@@ -437,24 +437,15 @@ def generate_comparison_markdown(
     chip_table = "\n".join(chip_table_rows)
 
     vllm_table_rows = []
-    vllm_param_names = [
-        "model_name",
-        "max-model-len",
-        "max-num-seqs",
-        "max-num-batched-tokens",
-        "gpu-memory-utilization",
-        "dtype",
-        "block_size",
-        "dp",
-        "tp",
-        "pp",
-        "enable-export-parallel",
-        "enable-auto-tool-choice",
-        "tool-call-parser",
-        "reasoning-parser",
-    ]
-    for param in vllm_param_names:
-        row = f"| {param} |"
+    all_vllm_params = set()
+    for model in sorted_models:
+        cfg = load_vllm_config_by_model(chip_name, model)
+        all_vllm_params.update(cfg.keys())
+    all_vllm_params = sorted([p for p in all_vllm_params if p != "remarks"])
+
+    for param in all_vllm_params:
+        display_name = param.replace("-", " ").replace("_", " ").title()
+        row = f"| **{display_name}** |"
         for model in sorted_models:
             cfg = load_vllm_config_by_model(chip_name, model)
             val = cfg.get(param, "N/A")
@@ -483,79 +474,21 @@ def generate_comparison_markdown(
         pct_str = f"{sign}{pct:.1f}%"
         return diff_str, pct_str
 
-    def make_row(key_name):
-        cells = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            cells.append(value if value else "0")
-        return " | ".join(cells)
-
-    def make_row_with_diff(key_name, is_throughput=True):
+    def make_row_with_diff(key_name):
         """生成包含差异和百分比的行，以第一个模型为基准"""
         baseline_model = sorted_models[0]
-        baseline_val = models_data[baseline_model].get(key_name.lower(), "")
+        baseline_val = models_data[baseline_model].get(key_name.lower(), "") or "0"
 
-        cells = [baseline_val]  # 基准模型的值
+        cells = [baseline_val]
 
-        # 其他模型与基准的差异
         for model in sorted_models[1:]:
-            other_val = models_data[model].get(key_name.lower(), "")
+            other_val = models_data[model].get(key_name.lower(), "") or "0"
             diff, pct = calculate_diff(baseline_val, other_val)
             diff_str, pct_str = format_diff(diff, pct)
             cells.append(other_val if other_val else "0")
             cells.append(diff_str)
             cells.append(pct_str)
 
-        return " | ".join(cells)
-
-    def make_throughput_row(key_name, highlight_max=True):
-        cells = []
-        values = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            values.append((model, value))
-        cells = []
-        if highlight_max:
-            try:
-                numeric = [(m, float(v)) for m, v in values if v]
-                if numeric:
-                    max_val = max(numeric, key=lambda x: x[1])
-                    for m, v in values:
-                        if v and float(v) == max_val[1]:
-                            cells.append(f"**{v}** ⭐")
-                        else:
-                            cells.append(v)
-                else:
-                    cells = [v for _, v in values]
-            except:
-                cells = [v for _, v in values]
-        else:
-            cells = [v for _, v in values]
-        return " | ".join(cells)
-
-    def make_latency_row(key_name, highlight_min=True):
-        cells = []
-        values = []
-        for model in sorted_models:
-            value = models_data[model].get(key_name.lower(), "")
-            values.append((model, value))
-        cells = []
-        if highlight_min:
-            try:
-                numeric = [(m, float(v)) for m, v in values if v]
-                if numeric:
-                    min_val = min(numeric, key=lambda x: x[1])
-                    for m, v in values:
-                        if v and float(v) == min_val[1]:
-                            cells.append(f"**{v}** ⭐")
-                        else:
-                            cells.append(v)
-                else:
-                    cells = [v for _, v in values]
-            except:
-                cells = [v for _, v in values]
-        else:
-            cells = [v for _, v in values]
         return " | ".join(cells)
 
     # 生成表头和分隔行（根据模型数量）
@@ -668,6 +601,54 @@ def generate_comparison_markdown(
 
     run_id_display = ", ".join(run_ids) if run_ids else "N/A"
 
+    model_list_section = ""
+    for i, model in enumerate(sorted_models):
+        rid = run_ids[i] if i < len(run_ids) else "N/A"
+        model_list_section += f"| {model} | {rid} | [OK] |\n"
+
+    yaml_config = load_yaml_config()
+    base_config = yaml_config.get("base_config", {})
+    params = base_config.get("params", {})
+    test_cfg = params.get(test_suite, {})
+
+    dataset = test_cfg.get("dataset-name", "random")
+    num_prompts = test_cfg.get("num-prompts", [])
+    input_output_lens = test_cfg.get("random-input-output-len", [])
+
+    if (
+        input_output_lens
+        and isinstance(input_output_lens[0], list)
+        and len(input_output_lens[0]) >= 2
+    ):
+        io_str = ", ".join([f"({p[0]}, {p[1]})" for p in input_output_lens])
+    else:
+        input_len = test_cfg.get("random-input-len", [])
+        output_len = test_cfg.get("random-output-len", [])
+        if input_len and output_len:
+            io_str = f"({input_len[0] if input_len else 'N/A'}, {output_len[0] if output_len else 'N/A'})"
+        else:
+            io_str = "N/A"
+
+    config_concurrencies = test_cfg.get("max-concurrency", [])
+    conc_str = (
+        ", ".join([str(c) for c in config_concurrencies])
+        if config_concurrencies
+        else "N/A"
+    )
+    num_prompts_str = str(num_prompts[0]) if num_prompts else "N/A"
+
+    vllm_version = yaml_config.get("vllm_version", "N/A")
+
+    def format_tokens(val):
+        try:
+            v = int(val)
+            if v >= 1024:
+                return f"{v // 1024}k"
+            else:
+                return f"{v / 1024:.2f}k"
+        except:
+            return str(val)
+
     md_content = f"""# 多模型性能对比报告
 
 <div>
@@ -690,16 +671,16 @@ def generate_comparison_markdown(
 
 ## 🤖 芯片和模型配置信息
 
-| 芯片名称                        | **{"** | **".join(sorted_models)}** |
-|-----------------------------|{("-------------------------------|") * len(sorted_models)}
+| 参数名称 | **{"** | **".join(sorted_models)}** |
+|----------|{"----------|" * len(sorted_models)}
 {chip_table}
 
 ---
 
-## 🤖 vLLM启动配置信息
+## ⚙️ vLLM 启动配置信息
 
-| 参数名称                    | **{"** | **".join(sorted_models)}** |
-|-------------------------|{("-------------------|") * len(sorted_models)}
+| 参数名称 | **{"** | **".join(sorted_models)}** |
+|----------|{"----------|" * len(sorted_models)}
 {vllm_table}
 
 ---
@@ -708,13 +689,22 @@ def generate_comparison_markdown(
 
 | 模型名称 | Run ID | 状态 |
 |----------|--------|------|
-"""
+{model_list_section}
 
-    for i, model in enumerate(sorted_models):
-        rid = run_ids[i] if i < len(run_ids) else "N/A"
-        md_content += f"| {model} | {rid} | [OK] |\n"
+---
 
-    md_content += f"""
+## 📊 测试概览
+
+| 项目            | 配置                                     | 备注  |
+|---------------|----------------------------------------|-----|
+| **数据集**       | {dataset}                                 |     |
+| **并发数**       | {conc_str}    |     |
+| **总请求数**      | {num_prompts_str}                                    |     |
+| **输入输出长度** | {io_str} |     |
+| **测试套件**     | {test_suite}                           |     |
+| **被测芯片**      | {chip} |     |
+| **vLLM版本**   | {vllm_version}                           |     |
+
 ---
 
 ## 📈 服务基准结果对比
@@ -751,7 +741,7 @@ def generate_comparison_markdown(
 
 ## 📊 模型性能对比
 
-![Model Performance Comparison](./concurrency{concurrency}_comparison.png)
+<img src="concurrency{concurrency}_comparison.png" width="1000" />
 
 ---
 
@@ -980,19 +970,25 @@ def main():
 
 
 def generate_summary_report(output_base, test_suite, generated_reports):
-    summary_lines = []
-    summary_lines.append("# 多模型性能汇总对比报告\n")
-    summary_lines.append(f"**生成时间:** {datetime.now().strftime('%Y-%m-%d')}\n")
-    summary_lines.append("---\n")
-    summary_lines.append("## 各并发级别报告链接\n")
+    current_date = datetime.now().strftime("%Y-%m-%d")
 
     sorted_reports = sorted(generated_reports, key=lambda x: x[1])
+
+    summary_lines = ["# 多模型性能对比汇总报告\n"]
+    summary_lines.append(f"\n**测试日期：** {current_date}\n")
+    summary_lines.append(f"**测试套件：** {test_suite}\n")
+    summary_lines.append("---\n")
+
+    summary_lines.append("## 报告列表\n")
+    summary_lines.append("| 并发级别 | 配置文件 | 报告链接 |")
+    summary_lines.append("|----------|----------|----------|")
+
     for config_key, concurrency in sorted_reports:
-        csv_link = f"./{config_key}/concurrency{concurrency}_comparison.csv"
-        md_link = f"./{config_key}/concurrency{concurrency}_comparison.md"
-        summary_lines.append(
-            f"- [{config_key} (CSV)]({csv_link}) | [Markdown]({md_link})"
-        )
+        md_link = f"[详细报告](./{config_key}/concurrency{concurrency}_comparison.md)"
+        summary_lines.append(f"| {concurrency} | {config_key} | {md_link} |")
+
+    summary_lines.append("\n---\n")
+    summary_lines.append(f"*共生成 {len(generated_reports)} 个并发级别的对比报告*\n")
 
     summary_file = os.path.join(output_base, test_suite, "summary.md")
     with open(summary_file, "w", encoding="utf-8") as f:
