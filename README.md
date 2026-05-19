@@ -384,9 +384,46 @@ python chip_comparison.py --chip hygon_bw1000,nvidia_h100 --test-suite test_01 -
 ##### 10.6 使用简写-c指定并发数
 python chip_comparison.py -c 1,4,8,16 --chip hygon_bw1000,nvidia_h100
 
+##### 10.7 多I/O测试场景（test_05）生成独立报告
+python chip_comparison.py --chip nvidia_h100,hygon_bw1000 --model "MiniMax-M2.5,MiniMax-M2.5-W8A8" --test-suite test_05 --run-id '01,02'
+- test_05 包含多组 I/O 组合（128x128, 512x256, 1024x512, 2048x1024, 4096x2048, 8192x1024）
+- 脚本会为每组 I/O 组合生成独立的报告目录
+
 **注意**：
 - model 参数如果只有一个值，所有芯片使用相同模型
 - model 参数如果有多个值（逗号分隔），按 --chip 参数顺序一一对应，每个芯片比对不同的模型
 - run-id 参数如果只有一个值，所有芯片使用相同 run-id
 - run-id 参数如果有多个值（逗号分隔），按 --chip 参数顺序一一对应
 - 所有参数值大小写不敏感
+
+#### 10.1 chip_comparison.py 多I/O场景报告目录结构
+对于多I/O测试场景（如 test_05），报告按 I/O 组合分别生成：
+
+```
+analysis/chip_comparison/<model>/<test_suite>/
+├── i128-o128/<run_id>/
+│   ├── concurrency1_comparison_<test_suite>_<chip1>_vs_<chip2>.csv
+│   ├── chip_comparison_c1_<test_suite>_<chip1>_vs_<chip2>.png
+│   ├── performance_trends_<test_suite>_<chip1>_vs_<chip2>.png
+│   └── <model>_chip_comparison_<test_suite>_<chip1>_vs_<chip2>.md
+├── i512-o256/<run_id>/
+├── i1024-o512/<run_id>/
+├── i2048-o1024/<run_id>/
+├── i4096-o2048/<run_id>/
+└── i8192-o1024/<run_id>/
+```
+
+对于单I/O测试场景（如 test_01, test_04），报告目录结构为：
+
+```
+analysis/chip_comparison/<model>/<test_suite>/<run_id>/
+├── concurrency1_comparison_<test_suite>_<chip1>_vs_<chip2>.csv
+├── chip_comparison_c1_<test_suite>_<chip1>_vs_<chip2>.png
+├── performance_trends_<test_suite>_<chip1>_vs_<chip2>.png
+└── <model>_chip_comparison_<test_suite>_<chip1>_vs_<chip2>.md
+```
+
+**说明**：
+- 多I/O场景：每个 I/O 组合生成独立目录（如 `i8192-o1024/`），报告中显示对应的输入输出上下文长度
+- 单I/O场景：所有并发级别生成在同一目录下
+- Markdown 报告中会显示正确的 I/O 配置信息（取最后一组或指定组的 I/O 组合）
