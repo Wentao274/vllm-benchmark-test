@@ -1,0 +1,605 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>MiniMax-M2.5_chip_comparison_test_01_nvidia_h100_vs_hygon_bw1000</title><link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; word-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 40px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:first-child { margin-top: -20px; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; }
+button, input, select, textarea { color: inherit; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 2; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px !important; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  html.blink-to-pdf { font-size: 13px; }
+  .typora-export #write { padding-left: 32px; padding-right: 32px; padding-bottom: 0px; break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  @page { margin: 20mm 0px; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="mermaid"] svg, [lang="flow"] svg { max-width: 100%; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+
+
+:root { --side-bar-bg-color: #fafafa; --control-text-color: #777; }
+html { font-size: 16px; }
+body { font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgb(51, 51, 51); line-height: 1.6; }
+#write { max-width: 860px; margin: 0px auto; padding: 30px 30px 100px; }
+#write > ul:first-child, #write > ol:first-child { margin-top: 30px; }
+a { color: rgb(65, 131, 196); }
+h1, h2, h3, h4, h5, h6 { position: relative; margin-top: 1rem; margin-bottom: 1rem; font-weight: bold; line-height: 1.4; cursor: text; }
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor { text-decoration: none; }
+h1 tt, h1 code { font-size: inherit; }
+h2 tt, h2 code { font-size: inherit; }
+h3 tt, h3 code { font-size: inherit; }
+h4 tt, h4 code { font-size: inherit; }
+h5 tt, h5 code { font-size: inherit; }
+h6 tt, h6 code { font-size: inherit; }
+h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom: 1px solid rgb(238, 238, 238); }
+h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom: 1px solid rgb(238, 238, 238); }
+h3 { font-size: 1.5em; line-height: 1.43; }
+h4 { font-size: 1.25em; }
+h5 { font-size: 1em; }
+h6 { font-size: 1em; color: rgb(119, 119, 119); }
+p, blockquote, ul, ol, dl, table { margin: 0.8em 0px; }
+li > ol, li > ul { margin: 0px; }
+hr { height: 2px; padding: 0px; margin: 16px 0px; background-color: rgb(231, 231, 231); border: 0px none; overflow: hidden; box-sizing: content-box; }
+li p.first { display: inline-block; }
+ul, ol { padding-left: 30px; }
+ul:first-child, ol:first-child { margin-top: 0px; }
+ul:last-child, ol:last-child { margin-bottom: 0px; }
+blockquote { border-left: 4px solid rgb(223, 226, 229); padding: 0px 15px; color: rgb(119, 119, 119); }
+blockquote blockquote { padding-right: 0px; }
+table { padding: 0px; word-break: initial; }
+table tr { border-top: 1px solid rgb(223, 226, 229); margin: 0px; padding: 0px; }
+table tr:nth-child(2n), thead { background-color: rgb(248, 248, 248); }
+table tr th { font-weight: bold; border-width: 1px 1px 0px; border-top-style: solid; border-right-style: solid; border-left-style: solid; border-top-color: rgb(223, 226, 229); border-right-color: rgb(223, 226, 229); border-left-color: rgb(223, 226, 229); border-image: initial; border-bottom-style: initial; border-bottom-color: initial; text-align: left; margin: 0px; padding: 6px 13px; }
+table tr td { border: 1px solid rgb(223, 226, 229); text-align: left; margin: 0px; padding: 6px 13px; }
+table tr th:first-child, table tr td:first-child { margin-top: 0px; }
+table tr th:last-child, table tr td:last-child { margin-bottom: 0px; }
+.CodeMirror-lines { padding-left: 4px; }
+.code-tooltip { box-shadow: rgba(0, 28, 36, 0.3) 0px 1px 1px 0px; border-top: 1px solid rgb(238, 242, 242); }
+.md-fences, code, tt { border: 1px solid rgb(231, 234, 237); background-color: rgb(248, 248, 248); border-radius: 3px; padding: 2px 4px 0px; font-size: 0.9em; }
+code { background-color: rgb(243, 244, 244); padding: 0px 2px; }
+.md-fences { margin-bottom: 15px; margin-top: 15px; padding-top: 8px; padding-bottom: 6px; }
+.md-task-list-item > input { margin-left: -1.3em; }
+@media print {
+  html { font-size: 13px; }
+  table, pre { break-inside: avoid; }
+  pre { word-wrap: break-word; }
+}
+.md-fences { background-color: rgb(248, 248, 248); }
+#write pre.md-meta-block { padding: 1rem; font-size: 85%; line-height: 1.45; background-color: rgb(247, 247, 247); border: 0px; border-radius: 3px; color: rgb(119, 119, 119); margin-top: 0px !important; }
+.mathjax-block > .code-tooltip { bottom: 0.375rem; }
+.md-mathjax-midline { background: rgb(250, 250, 250); }
+#write > h3.md-focus::before { left: -1.5625rem; top: 0.375rem; }
+#write > h4.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+#write > h5.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+#write > h6.md-focus::before { left: -1.5625rem; top: 0.285714rem; }
+.md-image > .md-meta { border-radius: 3px; padding: 2px 0px 0px 4px; font-size: 0.9em; color: inherit; }
+.md-tag { color: rgb(167, 167, 167); opacity: 1; }
+.md-toc { margin-top: 20px; padding-bottom: 20px; }
+.sidebar-tabs { border-bottom: none; }
+#typora-quick-open { border: 1px solid rgb(221, 221, 221); background-color: rgb(248, 248, 248); }
+#typora-quick-open-item { background-color: rgb(250, 250, 250); border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238); border-style: solid; border-width: 1px; }
+.on-focus-mode blockquote { border-left-color: rgba(85, 85, 85, 0.12); }
+header, .context-menu, .megamenu-content, footer { font-family: "Segoe UI", Arial, sans-serif; }
+.file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state { visibility: visible; }
+.mac-seamless-mode #typora-sidebar { background-color: var(--side-bar-bg-color); }
+.md-lang { color: rgb(180, 101, 77); }
+.html-for-mac .context-menu { --item-hover-bg-color: #E6F0FE; }
+#md-notification .btn { border: 0px; }
+.dropdown-menu .divider { border-color: rgb(229, 229, 229); }
+@media print {
+  body::before { content: ""; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url("datacanvas.png"); background-repeat: repeat; background-position: center center; background-size: 200px 200px; opacity: 0.1; pointer-events: none; z-index: 9999; }
+}
+#write::before { content: ""; position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; background-image: url("watermark.png"); background-repeat: repeat; background-position: center center; background-size: 200px 200px; opacity: 0.05; pointer-events: none; z-index: -1; }
+
+
+
+
+
+ .typora-export li, .typora-export p, .typora-export,  .footnote-line {white-space: normal;} 
+</style>
+
+<style>
+/* ========== 水印系统 ========== */
+
+/* 页面水印容器 - 每页显示 */
+@page {
+    margin: 15mm;
+    @top-center {
+        content: "九章云极";
+        font-size: 10pt;
+        color: rgba(180, 180, 180, 0.4);
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+    }
+    @bottom-center {
+        content: "九章云极";
+        font-size: 10pt;
+        color: rgba(180, 180, 180, 0.4);
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+    }
+}
+
+/* 屏幕显示水印 - 固定在页面中央，确保完整显示，覆盖所有内容 */
+.screen-watermark {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) rotate(-30deg) !important;
+    font-size: 60px !important;
+    font-weight: bold !important;
+    color: rgba(200, 200, 200, 0.12) !important;
+    pointer-events: none !important;
+    z-index: 99999 !important;
+    white-space: nowrap !important;
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif !important;
+    letter-spacing: 10px !important;
+}
+
+/* 打印时的水印 - 使用绝对定位确保不溢出，覆盖所有内容 */
+@media print {
+    .screen-watermark {
+        position: fixed !important;
+        font-size: 50px !important;
+        color: rgba(180, 180, 180, 0.15) !important;
+        z-index: 99999 !important;
+        transform: translate(-50%, -50%) rotate(-30deg) !important;
+    }
+    
+    /* 打印时为每个图片添加水印 */
+    .image-watermark {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) rotate(-30deg) !important;
+        font-size: 30px !important;
+        font-weight: bold !important;
+        color: rgba(180, 180, 180, 0.3) !important;
+        pointer-events: none !important;
+        z-index: 9999 !important;
+        white-space: nowrap !important;
+        font-family: "Microsoft YaHei", Arial, sans-serif !important;
+    }
+    
+    /* 确保图片容器支持水印定位 */
+    .image-container {
+        position: relative !important;
+    }
+}
+
+/* 图片水印容器 */
+.image-container {
+    position: relative !important;
+    display: inline-block !important;
+    width: 100% !important;
+}
+
+/* 图片上的水印 - 屏幕显示 */
+.image-watermark {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) rotate(-30deg) !important;
+    font-size: 35px !important;
+    font-weight: bold !important;
+    color: rgba(200, 200, 200, 0.25) !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    white-space: nowrap !important;
+    font-family: "Microsoft YaHei", Arial, sans-serif !important;
+    letter-spacing: 8px !important;
+}
+
+/* 确保图片正常显示 */
+.image-container img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
+
+/* 表格水印容器 */
+.table-container {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 1em 0 !important;
+}
+
+/* 表格上的水印 - 屏幕显示 */
+.table-watermark {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) rotate(-30deg) !important;
+    font-size: 45px !important;
+    font-weight: bold !important;
+    color: rgba(200, 200, 200, 0.15) !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    white-space: nowrap !important;
+    font-family: "Microsoft YaHei", Arial, sans-serif !important;
+    letter-spacing: 8px !important;
+}
+
+/* 确保表格正常显示 */
+.table-container table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+/* 打印时表格水印 */
+@media print {
+    .table-watermark {
+        position: absolute !important;
+        font-size: 40px !important;
+        color: rgba(180, 180, 180, 0.2) !important;
+        z-index: 9999 !important;
+    }
+}
+
+/* 页面四个角的水印 - 确保不溢出 */
+.corner-watermark {
+    position: fixed !important;
+    font-size: 14px !important;
+    color: rgba(180, 180, 180, 0.3) !important;
+    pointer-events: none !important;
+    z-index: 9999 !important;
+    font-family: "Microsoft YaHei", Arial, sans-serif !important;
+}
+
+.corner-watermark.top-left {
+    top: 20px !important;
+    left: 20px !important;
+}
+
+.corner-watermark.top-right {
+    top: 20px !important;
+    right: 20px !important;
+}
+
+.corner-watermark.bottom-left {
+    bottom: 20px !important;
+    left: 20px !important;
+}
+
+.corner-watermark.bottom-right {
+    bottom: 20px !important;
+    right: 20px !important;
+}
+
+@media print {
+    .corner-watermark {
+        position: absolute !important;
+        font-size: 12px !important;
+        color: rgba(180, 180, 180, 0.4) !important;
+    }
+}
+</style>
+
+</head>
+<body class='typora-export os-windows' >
+<!-- 水印元素 -->
+<div class="screen-watermark">九章云极</div>
+<div class="corner-watermark top-left">九章云极</div>
+<div class="corner-watermark top-right">九章云极</div>
+<div class="corner-watermark bottom-left">九章云极</div>
+<div class="corner-watermark bottom-right">九章云极</div>
+
+<div  id='write'  class = 'is-node'><h1><a name='header-n0' class='md-header-anchor '></a>MiniMax-M2.5模型在不同芯片下的benchmark基准测试报告</h1><div align="center">
+**测试日期：** 2026-05-19</div><p></div></p><hr /><h2><a name='header-n5' class='md-header-anchor '></a>测试场景</h2><p>在固定请求数，输入上下文和输出上下文长度下，使用vllm bench serve工具对并发数逐级增加场景的性能基准验证。并对比同一模型在不同芯片环境上的性能指标。</p><p><strong>主要采集指标</strong>：</p><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>单位</th><th>含义</th></tr></thead><tbody><tr><td>TTFT</td><td>ms</td><td>Time To First Token，首 token 延迟</td></tr><tr><td>TPOT</td><td>ms/token</td><td>Time Per Output Token，每 token 生成时间</td></tr><tr><td>Throughput</td><td>tokens/s</td><td>系统总吞吐</td></tr><tr><td>QPS</td><td>requests/s</td><td>请求吞吐</td></tr><tr><td>P50/P95/P99 Latency</td><td>ms</td><td>延迟分位数</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h3><a name='header-n33' class='md-header-anchor '></a>📊 测试概览</h3><figure><div class="table-container">
+<table><thead><tr><th>项目</th><th>配置</th><th>备注</th></tr></thead><tbody><tr><td><strong>数据集</strong></td><td>random</td><td>&nbsp;</td></tr><tr><td><strong>并发数</strong></td><td>1, 2, 4, 8, 10, 16, 32, 64, 80, 128</td><td>&nbsp;</td></tr><tr><td><strong>总请求数</strong></td><td>320</td><td>&nbsp;</td></tr><tr><td><strong>请求输入上下文长度</strong></td><td>10240（10k）</td><td>&nbsp;</td></tr><tr><td><strong>请求输出上下文长度</strong></td><td>256（0.25k）</td><td>&nbsp;</td></tr><tr><td><strong>被测芯片</strong></td><td>NVIDIA_H100, Hygon_BW1000</td><td>&nbsp;</td></tr><tr><td><strong>被测模型</strong></td><td>MiniMax-M2.5</td><td>&nbsp;</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n68' class='md-header-anchor '></a>🤖 芯片和模型配置信息</h3><figure><div class="table-container">
+<table><thead><tr><th>参数名称</th><th><strong>NVIDIA_H100</strong></th><th><strong>Hygon_BW1000</strong></th></tr></thead><tbody><tr><td><strong>max_position_embeddings</strong></td><td>196608</td><td>196608</td></tr><tr><td><strong>model_name</strong></td><td>MiniMax-M2.5</td><td>MiniMax-M2.5-W8A8</td></tr><tr><td><strong>model_size</strong></td><td>215G</td><td>215G</td></tr><tr><td><strong>python_version</strong></td><td>3.12.3</td><td>3.10.12</td></tr><tr><td><strong>quantization_config</strong></td><td>FP16</td><td>int-8</td></tr><tr><td><strong>temperature</strong></td><td>N/A</td><td>N/A</td></tr><tr><td><strong>top_k</strong></td><td>N/A</td><td>N/A</td></tr><tr><td><strong>top_p</strong></td><td>N/A</td><td>N/A</td></tr><tr><td><strong>transformers_version</strong></td><td>4.46.1</td><td>4.57.6</td></tr><tr><td><strong>vllm_version</strong></td><td>0.15.1</td><td>0.15.1+das.opt1.alpha.dtk2604</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n115' class='md-header-anchor '></a>⚙️ vLLM启动配置信息</h3><figure><div class="table-container">
+<table><thead><tr><th>参数名称</th><th><strong>NVIDIA_H100</strong></th><th><strong>Hygon_BW1000</strong></th></tr></thead><tbody><tr><td><strong>Block Size</strong></td><td>default</td><td>default</td></tr><tr><td><strong>Compilation Config</strong></td><td>N/A</td><td>N/A</td></tr><tr><td><strong>Dp</strong></td><td>1</td><td>1</td></tr><tr><td><strong>Dtype</strong></td><td>default</td><td>bfloat16</td></tr><tr><td><strong>Enable Auto Tool Choice</strong></td><td>True</td><td>True</td></tr><tr><td><strong>Enable Export Parallel</strong></td><td>True</td><td>True</td></tr><tr><td><strong>Gpu Memory Utilization</strong></td><td>0.85</td><td>0.9</td></tr><tr><td><strong>Max Model Len</strong></td><td>196608</td><td>196608</td></tr><tr><td><strong>Max Num Batched Tokens</strong></td><td>8192</td><td>default</td></tr><tr><td><strong>Max Num Seqs</strong></td><td>10</td><td>64</td></tr><tr><td><strong>Model Name</strong></td><td>MiniMax-M2.5</td><td>MiniMax-M2.5-W8A8</td></tr><tr><td><strong>Pp</strong></td><td>1</td><td>1</td></tr><tr><td><strong>Reasoning Parser</strong></td><td>minimax_m2</td><td>minimax_m2 (不生效)</td></tr><tr><td><strong>Tool Call Parser</strong></td><td>minimax_m2</td><td>minimax_m2</td></tr><tr><td><strong>Tp</strong></td><td>8</td><td>8</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><ul><li><strong>NVIDIA_H100</strong>: 英伟达H100标准配置</li><li><strong>Hygon_BW1000</strong>: 海光芯片专家并行配置</li></ul><hr /><h3><a name='header-n187' class='md-header-anchor '></a>📊 芯片性能对比柱状图</h3><p><strong>1并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c1_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>2并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c2_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>4并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c4_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>8并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c8_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>10并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c10_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>16并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c16_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>32并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c32_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>64并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c64_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>80并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c80_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><p><strong>128并发</strong></p><p><div class="image-container">
+<img src="./chip_comparison_c128_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><h3><a name='header-n209' class='md-header-anchor '></a>📈 性能趋势对比图 (所有芯片)</h3><p><div class="image-container">
+<img src="./performance_trends_test_01_nvidia_h100_vs_hygon_bw1000.png" width="1000" />
+<div class="image-watermark">九章云极</div>
+</div></p><hr /><h3><a name='header-n212' class='md-header-anchor '></a>📈 各指标随并发级别性能对比详情</h3><h4><a name='header-n214' class='md-header-anchor '></a>请求吞吐量（Request throughput (req/s)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>0.45</td><td>0.21</td><td>-0.24</td><td>-53.3%</td></tr><tr><td>2</td><td>0.78</td><td>0.33</td><td>-0.45</td><td>-57.7%</td></tr><tr><td>4</td><td>1.26</td><td>0.48</td><td>-0.78</td><td>-61.9%</td></tr><tr><td>8</td><td>1.82</td><td>0.61</td><td>-1.21</td><td>-66.5%</td></tr><tr><td>10</td><td>2.09</td><td>0.61</td><td>-1.48</td><td>-70.8%</td></tr><tr><td>16</td><td>2.51</td><td>0.70</td><td>-1.81</td><td>-72.1%</td></tr><tr><td>32</td><td>3.12</td><td>0.76</td><td>-2.36</td><td>-75.6%</td></tr><tr><td>64</td><td>3.66</td><td>0.82</td><td>-2.84</td><td>-77.6%</td></tr><tr><td>80</td><td>3.67</td><td>0.82</td><td>-2.85</td><td>-77.7%</td></tr><tr><td>128</td><td>3.66</td><td>0.82</td><td>-2.84</td><td>-77.6%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n283' class='md-header-anchor '></a>输出token吞吐量（Output token throughput (tok/s)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>115.31</td><td>54.28</td><td>-61.03</td><td>-52.9%</td></tr><tr><td>2</td><td>199.70</td><td>85.05</td><td>-114.65</td><td>-57.4%</td></tr><tr><td>4</td><td>323.45</td><td>121.84</td><td>-201.61</td><td>-62.3%</td></tr><tr><td>8</td><td>465.99</td><td>157.18</td><td>-308.81</td><td>-66.3%</td></tr><tr><td>10</td><td>534.52</td><td>155.66</td><td>-378.86</td><td>-70.9%</td></tr><tr><td>16</td><td>643.80</td><td>180.19</td><td>-463.61</td><td>-72.0%</td></tr><tr><td>32</td><td>797.81</td><td>195.69</td><td>-602.12</td><td>-75.5%</td></tr><tr><td>64</td><td>937.16</td><td>210.25</td><td>-726.91</td><td>-77.6%</td></tr><tr><td>80</td><td>938.91</td><td>210.32</td><td>-728.59</td><td>-77.6%</td></tr><tr><td>128</td><td>937.61</td><td>210.20</td><td>-727.41</td><td>-77.6%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n352' class='md-header-anchor '></a>总token吞吐量（Total token throughput (tok/s)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>4745.14</td><td>2225.40</td><td>-2519.74</td><td>-53.1%</td></tr><tr><td>2</td><td>8217.92</td><td>3487.19</td><td>-4730.73</td><td>-57.6%</td></tr><tr><td>4</td><td>13310.92</td><td>4995.56</td><td>-8315.36</td><td>-62.5%</td></tr><tr><td>8</td><td>19176.39</td><td>6444.25</td><td>-12732.14</td><td>-66.4%</td></tr><tr><td>10</td><td>21996.95</td><td>6382.12</td><td>-15614.83</td><td>-71.0%</td></tr><tr><td>16</td><td>26494.03</td><td>7387.79</td><td>-19106.24</td><td>-72.1%</td></tr><tr><td>32</td><td>32831.81</td><td>8023.25</td><td>-24808.56</td><td>-75.6%</td></tr><tr><td>64</td><td>38566.45</td><td>8620.30</td><td>-29946.15</td><td>-77.6%</td></tr><tr><td>80</td><td>38638.21</td><td>8623.30</td><td>-30014.91</td><td>-77.7%</td></tr><tr><td>128</td><td>38585.00</td><td>8618.28</td><td>-29966.72</td><td>-77.7%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n421' class='md-header-anchor '></a>首token延迟（P99 TTFT (ms)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>286.01</td><td>1168.49</td><td>+882.48</td><td>+308.5%</td></tr><tr><td>2</td><td>466.40</td><td>2165.32</td><td>+1698.92</td><td>+364.3%</td></tr><tr><td>4</td><td>826.89</td><td>4137.09</td><td>+3310.20</td><td>+400.3%</td></tr><tr><td>8</td><td>1364.44</td><td>8133.44</td><td>+6769.00</td><td>+496.1%</td></tr><tr><td>10</td><td>1534.23</td><td>10081.63</td><td>+8547.40</td><td>+557.1%</td></tr><tr><td>16</td><td>2630.84</td><td>16063.93</td><td>+13433.09</td><td>+510.6%</td></tr><tr><td>32</td><td>6556.86</td><td>31917.86</td><td>+25361.00</td><td>+386.8%</td></tr><tr><td>64</td><td>12557.76</td><td>63531.55</td><td>+50973.79</td><td>+405.9%</td></tr><tr><td>80</td><td>19679.20</td><td>140904.11</td><td>+121224.91</td><td>+616.0%</td></tr><tr><td>128</td><td>29645.32</td><td>140903.29</td><td>+111257.97</td><td>+375.3%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n490' class='md-header-anchor '></a>每token生成时间（P99 TPOT (ms)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>7.68</td><td>14.16</td><td>+6.48</td><td>+84.4%</td></tr><tr><td>2</td><td>9.05</td><td>19.41</td><td>+10.36</td><td>+114.5%</td></tr><tr><td>4</td><td>11.41</td><td>28.88</td><td>+17.47</td><td>+153.1%</td></tr><tr><td>8</td><td>35.95</td><td>46.97</td><td>+11.02</td><td>+30.7%</td></tr><tr><td>10</td><td>17.75</td><td>60.61</td><td>+42.86</td><td>+241.5%</td></tr><tr><td>16</td><td>23.92</td><td>85.10</td><td>+61.18</td><td>+255.8%</td></tr><tr><td>32</td><td>38.79</td><td>160.15</td><td>+121.36</td><td>+312.9%</td></tr><tr><td>64</td><td>66.03</td><td>300.74</td><td>+234.71</td><td>+355.5%</td></tr><tr><td>80</td><td>66.45</td><td>301.17</td><td>+234.72</td><td>+353.2%</td></tr><tr><td>128</td><td>66.52</td><td>300.89</td><td>+234.37</td><td>+352.3%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n559' class='md-header-anchor '></a>token间延迟（P99 ITL (ms)）</h4><figure><div class="table-container">
+<table><thead><tr><th>并发数</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th><th>差值</th><th>百分比</th></tr></thead><tbody><tr><td>1</td><td>8.57</td><td>20.17</td><td>+11.60</td><td>+135.4%</td></tr><tr><td>2</td><td>16.54</td><td>24.07</td><td>+7.53</td><td>+45.5%</td></tr><tr><td>4</td><td>18.61</td><td>22.80</td><td>+4.19</td><td>+22.5%</td></tr><tr><td>8</td><td>152.68</td><td>24.15</td><td>-128.53</td><td>-84.2%</td></tr><tr><td>10</td><td>155.84</td><td>41.33</td><td>-114.51</td><td>-73.5%</td></tr><tr><td>16</td><td>161.83</td><td>42.55</td><td>-119.28</td><td>-73.7%</td></tr><tr><td>32</td><td>166.38</td><td>59.25</td><td>-107.13</td><td>-64.4%</td></tr><tr><td>64</td><td>170.95</td><td>64.72</td><td>-106.23</td><td>-62.1%</td></tr><tr><td>80</td><td>171.22</td><td>60.21</td><td>-111.01</td><td>-64.8%</td></tr><tr><td>128</td><td>170.62</td><td>85.02</td><td>-85.60</td><td>-50.2%</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><p>&nbsp;</p><h3><a name='header-n628' class='md-header-anchor '></a>📈 各并发级别性能对比详情</h3><h3><a name='header-n630' class='md-header-anchor '></a>1 并发</h3><h4><a name='header-n631' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>710.45</td><td>1509.26</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>0.45</strong> ⭐</td><td>0.21</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>115.31</strong> ⭐</td><td>54.28</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>132.00</strong> ⭐</td><td>72.00</td></tr><tr><td>峰值并发请求数</td><td>2.00</td><td>2.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>4745.14</strong> ⭐</td><td>2225.40</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n677' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>264.19</strong> ⭐</td><td>1112.21</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>264.45</strong> ⭐</td><td>1111.97</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>275.76</strong> ⭐</td><td>1127.95</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>286.01</strong> ⭐</td><td>1168.49</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n699' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>7.67</strong> ⭐</td><td>14.13</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>7.67</strong> ⭐</td><td>14.13</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>7.68</strong> ⭐</td><td>14.15</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>7.68</strong> ⭐</td><td>14.16</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n721' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>7.70</strong> ⭐</td><td>14.14</td></tr><tr><td>中位 ITL (ms)</td><td><strong>7.69</strong> ⭐</td><td>14.13</td></tr><tr><td>P95 ITL (ms)</td><td><strong>7.83</strong> ⭐</td><td>14.47</td></tr><tr><td>P99 ITL (ms)</td><td><strong>8.57</strong> ⭐</td><td>20.17</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n744' class='md-header-anchor '></a>2 并发</h3><h4><a name='header-n745' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>410.23</td><td>963.16</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>0.78</strong> ⭐</td><td>0.33</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>199.70</strong> ⭐</td><td>85.05</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>244.00</strong> ⭐</td><td>136.00</td></tr><tr><td>峰值并发请求数</td><td>4.00</td><td>4.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>8217.92</strong> ⭐</td><td>3487.19</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n791' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>360.79</strong> ⭐</td><td>1623.93</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>284.36</strong> ⭐</td><td>1153.37</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>463.55</strong> ⭐</td><td>2156.14</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>466.40</strong> ⭐</td><td>2165.32</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n813' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>8.64</strong> ⭐</td><td>17.24</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>8.65</strong> ⭐</td><td>17.15</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>9.04</strong> ⭐</td><td>19.37</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>9.05</strong> ⭐</td><td>19.41</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n835' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>8.68</strong> ⭐</td><td>17.23</td></tr><tr><td>中位 ITL (ms)</td><td><strong>8.28</strong> ⭐</td><td>15.20</td></tr><tr><td>P95 ITL (ms)</td><td><strong>8.46</strong> ⭐</td><td>16.13</td></tr><tr><td>P99 ITL (ms)</td><td><strong>16.54</strong> ⭐</td><td>24.07</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n858' class='md-header-anchor '></a>4 并发</h3><h4><a name='header-n859' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>253.27</td><td>672.34</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>1.26</strong> ⭐</td><td>0.48</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>323.45</strong> ⭐</td><td>121.84</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>436.00</strong> ⭐</td><td>247.00</td></tr><tr><td>峰值并发请求数</td><td>8.00</td><td>8.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>13310.92</strong> ⭐</td><td>4995.56</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n905' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>584.15</strong> ⭐</td><td>3351.54</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>582.44</strong> ⭐</td><td>4115.92</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>821.10</strong> ⭐</td><td>4129.04</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>826.89</strong> ⭐</td><td>4137.09</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n927' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>10.12</strong> ⭐</td><td>19.81</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>10.02</strong> ⭐</td><td>16.93</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>11.39</strong> ⭐</td><td>28.78</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>11.41</strong> ⭐</td><td>28.88</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n949' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>10.20</strong> ⭐</td><td>19.76</td></tr><tr><td>中位 ITL (ms)</td><td><strong>9.24</strong> ⭐</td><td>16.86</td></tr><tr><td>P95 ITL (ms)</td><td><strong>9.57</strong> ⭐</td><td>17.85</td></tr><tr><td>P99 ITL (ms)</td><td><strong>18.61</strong> ⭐</td><td>22.80</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n972' class='md-header-anchor '></a>8 并发</h3><h4><a name='header-n973' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>175.80</td><td>521.20</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>1.82</strong> ⭐</td><td>0.61</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>465.99</strong> ⭐</td><td>157.18</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>760.00</strong> ⭐</td><td>424.00</td></tr><tr><td>峰值并发请求数</td><td>16.00</td><td>16.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>19176.39</strong> ⭐</td><td>6444.25</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1019' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>931.63</strong> ⭐</td><td>7190.37</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>935.84</strong> ⭐</td><td>8083.99</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>1245.61</strong> ⭐</td><td>8094.81</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>1364.44</strong> ⭐</td><td>8133.44</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1041' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>13.58</strong> ⭐</td><td>22.89</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>13.24</strong> ⭐</td><td>19.52</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>15.59</strong> ⭐</td><td>46.86</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>35.95</strong> ⭐</td><td>46.97</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1063' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>13.66</strong> ⭐</td><td>22.82</td></tr><tr><td>中位 ITL (ms)</td><td><strong>10.60</strong> ⭐</td><td>19.56</td></tr><tr><td>P95 ITL (ms)</td><td><strong>11.15</strong> ⭐</td><td>20.53</td></tr><tr><td>P99 ITL (ms)</td><td>152.68</td><td><strong>24.15</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1086' class='md-header-anchor '></a>10 并发</h3><h4><a name='header-n1087' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>153.26</td><td>526.27</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>2.09</strong> ⭐</td><td>0.61</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>534.52</strong> ⭐</td><td>155.66</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>900.00</strong> ⭐</td><td>420.00</td></tr><tr><td>峰值并发请求数</td><td>19.00</td><td>20.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>21996.95</strong> ⭐</td><td>6382.12</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1133' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>827.89</strong> ⭐</td><td>9132.16</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>875.37</strong> ⭐</td><td>10065.22</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>1309.06</strong> ⭐</td><td>10076.09</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>1534.23</strong> ⭐</td><td>10081.63</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1155' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>15.52</strong> ⭐</td><td>28.67</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>15.31</strong> ⭐</td><td>25.19</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>17.71</strong> ⭐</td><td>60.21</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>17.75</strong> ⭐</td><td>60.61</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1177' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>15.60</strong> ⭐</td><td>28.65</td></tr><tr><td>中位 ITL (ms)</td><td><strong>11.23</strong> ⭐</td><td>25.20</td></tr><tr><td>P95 ITL (ms)</td><td><strong>12.43</strong> ⭐</td><td>26.22</td></tr><tr><td>P99 ITL (ms)</td><td>155.84</td><td><strong>41.33</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1200' class='md-header-anchor '></a>16 并发</h3><h4><a name='header-n1201' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>127.24</td><td>454.63</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>2.51</strong> ⭐</td><td>0.70</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>643.80</strong> ⭐</td><td>180.19</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>1248.00</strong> ⭐</td><td>656.00</td></tr><tr><td>峰值并发请求数</td><td>26.00</td><td>32.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>26494.03</strong> ⭐</td><td>7387.79</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1247' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>967.22</strong> ⭐</td><td>15052.83</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>1032.07</strong> ⭐</td><td>16028.53</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>1697.66</strong> ⭐</td><td>16056.37</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>2630.84</strong> ⭐</td><td>16063.93</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1269' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>21.13</strong> ⭐</td><td>30.10</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>20.85</strong> ⭐</td><td>26.43</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>23.79</strong> ⭐</td><td>84.67</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>23.92</strong> ⭐</td><td>85.10</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1291' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>21.27</strong> ⭐</td><td>30.01</td></tr><tr><td>中位 ITL (ms)</td><td><strong>13.09</strong> ⭐</td><td>26.59</td></tr><tr><td>P95 ITL (ms)</td><td>150.58</td><td><strong>30.25</strong> ⭐</td></tr><tr><td>P99 ITL (ms)</td><td>161.83</td><td><strong>42.55</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1314' class='md-header-anchor '></a>32 并发</h3><h4><a name='header-n1315' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>102.68</td><td>418.62</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>3.12</strong> ⭐</td><td>0.76</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>797.81</strong> ⭐</td><td>195.69</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>1920.00</strong> ⭐</td><td>864.00</td></tr><tr><td>峰值并发请求数</td><td>40.00</td><td>64.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>32831.81</strong> ⭐</td><td>8023.25</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1361' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>1227.85</strong> ⭐</td><td>30731.82</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>968.59</strong> ⭐</td><td>31855.15</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>3978.00</strong> ⭐</td><td>31914.75</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>6556.86</strong> ⭐</td><td>31917.86</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1383' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>35.33</strong> ⭐</td><td>43.62</td></tr><tr><td>中位 TPOT (ms)</td><td><strong>36.07</strong> ⭐</td><td>39.56</td></tr><tr><td>P95 TPOT (ms)</td><td><strong>38.47</strong> ⭐</td><td>39.90</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>38.79</strong> ⭐</td><td>160.15</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1405' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>35.48</strong> ⭐</td><td>43.45</td></tr><tr><td>中位 ITL (ms)</td><td><strong>16.79</strong> ⭐</td><td>39.75</td></tr><tr><td>P95 ITL (ms)</td><td>161.31</td><td><strong>48.15</strong> ⭐</td></tr><tr><td>P99 ITL (ms)</td><td>166.38</td><td><strong>59.25</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1428' class='md-header-anchor '></a>64 并发</h3><h4><a name='header-n1429' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>87.41</td><td>389.63</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>3.66</strong> ⭐</td><td>0.82</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>937.16</strong> ⭐</td><td>210.25</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>2878.00</strong> ⭐</td><td>1279.00</td></tr><tr><td>峰值并发请求数</td><td>72.00</td><td>128.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>38566.45</strong> ⭐</td><td>8620.30</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1475' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>2119.88</strong> ⭐</td><td>62196.04</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>981.41</strong> ⭐</td><td>63499.67</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>10055.31</strong> ⭐</td><td>63528.23</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>12557.76</strong> ⭐</td><td>63531.55</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1497' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>59.72</strong> ⭐</td><td>61.63</td></tr><tr><td>中位 TPOT (ms)</td><td>63.77</td><td><strong>57.08</strong> ⭐</td></tr><tr><td>P95 TPOT (ms)</td><td>64.94</td><td><strong>57.35</strong> ⭐</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>66.03</strong> ⭐</td><td>300.74</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1519' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>60.01</strong> ⭐</td><td>61.39</td></tr><tr><td>中位 ITL (ms)</td><td><strong>22.71</strong> ⭐</td><td>57.35</td></tr><tr><td>P95 ITL (ms)</td><td>166.68</td><td><strong>59.07</strong> ⭐</td></tr><tr><td>P99 ITL (ms)</td><td>170.95</td><td><strong>64.72</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1542' class='md-header-anchor '></a>80 并发</h3><h4><a name='header-n1543' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>87.25</td><td>389.49</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>3.67</strong> ⭐</td><td>0.82</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>938.91</strong> ⭐</td><td>210.32</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>2880.00</strong> ⭐</td><td>1263.00</td></tr><tr><td>峰值并发请求数</td><td>86.00</td><td>143.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>38638.21</strong> ⭐</td><td>8623.30</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1589' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>5759.41</strong> ⭐</td><td>77178.96</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>3936.04</strong> ⭐</td><td>62548.05</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>13080.99</strong> ⭐</td><td>140523.49</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>19679.20</strong> ⭐</td><td>140904.11</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1611' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>61.00</strong> ⭐</td><td>64.04</td></tr><tr><td>中位 TPOT (ms)</td><td>65.44</td><td><strong>61.00</strong> ⭐</td></tr><tr><td>P95 TPOT (ms)</td><td>65.70</td><td><strong>61.24</strong> ⭐</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>66.45</strong> ⭐</td><td>301.17</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1633' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>61.40</strong> ⭐</td><td>63.79</td></tr><tr><td>中位 ITL (ms)</td><td><strong>22.72</strong> ⭐</td><td>57.15</td></tr><tr><td>P95 ITL (ms)</td><td>167.68</td><td><strong>58.28</strong> ⭐</td></tr><tr><td>P99 ITL (ms)</td><td>171.22</td><td><strong>60.21</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><h3><a name='header-n1656' class='md-header-anchor '></a>128 并发</h3><h4><a name='header-n1657' class='md-header-anchor '></a>服务基准结果</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>成功请求数</td><td>320</td><td>320</td></tr><tr><td>失败请求数</td><td>0</td><td>0</td></tr><tr><td>测试持续时间 (s)</td><td>87.37</td><td>389.72</td></tr><tr><td>总输入 tokens</td><td>3289280</td><td>3276800</td></tr><tr><td>总生成 tokens</td><td>81920</td><td>81920</td></tr><tr><td><strong>请求吞吐量 (req/s)</strong></td><td><strong>3.66</strong> ⭐</td><td>0.82</td></tr><tr><td><strong>输出 token 吞吐量 (tok/s)</strong></td><td><strong>937.61</strong> ⭐</td><td>210.20</td></tr><tr><td>峰值输出 token 吞吐量 (tok/s)</td><td><strong>2874.00</strong> ⭐</td><td>1279.00</td></tr><tr><td>峰值并发请求数</td><td>134.00</td><td>191.00</td></tr><tr><td><strong>总 token 吞吐量 (tok/s)</strong></td><td><strong>38585.00</strong> ⭐</td><td>8618.28</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1703' class='md-header-anchor '></a>首Token延迟 (TTFT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TTFT (ms)</td><td><strong>16764.52</strong> ⭐</td><td>124081.37</td></tr><tr><td>中位 TTFT (ms)</td><td><strong>17718.86</strong> ⭐</td><td>140502.36</td></tr><tr><td>P95 TTFT (ms)</td><td><strong>27005.85</strong> ⭐</td><td>140895.64</td></tr><tr><td>P99 TTFT (ms)</td><td><strong>29645.32</strong> ⭐</td><td>140903.29</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1725' class='md-header-anchor '></a>每Token生成时间 (TPOT)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 TPOT (ms)</td><td><strong>61.07</strong> ⭐</td><td>64.17</td></tr><tr><td>中位 TPOT (ms)</td><td>65.51</td><td><strong>61.13</strong> ⭐</td></tr><tr><td>P95 TPOT (ms)</td><td>65.86</td><td><strong>61.49</strong> ⭐</td></tr><tr><td>P99 TPOT (ms)</td><td><strong>66.52</strong> ⭐</td><td>300.89</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><h4><a name='header-n1747' class='md-header-anchor '></a>Token间延迟 (ITL)</h4><figure><div class="table-container">
+<table><thead><tr><th>指标</th><th>NVIDIA_H100</th><th>Hygon_BW1000</th></tr></thead><tbody><tr><td>平均 ITL (ms)</td><td><strong>61.61</strong> ⭐</td><td>63.92</td></tr><tr><td>中位 ITL (ms)</td><td><strong>22.76</strong> ⭐</td><td>57.36</td></tr><tr><td>P95 ITL (ms)</td><td>167.75</td><td><strong>61.86</strong> ⭐</td></tr><tr><td>P99 ITL (ms)</td><td>170.62</td><td><strong>85.02</strong> ⭐</td></tr></tbody></table>
+<div class="table-watermark">九章云极</div>
+</div></figure><hr /><hr /><div align="center">
+*报告生成时间: 2026-05-19*
+</div><p>&nbsp;</p></div>
+</body>
+</html>
