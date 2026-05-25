@@ -58,7 +58,7 @@ vllm_configs:
   NVIDIA_H100:
     - model_name: MiniMax-M2.5
       max-model-len: 196608
-      max-num-seqs: 10
+      max-num-seqs: 64
       max-num-batched-tokens: 8192
       gpu-memory-utilization: 0.85
       dtype: default

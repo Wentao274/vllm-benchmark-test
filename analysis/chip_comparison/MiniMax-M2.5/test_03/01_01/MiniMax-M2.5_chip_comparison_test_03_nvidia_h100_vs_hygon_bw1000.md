@@ -1,7 +1,7 @@
 # MiniMax-M2.5模型在不同芯片下的benchmark基准测试报告
 
 <div align="center">
-**测试日期：** 2026-05-19
+**测试日期：** 2026-05-25
 
 </div>
 
@@ -42,12 +42,12 @@
 | **model_name** | MiniMax-M2.5 | MiniMax-M2.5-W8A8 |
 | **model_size** | 215G | 215G |
 | **python_version** | 3.12.3 | 3.10.12 |
-| **quantization_config** | FP16 | int-8 |
-| **temperature** | N/A | N/A |
-| **top_k** | N/A | N/A |
-| **top_p** | N/A | N/A |
+| **quantization_config** | FP8 | int-8 |
+| **temperature** | 1.0 | N/A |
+| **top_k** | 40 | N/A |
+| **top_p** | 0.95 | N/A |
 | **transformers_version** | 4.46.1 | 4.57.6 |
-| **vllm_version** | 0.15.1 | 0.15.1+das.opt1.alpha.dtk2604 |
+| **vllm_version** | 0.20.0 | 0.15.1+das.opt1.alpha.dtk2604 |
 
 ---
 
@@ -64,7 +64,7 @@
 | **Gpu Memory Utilization** | 0.85 | 0.9 |
 | **Max Model Len** | 196608 | 196608 |
 | **Max Num Batched Tokens** | 8192 | default |
-| **Max Num Seqs** | 10 | 64 |
+| **Max Num Seqs** | 64 | 64 |
 | **Model Name** | MiniMax-M2.5 | MiniMax-M2.5-W8A8 |
 | **Pp** | 1 | 1 |
 | **Reasoning Parser** | minimax_m2 | minimax_m2 (不生效) |
@@ -245,5 +245,5 @@
 ---
 
 <div align="center">
-*报告生成时间: 2026-05-19*
+*报告生成时间: 2026-05-25*
 </div>

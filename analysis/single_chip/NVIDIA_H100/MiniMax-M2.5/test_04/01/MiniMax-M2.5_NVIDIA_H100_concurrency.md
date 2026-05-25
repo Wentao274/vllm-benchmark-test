@@ -1,7 +1,7 @@
 # MiniMax-M2.5模型在NVIDIA_H100上的Benchmark基准测试报告
 
 <div align="center">
-**测试日期：** 2026-05-18
+**测试日期：** 2026-05-25
 
 </div>
 
@@ -27,14 +27,14 @@
 | 参数名称                    | NVIDIA_H100 |
 |------------------------|-------------|
 | **model_name** | MiniMax-M2.5 |
-| **quantization_config** | FP16 |
+| **quantization_config** | FP8 |
 | **model_size** | 215G |
 | **max_position_embeddings** | 196608 |
-| **temperature** | N/A |
-| **top_k** | N/A |
-| **top_p** | N/A |
+| **temperature** | 1.0 |
+| **top_k** | 40 |
+| **top_p** | 0.95 |
 | **transformers_version** | 4.46.1 |
-| **vllm_version** | 0.15.1 |
+| **vllm_version** | 0.20.0 |
 | **python_version** | 3.12.3 |
 
 
@@ -44,7 +44,7 @@
 |------------------------|-------------|
 | **Model Name** | MiniMax-M2.5 |
 | **Max Model Len** | 196608 |
-| **Max Num Seqs** | 10 |
+| **Max Num Seqs** | 64 |
 | **Max Num Batched Tokens** | 8192 |
 | **Gpu Memory Utilization** | 0.85 |
 | **Dtype** | default |
@@ -189,5 +189,5 @@ ITL随并发增加呈上升趋势。
 ---
 
 <div align="center">
-*报告生成时间: 2026-05-18*
+*报告生成时间: 2026-05-25*
 </div>

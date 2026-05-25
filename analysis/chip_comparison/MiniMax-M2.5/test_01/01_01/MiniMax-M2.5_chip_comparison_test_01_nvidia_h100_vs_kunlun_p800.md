@@ -1,7 +1,7 @@
 # MiniMax-M2.5模型在不同芯片下的benchmark基准测试报告
 
 <div align="center">
-**测试日期：** 2026-05-19
+**测试日期：** 2026-05-25
 
 </div>
 
@@ -42,34 +42,34 @@
 | **model_name** | MiniMax-M2.5 | MiniMax-M2.5-W8A8-INT8-Dynamic |
 | **model_size** | 215G | 215G |
 | **python_version** | 3.12.3 | 3.10.15 |
-| **quantization_config** | FP16 | int-8 |
-| **temperature** | N/A | 1.0 |
-| **top_k** | N/A | 40 |
-| **top_p** | N/A | 0.95 |
+| **quantization_config** | FP8 | int-8 |
+| **temperature** | 1.0 | 1.0 |
+| **top_k** | 40 | 40 |
+| **top_p** | 0.95 | 0.95 |
 | **transformers_version** | 4.46.1 | 4.46.1 |
-| **vllm_version** | 0.15.1 | 0.11.0 |
+| **vllm_version** | 0.20.0 | 0.11.0 |
 
 ---
 
 ### ⚙️ vLLM启动配置信息
 
-| 参数名称 | **NVIDIA_H100** | **Kunlun_P800** |
-|----------|----------|----------|
-| **Block Size** | default | 128 |
-| **Compilation Config** | N/A | {"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.unified_attention_with_output_kunlun","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer","vllm.sparse_attn_indexer_vllm_kunlun"]} |
-| **Dp** | 1 | 1 |
-| **Dtype** | default | auto |
-| **Enable Auto Tool Choice** | True | True |
-| **Enable Export Parallel** | True | False |
-| **Gpu Memory Utilization** | 0.85 | 0.95 |
-| **Max Model Len** | 196608 | 196608 |
-| **Max Num Batched Tokens** | 8192 | 8192 |
-| **Max Num Seqs** | 10 | 64 |
-| **Model Name** | MiniMax-M2.5 | MiniMax-M2.5-W8A8-INT8-Dynamic |
-| **Pp** | 1 | 1 |
-| **Reasoning Parser** | minimax_m2 | minimax_m2 (不生效) |
-| **Tool Call Parser** | minimax_m2 | minimax_m2 |
-| **Tp** | 8 | 8 |
+| 参数名称                        | **NVIDIA_H100** | **Kunlun_P800**                                                                                                                                                                                                                                                                                                                 |
+|-----------------------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Block Size**              | default         | 128                                                                                                                                                                                                                                                                                                                             |
+| **Compilation Config**      | N/A             | {"splitting_ops":["vllm.unified_attention",<br/>"vllm.unified_attention_with_output",<br/>"vllm.unified_attention_with_output_kunlun",<br/>"vllm.mamba_mixer2",<br/>"vllm.mamba_mixer",<br/>"vllm.short_conv",<br/>"vllm.linear_attention",<br/>"vllm.plamo2_mamba_mixer",<br/>"vllm.gdn_attention",<br/>"vllm.sparse_attn_indexer",<br/>"vllm.sparse_attn_indexer_vllm_kunlun"]} |
+| **Dp**                      | 1               | 1                                                                                                                                                                                                                                                                                                                               |
+| **Dtype**                   | default         | auto                                                                                                                                                                                                                                                                                                                            |
+| **Enable Auto Tool Choice** | True            | True                                                                                                                                                                                                                                                                                                                            |
+| **Enable Export Parallel**  | True            | False                                                                                                                                                                                                                                                                                                                           |
+| **Gpu Memory Utilization**  | 0.85            | 0.95                                                                                                                                                                                                                                                                                                                            |
+| **Max Model Len**           | 196608          | 196608                                                                                                                                                                                                                                                                                                                          |
+| **Max Num Batched Tokens**  | 8192            | 8192                                                                                                                                                                                                                                                                                                                            |
+| **Max Num Seqs**            | 64              | 64                                                                                                                                                                                                                                                                                                                              |
+| **Model Name**              | MiniMax-M2.5    | MiniMax-M2.5-W8A8-INT8-Dynamic                                                                                                                                                                                                                                                                                                  |
+| **Pp**                      | 1               | 1                                                                                                                                                                                                                                                                                                                               |
+| **Reasoning Parser**        | minimax_m2      | minimax_m2 (不生效)                                                                                                                                                                                                                                                                                                                |
+| **Tool Call Parser**        | minimax_m2      | minimax_m2                                                                                                                                                                                                                                                                                                                      |
+| **Tp**                      | 8               | 8                                                                                                                                                                                                                                                                                                                               |
 
 - **NVIDIA_H100**: 英伟达H100标准配置
 - **Kunlun_P800**: 昆仑芯不启用专家并行避免通信问题
@@ -693,5 +693,5 @@
 ---
 
 <div align="center">
-*报告生成时间: 2026-05-19*
+*报告生成时间: 2026-05-25*
 </div>

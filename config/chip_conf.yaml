@@ -51,13 +51,13 @@ chips:
       remark: 昆仑芯P800芯片
   NVIDIA_H100:
     - model_name: MiniMax-M2.5
-      quantization_config: FP16
+      quantization_config: FP8
       model_size: 215G
       max_position_embeddings: 196608
-      temperature: N/A
-      top_k: N/A
-      top_p: N/A
+      temperature: 1.0
+      top_k: 40
+      top_p: 0.95
       transformers_version: 4.46.1
-      vllm_version: 0.15.1
+      vllm_version: 0.20.0
       python_version: 3.12.3
       remark: 英伟达H100芯片
