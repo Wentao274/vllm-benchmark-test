@@ -265,7 +265,7 @@ COMPARISON_METRICS = [
 def generate_comparison_csv(
     chip_data, concurrencies, output_dir, test_suite, chip_names
 ):
-    chip_suffix = "_vs_".join([c.lower() for c in chip_names])
+    chip_suffix = "_vs_".join([re.sub(r"[().]", "_", c.lower()) for c in chip_names])
 
     metric_names = [
         ("[Serving Benchmark Result]", ""),
@@ -332,7 +332,7 @@ def generate_comparison_csv(
 def generate_comparison_charts(
     chip_data, concurrencies, output_dir, test_suite, chip_names
 ):
-    chip_suffix = "_vs_".join([c.lower() for c in chip_names])
+    chip_suffix = "_vs_".join([re.sub(r"[().]", "_", c.lower()) for c in chip_names])
     x = range(len(chip_names))
 
     def get_values(key):
@@ -348,7 +348,16 @@ def generate_comparison_charts(
             values.append(chip_vals)
         return values
 
-    colors = ["#3498db", "#2ecc71", "#e74c3c"]
+    colors = [
+        "#3498db",
+        "#2ecc71",
+        "#e74c3c",
+        "#f39c12",
+        "#9b59b6",
+        "#1abc9c",
+        "#e67e22",
+        "#34495e",
+    ]
 
     req_throughput = get_values("Request throughput (req/s)")
     total_tput = get_values("Total token throughput (tok/s)")
@@ -358,7 +367,7 @@ def generate_comparison_charts(
     chart_files = []
 
     for conc in concurrencies:
-        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+        fig, axes = plt.subplots(2, 2, figsize=(24, 16))
         fig.suptitle(
             f"{MODEL_NAME} Chip Comparison @ {conc} Concurrency",
             fontsize=14,
@@ -460,15 +469,24 @@ def generate_comparison_charts(
 def generate_performance_trends(
     chip_data, concurrencies, output_dir, test_suite, chip_names
 ):
-    chip_suffix = "_vs_".join([c.lower() for c in chip_names])
+    chip_suffix = "_vs_".join([re.sub(r"[().]", "_", c.lower()) for c in chip_names])
     if not HAS_MATPLOTLIB:
         return None
 
     concurrencies_int = [int(c) for c in concurrencies]
 
-    colors = ["#3498db", "#2ecc71", "#e74c3c"]
+    colors = [
+        "#3498db",
+        "#2ecc71",
+        "#e74c3c",
+        "#f39c12",
+        "#9b59b6",
+        "#1abc9c",
+        "#e67e22",
+        "#34495e",
+    ]
 
-    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    fig, axes = plt.subplots(2, 3, figsize=(28, 16))
     fig.suptitle(
         f"{MODEL_NAME} Performance Trends by Concurrency",
         fontsize=14,
@@ -656,7 +674,7 @@ def generate_performance_trends(
 def generate_performance_trends_csv(
     chip_data, concurrencies, output_dir, test_suite, chip_names
 ):
-    chip_suffix = "_vs_".join([c.lower() for c in chip_names])
+    chip_suffix = "_vs_".join([re.sub(r"[().]", "_", c.lower()) for c in chip_names])
     metric_names = [
         ("[Serving Benchmark Result]", ""),
         ("Successful requests", "Successful requests"),
@@ -688,8 +706,6 @@ def generate_performance_trends_csv(
         ("P95 ITL (ms)", "P95 ITL (ms)"),
         ("P99 ITL (ms)", "P99 ITL (ms)"),
     ]
-
-    chip_names = list(CHIP_BASE_PATHS.keys())
 
     csv_lines = []
     header = ["Metric"] + [
@@ -970,6 +986,7 @@ def generate_markdown_report(
     scenarios_config,
     chip_names=None,
     model_display=None,
+    chip_configs=None,
 ):
     current_date = datetime.now().strftime("%Y-%m-%d")
     if chip_names is None:
@@ -978,19 +995,12 @@ def generate_markdown_report(
     if model_display is None:
         model_display = MODEL_NAME
 
-    chip_suffix = "_vs_".join([c.lower() for c in chip_names])
+    chip_suffix = "_vs_".join([re.sub(r"[().]", "_", c.lower()) for c in chip_names])
 
     chip_config = load_chip_config()
     vllm_config = load_vllm_config()
 
     chips_raw = chip_config.get("chips", {})
-    chips_info = {}
-    for chip_name, configs in chips_raw.items():
-        if isinstance(configs, list) and configs:
-            chips_info[chip_name] = configs[0]
-        else:
-            chips_info[chip_name] = configs or {}
-
     vllm_configs = vllm_config.get("vllm_configs", {})
 
     base_config = scenarios_config.get("base_config", {})
@@ -1039,15 +1049,27 @@ def generate_markdown_report(
         conc, key_name, highlight_max=False, highlight_min=False
     ):
         values = []
+        numeric_values = []
         for chip in chip_names:
             value = chip_data.get(chip, {}).get(conc, {}).get(key_name, "")
             if value == "" or value is None:
                 value = "0"
             values.append(value)
+            try:
+                import re
+
+                clean_val = re.sub(r"[*#⭐ ]", "", str(value))
+                numeric_values.append(float(clean_val))
+            except:
+                numeric_values.append(0.0)
 
         if highlight_max or highlight_min:
             try:
-                numeric = [(i, float(v)) for i, v in enumerate(values) if v]
+                numeric = [
+                    (i, numeric_values[i])
+                    for i in range(len(numeric_values))
+                    if numeric_values[i] > 0
+                ]
                 if numeric:
                     if highlight_max:
                         best_idx = max(numeric, key=lambda x: x[1])[0]
@@ -1058,7 +1080,32 @@ def generate_markdown_report(
                             values[i] = f"**{values[i]}** ⭐"
             except:
                 pass
-        return " | ".join(values)
+
+        nvidia_idx = None
+        for i, chip in enumerate(chip_names):
+            if "nvidia" in chip.lower() and "h100" in chip.lower():
+                nvidia_idx = i
+                break
+        if nvidia_idx is None:
+            nvidia_idx = 0
+
+        base_value = numeric_values[nvidia_idx] if numeric_values else 0
+        result_pairs = []
+        for i in range(len(values)):
+            if i == nvidia_idx:
+                result_pairs.append((values[i], "-"))
+            else:
+                try:
+                    curr = numeric_values[i]
+                    if base_value != 0:
+                        pct = ((curr - base_value) / base_value) * 100
+                        result_pairs.append((values[i], f"{pct:+.1f}%"))
+                    else:
+                        result_pairs.append((values[i], "-"))
+                except:
+                    result_pairs.append((values[i], "-"))
+
+        return result_pairs
 
     serving_metrics = [
         ("成功请求数", "Successful requests", False, False),
@@ -1107,35 +1154,39 @@ def generate_markdown_report(
     concurrency_tables = ""
 
     for conc in concurrencies:
-        header = " | ".join(chip_names)
-        separator = " | ".join(["-----------"] * len(chip_names))
+        chip_headers = []
+        chip_separators = []
+        for chip in chip_names:
+            chip_headers.append(f"{chip} | {chip}差异")
+            chip_separators.append("----------- | -----------")
+        header = " | ".join(chip_headers)
+        separator = " | ".join(chip_separators)
+
+        def make_row(name, key, hmax, hmin):
+            pairs = make_table_for_concurrency(conc, key, hmax, hmin)
+            cells = []
+            for val, diff in pairs:
+                cells.append(val)
+                cells.append(diff)
+            return f"| {name} | {' | '.join(cells)} |"
 
         serving_rows = "\n".join(
             [
-                f"| {name} | {make_table_for_concurrency(conc, key, hmax, hmin)} |"
+                make_row(name, key, hmax, hmin)
                 for name, key, hmax, hmin in serving_metrics
             ]
         )
 
         ttft_rows = "\n".join(
-            [
-                f"| {name} | {make_table_for_concurrency(conc, key, hmax, hmin)} |"
-                for name, key, hmax, hmin in ttft_metrics
-            ]
+            [make_row(name, key, hmax, hmin) for name, key, hmax, hmin in ttft_metrics]
         )
 
         tpot_rows = "\n".join(
-            [
-                f"| {name} | {make_table_for_concurrency(conc, key, hmax, hmin)} |"
-                for name, key, hmax, hmin in tpot_metrics
-            ]
+            [make_row(name, key, hmax, hmin) for name, key, hmax, hmin in tpot_metrics]
         )
 
         itl_rows = "\n".join(
-            [
-                f"| {name} | {make_table_for_concurrency(conc, key, hmax, hmin)} |"
-                for name, key, hmax, hmin in itl_metrics
-            ]
+            [make_row(name, key, hmax, hmin) for name, key, hmax, hmin in itl_metrics]
         )
 
         concurrency_tables += f"""
@@ -1249,60 +1300,70 @@ def generate_markdown_report(
 
     metric_trends_section = ""
 
+    nvidia_idx = None
+    for i, chip in enumerate(chip_names):
+        if "nvidia" in chip.lower() and "h100" in chip.lower():
+            nvidia_idx = i
+            break
+    if nvidia_idx is None:
+        nvidia_idx = 0
+
     for display_name, key_name in COMPARISON_METRICS:
         is_throughput = key_name in [
             "Request throughput (req/s)",
             "Output token throughput (tok/s)",
             "Total token throughput (tok/s)",
         ]
-        find_max = is_throughput
 
-        chip_header = " | ".join(chip_names)
-        chip_separator = " | ".join(["-----------"] * len(chip_names))
-        header = f"{chip_header} | 差值 | 百分比"
-        separator = f"{chip_separator} | ----------- | -----------"
+        header_parts = []
+        separator_parts = []
+        for i, chip in enumerate(chip_names):
+            if i == nvidia_idx:
+                header_parts.append(f"{chip}(基准)")
+            else:
+                header_parts.append(chip)
+                header_parts.append("相对基准")
+            separator_parts.append("-----------")
+            if i != nvidia_idx:
+                separator_parts.append("-----------")
 
         metric_rows = []
         for conc in concurrencies:
-            base_value = None
             values = []
-            best_chip = None
             for chip in chip_names:
                 value = chip_data.get(chip, {}).get(conc, {}).get(key_name, "")
                 if value == "" or value is None:
                     value = "N/A"
                 values.append(value)
 
-                if chip == chip_names[0] and value != "N/A":
-                    try:
-                        base_value = float(value)
-                    except:
-                        base_value = None
+            base_value_str = values[nvidia_idx]
+            try:
+                base_value = float(base_value_str) if base_value_str != "N/A" else None
+            except:
+                base_value = None
 
-            if len(chip_names) > 1 and base_value is not None and base_value != 0:
-                last_value_str = values[-1] if values[-1] != "N/A" else None
-                if last_value_str:
-                    try:
-                        last_value = float(last_value_str)
-                        diff = last_value - base_value
-                        pct = (diff / base_value) * 100
-                        diff_str = f"+{diff:.2f}" if diff >= 0 else f"{diff:.2f}"
-                        pct_str = f"+{pct:.1f}%" if pct >= 0 else f"{pct:.1f}%"
-                        extra_cols = f" | {diff_str} | {pct_str}"
-                    except:
-                        extra_cols = " | N/A | N/A"
-                else:
-                    extra_cols = " | N/A | N/A"
-            else:
-                extra_cols = " | N/A | N/A"
+            row_parts = []
+            for i, v in enumerate(values):
+                row_parts.append(v)
+                if i != nvidia_idx:
+                    if base_value is not None and base_value != 0 and v != "N/A":
+                        try:
+                            curr = float(v)
+                            pct = ((curr - base_value) / base_value) * 100
+                            pct_str = f"{pct:+.1f}%"
+                            row_parts.append(pct_str)
+                        except:
+                            row_parts.append("-")
+                    else:
+                        row_parts.append("-")
 
-            metric_rows.append(f"| {conc}   | {' | '.join(values)}{extra_cols} |")
+            metric_rows.append(f"| {conc}   | {' | '.join(row_parts)} |")
 
         metric_trends_section += f"""
 #### {display_name}
 
-| 并发数 | {header} |
-|-----|{separator}|
+| 并发数 | {" | ".join(header_parts)} |
+|-----|{" | ".join(separator_parts)}|
 {chr(10).join(metric_rows)}
 
 """
@@ -1316,7 +1377,47 @@ def generate_markdown_report(
 
     performance_trends_img = f'<img src="./performance_trends_{test_suite}_{chip_suffix}.png" width="1000" />'
 
-    chip_info_map = load_chip_config_by_model()
+    chip_info_map = {}
+    vllm_info_map = {}
+
+    if chip_configs:
+        for i, cfg in enumerate(chip_configs):
+            chip_name = cfg["name"]
+            model_name = cfg["model"]
+            chip_display = chip_names[i] if i < len(chip_names) else chip_name
+
+            chip_configs_list = chips_raw.get(chip_name, [])
+            if isinstance(chip_configs_list, list):
+                found = False
+                for c in chip_configs_list:
+                    if c.get("model_name") == model_name:
+                        chip_info_map[chip_display] = c
+                        found = True
+                        break
+                if not found:
+                    chip_info_map[chip_display] = (
+                        chip_configs_list[0] if chip_configs_list else {}
+                    )
+            elif isinstance(chip_configs_list, dict):
+                chip_info_map[chip_display] = chip_configs_list
+
+            vllm_configs_list = vllm_configs.get(chip_name, [])
+            if isinstance(vllm_configs_list, list):
+                found = False
+                for c in vllm_configs_list:
+                    if c.get("model_name") == model_name:
+                        vllm_info_map[chip_display] = c
+                        found = True
+                        break
+                if not found:
+                    vllm_info_map[chip_display] = (
+                        vllm_configs_list[0] if vllm_configs_list else {}
+                    )
+            elif isinstance(vllm_configs_list, dict):
+                vllm_info_map[chip_display] = vllm_configs_list
+    else:
+        chip_info_map = load_chip_config_by_model()
+        vllm_info_map = load_vllm_config_by_model()
     chip_table_rows = []
     all_params = set()
     for chip in chip_names:
@@ -1333,7 +1434,6 @@ def generate_markdown_report(
         chip_table_rows.append(row)
     chip_table = "\n".join(chip_table_rows)
 
-    vllm_info_map = load_vllm_config_by_model()
     all_sglang_params = set()
     for chip in chip_names:
         cfg = vllm_info_map.get(chip, {})
@@ -1508,9 +1608,7 @@ def main():
     }
 
     if args.chip:
-        chip_list = [s.strip() for s in args.chip.split(",")]
-        chip_list = [s.lower() for s in chip_list]
-        chip_names = [chip_key_map_reverse.get(s, s) for s in chip_list]
+        chip_names = [s.strip() for s in args.chip.split(",")]
     else:
         chip_names = list(chip_key_map_reverse.values())
 
@@ -1563,7 +1661,7 @@ def main():
         run_id_to_use = [RUN_IDS[0]] * num_chips
 
     # 验证每个芯片是否有对应的模型报告文件
-    chip_base_paths = {}
+    chip_base_paths_list = []
     chip_key_map_for_path = {
         "Hygon_BW1000": "hygon_bw1000",
         "Kunlun_P800": "kunlun_p800",
@@ -1574,15 +1672,12 @@ def main():
         model_name = models_to_use[i]
         chip_key = chip_key_map_for_path.get(chip_name, chip_name.lower())
 
-        # 动态构建 base path
         base = f"reports/benchmark/{chip_key}/{model_name}"
 
-        # 检查模型目录是否存在
         if not os.path.exists(base):
             print(f"Error: Model '{model_name}' not found for chip '{chip_name}'")
             print(f"Expected path: {base}")
             print(f"Available models for {chip_name}:")
-            # 列出 reports 目录下的模型
             reports_chip_path = f"reports/benchmark/{chip_key}"
             if os.path.exists(reports_chip_path):
                 available_models = [
@@ -1596,7 +1691,6 @@ def main():
                 print(f"  No reports found for {chip_name}")
             return
 
-        # 检查测试套件目录是否存在
         test_path = f"{base}/{test_suite_to_use}"
         if not os.path.exists(test_path):
             print(
@@ -1605,7 +1699,6 @@ def main():
             print(f"Expected path: {test_path}")
             return
 
-        # 检查 run-id 目录是否存在（只检查当前芯片对应的 run-id）
         rid = run_id_to_use[i]
         runid_path = f"{test_path}/{rid}"
         if not os.path.exists(runid_path):
@@ -1613,7 +1706,6 @@ def main():
                 f"Error: Run-id '{rid}' not found for chip '{chip_name}' model '{model_name}' test-suite '{test_suite_to_use}'"
             )
             print(f"Expected path: {runid_path}")
-            # 列出可用的 run-id
             if os.path.exists(test_path):
                 available_runids = [
                     d
@@ -1625,19 +1717,23 @@ def main():
                 )
             return
 
-        chip_base_paths[chip_name] = base
+        chip_base_paths_list.append(base)
         print(
             f"Validated: {chip_name} - {model_name} - {test_suite_to_use} - run-id {rid}"
         )
 
     print(f"\nComparing {num_chips} chips with {len(set(models_to_use))} model(s)")
 
-    def get_chip_configs_for_chips(chip_names, test_suite, chip_run_ids, chip_models):
+    def get_chip_configs_for_chips(
+        chip_names, test_suite, chip_run_ids, chip_models, chip_base_paths_list
+    ):
         configs = []
+        name_count = {}
         for i, chip_name in enumerate(chip_names):
-            base_path = chip_base_paths.get(chip_name, "")
+            base_path = chip_base_paths_list[i] if i < len(chip_base_paths_list) else ""
             run_id = chip_run_ids[i] if i < len(chip_run_ids) else chip_run_ids[0]
             model_name = chip_models[i] if i < len(chip_models) else chip_models[0]
+            name_count[chip_name] = name_count.get(chip_name, 0) + 1
             if base_path:
                 configs.append(
                     {
@@ -1646,7 +1742,14 @@ def main():
                         "base_path": f"{base_path}/{test_suite}/{run_id}",
                     }
                 )
-        return configs
+        duplicate_chips = {k for k, v in name_count.items() if v > 1}
+        display_names = []
+        for cfg in configs:
+            if cfg["name"] in duplicate_chips:
+                display_names.append(f"{cfg['name']}({cfg['model']})")
+            else:
+                display_names.append(cfg["name"])
+        return configs, display_names
 
     for test_suite in [test_suite_to_use]:
         print(f"\n{'#' * 60}")
@@ -1656,8 +1759,8 @@ def main():
         print(f"Run IDs: {', '.join(run_id_to_use)}")
         print(f"{'#' * 60}\n")
 
-        chip_configs = get_chip_configs_for_chips(
-            chip_names, test_suite, run_id_to_use, models_to_use
+        chip_configs, display_names = get_chip_configs_for_chips(
+            chip_names, test_suite, run_id_to_use, models_to_use, chip_base_paths_list
         )
         run_id_display = "_".join(run_id_to_use)
 
@@ -1719,14 +1822,14 @@ def main():
 
                 chip_data = defaultdict(lambda: defaultdict(dict))
 
-                for chip in chip_configs:
-                    chip_name = chip["name"]
-                    print(f"\n  Processing chip: {chip_name}")
+                for idx, chip in enumerate(chip_configs):
+                    chip_display = display_names[idx]
+                    print(f"\n  Processing chip: {chip_display}")
 
                     for conc in concurrencies:
                         metrics = get_chip_metrics(chip, conc, inp, out)
                         if metrics:
-                            chip_data[chip_name][conc] = metrics
+                            chip_data[chip_display][conc] = metrics
                             print(f"    - {conc}并发: OK")
                         else:
                             print(f"    - {conc}并发: No data")
@@ -1734,19 +1837,19 @@ def main():
                 print("\n  Generating comparison reports...")
 
                 generate_comparison_csv(
-                    chip_data, concurrencies, output_base, test_suite, chip_names
+                    chip_data, concurrencies, output_base, test_suite, display_names
                 )
 
                 if HAS_MATPLOTLIB:
                     generate_comparison_charts(
-                        chip_data, concurrencies, output_base, test_suite, chip_names
+                        chip_data, concurrencies, output_base, test_suite, display_names
                     )
                     generate_performance_trends(
-                        chip_data, concurrencies, output_base, test_suite, chip_names
+                        chip_data, concurrencies, output_base, test_suite, display_names
                     )
 
                 generate_performance_trends_csv(
-                    chip_data, concurrencies, output_base, test_suite, chip_names
+                    chip_data, concurrencies, output_base, test_suite, display_names
                 )
 
                 scenarios_config_for_report = {
@@ -1766,8 +1869,9 @@ def main():
                     output_base,
                     test_suite,
                     scenarios_config_for_report,
-                    chip_names,
+                    display_names,
                     model_display,
+                    chip_configs,
                 )
 
                 print(f"\n  Generated report for I/O {inp}x{out}")
@@ -1819,16 +1923,16 @@ def main():
 
             chip_data = defaultdict(lambda: defaultdict(dict))
 
-            for chip in chip_configs:
-                chip_name = chip["name"]
-                print(f"\nProcessing chip: {chip_name}")
+            for idx, chip in enumerate(chip_configs):
+                chip_display = display_names[idx]
+                print(f"\nProcessing chip: {chip_display}")
 
                 for conc in concurrencies:
                     metrics = get_chip_metrics(
                         chip, conc, target_input_len, target_output_len
                     )
                     if metrics:
-                        chip_data[chip_name][conc] = metrics
+                        chip_data[chip_display][conc] = metrics
                         print(f"  - {conc}并发: OK")
                     else:
                         print(f"  - {conc}并发: No data")
@@ -1836,19 +1940,27 @@ def main():
             print("\nGenerating comparison reports...")
 
             generate_comparison_csv(
-                chip_data, concurrencies, output_base, test_suite_to_use, chip_names
+                chip_data, concurrencies, output_base, test_suite_to_use, display_names
             )
 
             if HAS_MATPLOTLIB:
                 generate_comparison_charts(
-                    chip_data, concurrencies, output_base, test_suite_to_use, chip_names
+                    chip_data,
+                    concurrencies,
+                    output_base,
+                    test_suite_to_use,
+                    display_names,
                 )
                 generate_performance_trends(
-                    chip_data, concurrencies, output_base, test_suite_to_use, chip_names
+                    chip_data,
+                    concurrencies,
+                    output_base,
+                    test_suite_to_use,
+                    display_names,
                 )
 
             generate_performance_trends_csv(
-                chip_data, concurrencies, output_base, test_suite_to_use, chip_names
+                chip_data, concurrencies, output_base, test_suite_to_use, display_names
             )
 
             generate_markdown_report(
@@ -1857,8 +1969,9 @@ def main():
                 output_base,
                 test_suite_to_use,
                 scenarios_config,
-                chip_names,
+                display_names,
                 model_display,
+                chip_configs,
             )
 
             print(f"\n{'=' * 50}")

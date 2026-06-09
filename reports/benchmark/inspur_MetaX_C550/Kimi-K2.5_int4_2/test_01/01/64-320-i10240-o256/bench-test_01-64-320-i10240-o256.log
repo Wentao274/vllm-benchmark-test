@@ -1,0 +1,639 @@
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+metax3.5.3.9 for torchao version 0.15.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+/opt/conda/lib/python3.10/site-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/opt/conda/lib/python3.10/site-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc63eb0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: eebdbdf1-36a1-49eb-904c-b803de26c765)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca0460>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: a9715aaf-736b-4cd1-b5fb-449f53bdaffc)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca0490>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: f5b83f8e-b7d4-4d94-8ea6-6f7024c79478)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca07c0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 995949b5-8c84-40c7-bd74-d23bdc07f561)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc84250>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 5a5641c4-d969-4732-8908-d478e3cda88e)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/tokenizer_config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc845e0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 74c299d7-9564-44a2-a15a-0bae147a1a6d)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/tokenizer_config.json
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc84fd0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 58dcbfeb-ffb1-40cd-8a18-aca37b7bb3b6)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc85360>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: c1e44388-a249-49ea-82cf-6a872bfd2227)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cc856c0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: bae87bc6-c947-43fe-ac18-bbef82e3619f)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca09d0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 8ec22b19-f70c-4b69-8705-316af8b0502a)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca06a0>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: a8f1a637-aac8-4ad4-a9ee-18af5e98e710)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError("HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /kimi-k2.5/resolve/main/config.json (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f733cca0370>: Failed to establish a new connection: [Errno 101] Network is unreachable'))"), '(Request ID: 2284ea07-4cd7-41fa-aa9b-f10149faf6c0)')' thrown while requesting HEAD https://huggingface.co/kimi-k2.5/resolve/main/config.json
+benchmark_args=Namespace(backend='sglang', base_url=None, host='0.0.0.0', port=8000, dataset_name='random', dataset_path='/home/workspace/ShareGPT_V3_unfiltered_cleaned_split.json', model=None, served_model_name=None, tokenizer='/data2/data_shared/Kimi-K2.5_int4_2', num_prompts=320, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=10240, random_output_len=256, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=64, output_file=None, output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, return_routed_experts=False, seed=1, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', tag=None, header=None, rampup_mode=False, ramp_up_period=0.0)
+Fail to load tokenizer config with error=We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.
+Check your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.
+
+WARNING It is recommended to use the `Chat` or `Instruct` model for benchmarking.
+Because when the tokenizer counts the output tokens, if there is gibberish, it might count incorrectly.
+
+Namespace(backend='sglang', base_url=None, host='0.0.0.0', port=8000, dataset_name='random', dataset_path='/home/workspace/ShareGPT_V3_unfiltered_cleaned_split.json', model='kimi-k2.5', served_model_name=None, tokenizer='/data2/data_shared/Kimi-K2.5_int4_2', num_prompts=320, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=10240, random_output_len=256, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=64, output_file=None, output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, return_routed_experts=False, seed=1, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', tag=None, header=None, rampup_mode=False, ramp_up_period=0.0)
+
+#Input tokens: 3276800
+#Output tokens: 81920
+Starting warmup with 1 sequences...
+Warmup completed with 1 sequences. Starting main benchmark run...
+
+  0%|          | 0/320 [00:00<?, ?it/s]
+  0%|          | 1/320 [00:24<2:10:36, 24.57s/it]
+  1%|          | 2/320 [00:25<56:52, 10.73s/it]  
+  1%|▏         | 4/320 [00:27<24:01,  4.56s/it]
+  2%|▏         | 5/320 [00:28<18:14,  3.47s/it]
+  3%|▎         | 11/320 [00:33<08:01,  1.56s/it]
+  4%|▍         | 12/320 [00:34<07:34,  1.47s/it]
+  4%|▍         | 13/320 [00:35<07:06,  1.39s/it]
+  5%|▌         | 16/320 [00:38<05:53,  1.16s/it]
+  5%|▌         | 17/320 [00:38<05:42,  1.13s/it]
+  6%|▌         | 18/320 [00:40<05:47,  1.15s/it]
+  6%|▌         | 19/320 [00:41<05:41,  1.14s/it]
+  6%|▋         | 20/320 [00:43<07:30,  1.50s/it]
+  7%|▋         | 21/320 [00:48<11:35,  2.33s/it]
+  7%|▋         | 22/320 [00:50<10:10,  2.05s/it]
+  8%|▊         | 25/320 [00:52<07:01,  1.43s/it]
+  8%|▊         | 26/320 [00:53<06:37,  1.35s/it]
+  8%|▊         | 27/320 [00:54<06:19,  1.29s/it]
+  9%|▉         | 29/320 [00:56<05:31,  1.14s/it]
+  9%|▉         | 30/320 [00:57<05:16,  1.09s/it]
+ 10%|▉         | 31/320 [00:58<05:04,  1.05s/it]
+ 10%|█         | 33/320 [01:00<04:40,  1.02it/s]
+ 11%|█         | 34/320 [01:01<04:43,  1.01it/s]
+ 11%|█▏        | 36/320 [01:03<04:30,  1.05it/s]
+ 12%|█▏        | 37/320 [01:04<04:39,  1.01it/s]
+ 12%|█▏        | 38/320 [01:05<04:41,  1.00it/s]
+ 12%|█▏        | 39/320 [01:07<06:21,  1.36s/it]
+ 12%|█▎        | 40/320 [01:10<08:38,  1.85s/it]
+ 13%|█▎        | 41/320 [01:13<09:14,  1.99s/it]
+ 13%|█▎        | 42/320 [01:14<08:24,  1.82s/it]
+ 13%|█▎        | 43/320 [01:15<07:20,  1.59s/it]
+ 14%|█▍        | 44/320 [01:16<06:34,  1.43s/it]
+ 15%|█▌        | 48/320 [01:20<04:59,  1.10s/it]
+ 16%|█▌        | 50/320 [01:22<04:45,  1.06s/it]
+ 16%|█▋        | 52/320 [01:24<04:37,  1.04s/it]
+ 17%|█▋        | 53/320 [01:25<04:42,  1.06s/it]
+ 18%|█▊        | 56/320 [01:28<04:43,  1.07s/it]
+ 18%|█▊        | 57/320 [01:29<04:38,  1.06s/it]
+ 18%|█▊        | 58/320 [01:31<05:10,  1.18s/it]
+ 18%|█▊        | 59/320 [01:32<05:43,  1.31s/it]
+ 19%|█▉        | 60/320 [01:35<06:42,  1.55s/it]
+ 19%|█▉        | 61/320 [01:37<07:33,  1.75s/it]
+ 19%|█▉        | 62/320 [01:39<07:22,  1.72s/it]
+ 20%|██        | 64/320 [01:41<05:51,  1.37s/it]
+ 21%|██        | 67/320 [01:43<04:44,  1.13s/it]
+ 21%|██▏       | 68/320 [01:44<04:36,  1.10s/it]
+ 22%|██▏       | 69/320 [01:45<04:29,  1.07s/it]
+ 22%|██▏       | 70/320 [01:46<04:30,  1.08s/it]
+ 23%|██▎       | 74/320 [01:50<03:54,  1.05it/s]
+ 23%|██▎       | 75/320 [01:51<04:04,  1.00it/s]
+ 24%|██▍       | 76/320 [01:53<04:54,  1.21s/it]
+ 24%|██▍       | 77/320 [01:54<04:50,  1.19s/it]
+ 24%|██▍       | 78/320 [01:55<04:49,  1.20s/it]
+ 25%|██▍       | 79/320 [01:57<05:31,  1.37s/it]
+ 25%|██▌       | 80/320 [02:00<06:38,  1.66s/it]
+ 25%|██▌       | 81/320 [02:02<07:00,  1.76s/it]
+ 26%|██▌       | 82/320 [02:03<06:44,  1.70s/it]
+ 27%|██▋       | 85/320 [02:06<04:50,  1.24s/it]
+ 27%|██▋       | 86/320 [02:07<04:37,  1.18s/it]
+ 27%|██▋       | 87/320 [02:08<04:28,  1.15s/it]
+ 28%|██▊       | 89/320 [02:10<04:08,  1.07s/it]
+ 29%|██▉       | 92/320 [02:12<03:42,  1.03it/s]
+ 29%|██▉       | 93/320 [02:13<03:24,  1.11it/s]
+ 29%|██▉       | 94/320 [02:14<03:41,  1.02it/s]
+ 30%|███       | 96/320 [02:17<04:21,  1.17s/it]
+ 30%|███       | 97/320 [02:18<04:21,  1.17s/it]
+ 31%|███       | 98/320 [02:20<04:46,  1.29s/it]
+ 31%|███       | 99/320 [02:22<05:14,  1.42s/it]
+ 31%|███▏      | 100/320 [02:24<05:50,  1.59s/it]
+ 32%|███▏      | 101/320 [02:26<06:34,  1.80s/it]
+ 32%|███▏      | 102/320 [02:27<05:42,  1.57s/it]
+ 32%|███▎      | 104/320 [02:29<04:55,  1.37s/it]
+ 33%|███▎      | 107/320 [02:32<04:02,  1.14s/it]
+ 34%|███▍      | 109/320 [02:34<03:48,  1.08s/it]
+ 34%|███▍      | 110/320 [02:36<04:00,  1.14s/it]
+ 35%|███▍      | 111/320 [02:36<03:51,  1.11s/it]
+ 36%|███▌      | 114/320 [02:39<03:23,  1.01it/s]
+ 36%|███▌      | 115/320 [02:40<03:20,  1.02it/s]
+ 36%|███▋      | 116/320 [02:41<03:19,  1.02it/s]
+ 37%|███▋      | 117/320 [02:42<03:40,  1.09s/it]
+ 37%|███▋      | 118/320 [02:45<05:05,  1.51s/it]
+ 37%|███▋      | 119/320 [02:46<04:49,  1.44s/it]
+ 38%|███▊      | 120/320 [02:49<05:44,  1.72s/it]
+ 38%|███▊      | 121/320 [02:51<06:04,  1.83s/it]
+ 38%|███▊      | 122/320 [02:52<05:15,  1.59s/it]
+ 39%|███▉      | 124/320 [02:54<04:30,  1.38s/it]
+ 39%|███▉      | 125/320 [02:55<04:17,  1.32s/it]
+ 40%|███▉      | 127/320 [02:57<03:43,  1.16s/it]
+ 40%|████      | 128/320 [02:58<03:38,  1.14s/it]
+ 40%|████      | 129/320 [03:00<03:39,  1.15s/it]
+ 41%|████      | 130/320 [03:01<03:30,  1.11s/it]
+ 41%|████▏     | 132/320 [03:02<03:13,  1.03s/it]
+ 42%|████▏     | 133/320 [03:03<03:10,  1.02s/it]
+ 42%|████▏     | 135/320 [03:06<03:15,  1.06s/it]
+ 42%|████▎     | 136/320 [03:08<04:14,  1.38s/it]
+ 43%|████▎     | 137/320 [03:09<04:12,  1.38s/it]
+ 43%|████▎     | 139/320 [03:11<03:41,  1.22s/it]
+ 44%|████▍     | 140/320 [03:14<04:25,  1.47s/it]
+ 44%|████▍     | 141/320 [03:16<04:51,  1.63s/it]
+ 44%|████▍     | 142/320 [03:17<04:31,  1.53s/it]
+ 45%|████▌     | 145/320 [03:20<03:36,  1.24s/it]
+ 46%|████▌     | 146/320 [03:21<03:30,  1.21s/it]
+ 46%|████▋     | 148/320 [03:23<03:12,  1.12s/it]
+ 47%|████▋     | 149/320 [03:25<03:22,  1.19s/it]
+ 47%|████▋     | 150/320 [03:26<03:16,  1.15s/it]
+ 47%|████▋     | 151/320 [03:27<03:07,  1.11s/it]
+ 48%|████▊     | 152/320 [03:28<03:14,  1.16s/it]
+ 48%|████▊     | 155/320 [03:31<02:54,  1.06s/it]
+ 49%|████▉     | 156/320 [03:33<03:21,  1.23s/it]
+ 49%|████▉     | 157/320 [03:34<03:27,  1.27s/it]
+ 49%|████▉     | 158/320 [03:35<03:17,  1.22s/it]
+ 50%|████▉     | 159/320 [03:37<03:35,  1.34s/it]
+ 50%|█████     | 160/320 [03:40<04:37,  1.74s/it]
+ 50%|█████     | 161/320 [03:41<04:08,  1.56s/it]
+ 51%|█████     | 162/320 [03:42<03:41,  1.40s/it]
+ 51%|█████     | 163/320 [03:43<03:35,  1.37s/it]
+ 51%|█████▏    | 164/320 [03:44<03:16,  1.26s/it]
+ 52%|█████▎    | 168/320 [03:47<02:32,  1.00s/it]
+ 53%|█████▎    | 169/320 [03:49<02:35,  1.03s/it]
+ 53%|█████▎    | 170/320 [03:50<02:51,  1.15s/it]
+ 54%|█████▍    | 172/320 [03:53<02:52,  1.16s/it]
+ 54%|█████▍    | 174/320 [03:54<02:36,  1.07s/it]
+ 55%|█████▍    | 175/320 [03:55<02:34,  1.07s/it]
+ 55%|█████▌    | 176/320 [03:57<03:01,  1.26s/it]
+ 56%|█████▌    | 178/320 [03:59<02:40,  1.13s/it]
+ 56%|█████▌    | 179/320 [04:01<02:49,  1.20s/it]
+ 56%|█████▋    | 180/320 [04:04<03:58,  1.70s/it]
+ 57%|█████▋    | 181/320 [04:05<03:39,  1.58s/it]
+ 57%|█████▋    | 182/320 [04:06<03:18,  1.44s/it]
+ 57%|█████▊    | 184/320 [04:08<02:43,  1.20s/it]
+ 58%|█████▊    | 185/320 [04:09<02:36,  1.16s/it]
+ 58%|█████▊    | 186/320 [04:10<02:33,  1.14s/it]
+ 58%|█████▊    | 187/320 [04:11<02:33,  1.15s/it]
+ 59%|█████▉    | 188/320 [04:12<02:28,  1.12s/it]
+ 59%|█████▉    | 189/320 [04:13<02:21,  1.08s/it]
+ 60%|█████▉    | 191/320 [04:15<02:15,  1.05s/it]
+ 60%|██████    | 192/320 [04:17<02:20,  1.09s/it]
+ 60%|██████    | 193/320 [04:18<02:23,  1.13s/it]
+ 61%|██████    | 194/320 [04:19<02:25,  1.15s/it]
+ 61%|██████    | 195/320 [04:20<02:26,  1.17s/it]
+ 61%|██████▏   | 196/320 [04:22<02:50,  1.38s/it]
+ 62%|██████▏   | 197/320 [04:23<02:39,  1.30s/it]
+ 62%|██████▏   | 198/320 [04:24<02:27,  1.21s/it]
+ 62%|██████▏   | 199/320 [04:27<03:04,  1.53s/it]
+ 62%|██████▎   | 200/320 [04:29<03:30,  1.76s/it]
+ 63%|██████▎   | 202/320 [04:31<02:58,  1.51s/it]
+ 64%|██████▍   | 204/320 [04:33<02:30,  1.30s/it]
+ 65%|██████▍   | 207/320 [04:36<02:10,  1.16s/it]
+ 65%|██████▌   | 209/320 [04:38<01:59,  1.08s/it]
+ 66%|██████▌   | 210/320 [04:39<02:04,  1.13s/it]
+ 66%|██████▋   | 212/320 [04:41<01:58,  1.10s/it]
+ 67%|██████▋   | 213/320 [04:42<01:55,  1.07s/it]
+ 67%|██████▋   | 214/320 [04:43<01:52,  1.07s/it]
+ 67%|██████▋   | 215/320 [04:45<01:58,  1.12s/it]
+ 68%|██████▊   | 217/320 [04:48<02:12,  1.28s/it]
+ 68%|██████▊   | 218/320 [04:49<02:19,  1.37s/it]
+ 68%|██████▊   | 219/320 [04:51<02:11,  1.30s/it]
+ 69%|██████▉   | 220/320 [04:53<02:47,  1.68s/it]
+ 69%|██████▉   | 221/320 [04:55<02:40,  1.62s/it]
+ 69%|██████▉   | 222/320 [04:56<02:23,  1.47s/it]
+ 70%|██████▉   | 223/320 [04:57<02:12,  1.36s/it]
+ 70%|███████   | 225/320 [04:59<01:52,  1.18s/it]
+ 71%|███████   | 226/320 [05:00<01:49,  1.16s/it]
+ 71%|███████   | 227/320 [05:01<01:49,  1.18s/it]
+ 72%|███████▏  | 229/320 [05:03<01:37,  1.07s/it]
+ 72%|███████▏  | 230/320 [05:04<01:39,  1.10s/it]
+ 72%|███████▎  | 232/320 [05:06<01:32,  1.06s/it]
+ 73%|███████▎  | 233/320 [05:07<01:32,  1.06s/it]
+ 73%|███████▎  | 234/320 [05:08<01:33,  1.09s/it]
+ 73%|███████▎  | 235/320 [05:10<01:36,  1.13s/it]
+ 74%|███████▍  | 236/320 [05:12<01:58,  1.41s/it]
+ 74%|███████▍  | 237/320 [05:13<01:56,  1.40s/it]
+ 74%|███████▍  | 238/320 [05:14<01:47,  1.31s/it]
+ 75%|███████▍  | 239/320 [05:17<02:07,  1.57s/it]
+ 75%|███████▌  | 240/320 [05:19<02:16,  1.71s/it]
+ 75%|███████▌  | 241/320 [05:20<01:57,  1.49s/it]
+ 76%|███████▌  | 242/320 [05:21<01:44,  1.34s/it]
+ 76%|███████▋  | 244/320 [05:23<01:30,  1.19s/it]
+ 77%|███████▋  | 246/320 [05:25<01:24,  1.14s/it]
+ 77%|███████▋  | 247/320 [05:26<01:20,  1.10s/it]
+ 78%|███████▊  | 248/320 [05:27<01:19,  1.10s/it]
+ 78%|███████▊  | 249/320 [05:28<01:18,  1.10s/it]
+ 78%|███████▊  | 250/320 [05:29<01:15,  1.08s/it]
+ 79%|███████▉  | 252/320 [05:31<01:11,  1.05s/it]
+ 79%|███████▉  | 253/320 [05:33<01:21,  1.21s/it]
+ 79%|███████▉  | 254/320 [05:34<01:16,  1.15s/it]
+ 80%|███████▉  | 255/320 [05:35<01:25,  1.32s/it]
+ 80%|████████  | 256/320 [05:37<01:28,  1.38s/it]
+ 80%|████████  | 257/320 [05:39<01:36,  1.54s/it]
+ 81%|████████  | 258/320 [05:41<01:42,  1.65s/it]
+ 81%|████████  | 259/320 [05:42<01:37,  1.59s/it]
+ 81%|████████▏ | 260/320 [05:44<01:32,  1.55s/it]
+ 82%|████████▏ | 262/320 [05:46<01:12,  1.26s/it]
+ 82%|████████▏ | 263/320 [05:47<01:08,  1.21s/it]
+ 82%|████████▎ | 264/320 [05:48<01:04,  1.15s/it]
+ 83%|████████▎ | 266/320 [05:50<00:57,  1.06s/it]
+ 83%|████████▎ | 267/320 [05:51<00:56,  1.06s/it]
+ 84%|████████▍ | 268/320 [05:52<00:57,  1.10s/it]
+ 84%|████████▍ | 270/320 [05:54<00:58,  1.18s/it]
+ 85%|████████▍ | 271/320 [05:55<00:56,  1.14s/it]
+ 85%|████████▌ | 272/320 [05:56<00:53,  1.10s/it]
+ 85%|████████▌ | 273/320 [05:57<00:51,  1.10s/it]
+ 86%|████████▌ | 275/320 [06:01<00:58,  1.30s/it]
+ 86%|████████▋ | 276/320 [06:02<00:55,  1.27s/it]
+ 87%|████████▋ | 277/320 [06:04<00:59,  1.40s/it]
+ 87%|████████▋ | 278/320 [06:06<01:13,  1.75s/it]
+ 87%|████████▋ | 279/320 [06:07<01:03,  1.54s/it]
+ 88%|████████▊ | 280/320 [06:09<01:00,  1.50s/it]
+ 88%|████████▊ | 281/320 [06:10<00:52,  1.36s/it]
+ 88%|████████▊ | 283/320 [06:12<00:42,  1.16s/it]
+ 89%|████████▉ | 285/320 [06:13<00:37,  1.08s/it]
+ 89%|████████▉ | 286/320 [06:15<00:37,  1.09s/it]
+ 90%|████████▉ | 287/320 [06:16<00:36,  1.11s/it]
+ 90%|█████████ | 289/320 [06:18<00:32,  1.04s/it]
+ 91%|█████████ | 290/320 [06:19<00:36,  1.23s/it]
+ 91%|█████████ | 291/320 [06:21<00:34,  1.19s/it]
+ 92%|█████████▏| 293/320 [06:22<00:29,  1.09s/it]
+ 92%|█████████▏| 294/320 [06:24<00:30,  1.17s/it]
+ 92%|█████████▏| 295/320 [06:25<00:29,  1.16s/it]
+ 92%|█████████▎| 296/320 [06:27<00:30,  1.29s/it]
+ 93%|█████████▎| 297/320 [06:28<00:31,  1.36s/it]
+ 93%|█████████▎| 298/320 [06:31<00:36,  1.64s/it]
+ 93%|█████████▎| 299/320 [06:32<00:31,  1.48s/it]
+ 94%|█████████▍| 300/320 [06:33<00:28,  1.43s/it]
+ 94%|█████████▍| 301/320 [06:34<00:25,  1.35s/it]
+ 95%|█████████▍| 303/320 [06:34<00:13,  1.27it/s]
+ 95%|█████████▌| 304/320 [06:34<00:09,  1.62it/s]
+ 95%|█████████▌| 305/320 [06:35<00:07,  1.90it/s]
+ 96%|█████████▌| 306/320 [06:35<00:06,  2.32it/s]
+ 96%|█████████▋| 308/320 [06:36<00:05,  2.40it/s]
+ 97%|█████████▋| 310/320 [06:36<00:03,  3.19it/s]
+ 98%|█████████▊| 312/320 [06:36<00:02,  3.89it/s]
+ 98%|█████████▊| 313/320 [06:37<00:01,  3.93it/s]
+ 98%|█████████▊| 315/320 [06:37<00:01,  4.68it/s]
+ 99%|█████████▉| 316/320 [06:37<00:01,  3.22it/s]
+ 99%|█████████▉| 317/320 [06:38<00:00,  3.07it/s]
+100%|█████████▉| 319/320 [06:39<00:00,  2.44it/s]
+100%|██████████| 320/320 [06:40<00:00,  2.24it/s]
+100%|██████████| 320/320 [06:40<00:00,  1.25s/it]
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+Calling super().encode with {'add_special_tokens': False}
+
+============ Serving Benchmark Result ============
+Backend:                                 sglang    
+Traffic request rate:                    inf       
+Max request concurrency:                 64        
+Successful requests:                     320       
+Benchmark duration (s):                  400.02    
+Total input tokens:                      3276800   
+Total input text tokens:                 3276800   
+Total generated tokens:                  81920     
+Total generated tokens (retokenized):    81909     
+Request throughput (req/s):              0.80      
+Input token throughput (tok/s):          8191.52   
+Output token throughput (tok/s):         204.79    
+Peak output token throughput (tok/s):    702.00    
+Peak concurrent requests:                70        
+Total token throughput (tok/s):          8396.31   
+Concurrency:                             60.06     
+Accept length:                           1.93      
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   75077.66  
+Median E2E Latency (ms):                 78490.29  
+P90 E2E Latency (ms):                    83766.79  
+P99 E2E Latency (ms):                    97818.99  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          52096.83  
+Median TTFT (ms):                        55427.05  
+P99 TTFT (ms):                           73549.17  
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          90.12     
+Median TPOT (ms):                        91.46     
+P99 TPOT (ms):                           136.18    
+---------------Inter-Token Latency----------------
+Mean ITL (ms):                           90.12     
+Median ITL (ms):                         29.40     
+P95 ITL (ms):                            461.76    
+P99 ITL (ms):                            926.00    
+Max ITL (ms):                            12964.87  
+==================================================

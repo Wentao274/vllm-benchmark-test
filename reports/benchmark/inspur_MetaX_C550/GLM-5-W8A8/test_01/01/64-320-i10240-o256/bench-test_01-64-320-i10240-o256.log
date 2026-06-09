@@ -1,0 +1,224 @@
+Skipping import of cpp extensions due to incompatible torch version 2.8.0+metax3.5.3.9 for torchao version 0.15.0             Please see https://github.com/pytorch/ao/issues/2919 for more info
+/opt/conda/lib/python3.10/site-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/opt/conda/lib/python3.10/site-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+benchmark_args=Namespace(backend='sglang', base_url=None, host='0.0.0.0', port=8000, dataset_name='random', dataset_path='/home/workspace/ShareGPT_V3_unfiltered_cleaned_split.json', model='/var_docker/data_shared/GLM-5-W8A8', served_model_name=None, tokenizer=None, num_prompts=320, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=10240, random_output_len=256, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=64, output_file='reports/benchmark/inspur_MetaX_C550/GLM-5-W8A8/test_01/01/64-320-i10240-o256/bench-test_01-64-320-i10240-o256.jsonl', output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, return_routed_experts=False, seed=1, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', tag=None, header=None, rampup_mode=False, ramp_up_period=0.0)
+Namespace(backend='sglang', base_url=None, host='0.0.0.0', port=8000, dataset_name='random', dataset_path='/home/workspace/ShareGPT_V3_unfiltered_cleaned_split.json', model='/var_docker/data_shared/GLM-5-W8A8', served_model_name=None, tokenizer=None, num_prompts=320, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=10240, random_output_len=256, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='random', request_rate=inf, use_trace_timestamps=False, max_concurrency=64, output_file='reports/benchmark/inspur_MetaX_C550/GLM-5-W8A8/test_01/01/64-320-i10240-o256/bench-test_01-64-320-i10240-o256.jsonl', output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, return_routed_experts=False, seed=1, disable_ignore_eos=False, extra_request_body=None, apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', tag=None, header=None, rampup_mode=False, ramp_up_period=0.0)
+
+#Input tokens: 3276800
+#Output tokens: 81920
+Starting warmup with 1 sequences...
+Warmup completed with 1 sequences. Starting main benchmark run...
+
+  0%|          | 0/320 [00:00<?, ?it/s]
+  0%|          | 1/320 [00:25<2:16:48, 25.73s/it]
+  2%|▎         | 8/320 [00:25<12:16,  2.36s/it]  
+  4%|▍         | 12/320 [00:40<12:06,  2.36s/it]
+  4%|▍         | 13/320 [00:44<15:21,  3.00s/it]
+  5%|▍         | 15/320 [00:52<16:09,  3.18s/it]
+  5%|▌         | 17/320 [01:03<19:05,  3.78s/it]
+  8%|▊         | 27/320 [01:03<06:56,  1.42s/it]
+  9%|▉         | 28/320 [01:20<06:55,  1.42s/it]
+  9%|▉         | 29/320 [01:23<13:15,  2.73s/it]
+  9%|▉         | 30/320 [01:27<13:46,  2.85s/it]
+ 10%|█         | 32/320 [01:40<13:40,  2.85s/it]
+ 10%|█         | 33/320 [01:42<16:40,  3.49s/it]
+ 13%|█▎        | 42/320 [01:42<07:10,  1.55s/it]
+ 13%|█▎        | 43/320 [02:00<07:09,  1.55s/it]
+ 14%|█▍        | 44/320 [02:00<12:04,  2.63s/it]
+ 14%|█▍        | 45/320 [02:04<12:45,  2.79s/it]
+ 15%|█▌        | 48/320 [02:17<14:31,  3.20s/it]
+ 15%|█▌        | 49/320 [02:22<15:48,  3.50s/it]
+ 17%|█▋        | 55/320 [02:22<07:36,  1.72s/it]
+ 18%|█▊        | 57/320 [02:35<11:23,  2.60s/it]
+ 18%|█▊        | 59/320 [02:42<12:15,  2.82s/it]
+ 19%|█▉        | 61/320 [02:54<15:32,  3.60s/it]
+ 19%|█▉        | 62/320 [02:59<15:57,  3.71s/it]
+ 20%|██        | 64/320 [03:07<16:22,  3.84s/it]
+ 20%|██        | 65/320 [03:13<17:41,  4.16s/it]
+ 22%|██▏       | 71/320 [03:21<10:23,  2.50s/it]
+ 23%|██▎       | 74/320 [03:28<10:08,  2.47s/it]
+ 23%|██▎       | 75/320 [03:39<14:36,  3.58s/it]
+ 24%|██▍       | 76/320 [03:44<14:52,  3.66s/it]
+ 24%|██▍       | 77/320 [03:47<14:51,  3.67s/it]
+ 24%|██▍       | 78/320 [03:52<15:28,  3.84s/it]
+ 25%|██▌       | 80/320 [03:57<13:20,  3.33s/it]
+ 25%|██▌       | 81/320 [04:02<15:09,  3.81s/it]
+ 27%|██▋       | 85/320 [04:10<10:56,  2.79s/it]
+ 28%|██▊       | 91/320 [04:29<11:28,  3.01s/it]
+ 29%|██▉       | 92/320 [04:33<11:54,  3.13s/it]
+ 29%|██▉       | 94/320 [04:42<12:42,  3.37s/it]
+ 30%|███       | 96/320 [04:50<13:15,  3.55s/it]
+ 30%|███       | 97/320 [04:55<14:24,  3.88s/it]
+ 32%|███▏      | 102/320 [05:03<09:39,  2.66s/it]
+ 32%|███▎      | 104/320 [05:10<10:22,  2.88s/it]
+ 33%|███▎      | 106/320 [05:22<12:45,  3.58s/it]
+ 33%|███▎      | 107/320 [05:25<12:46,  3.60s/it]
+ 34%|███▍      | 108/320 [05:30<13:01,  3.69s/it]
+ 34%|███▍      | 109/320 [05:33<12:53,  3.67s/it]
+ 34%|███▍      | 110/320 [05:38<13:24,  3.83s/it]
+ 35%|███▍      | 111/320 [05:41<13:16,  3.81s/it]
+ 35%|███▌      | 112/320 [05:46<13:38,  3.93s/it]
+ 35%|███▌      | 113/320 [05:51<15:09,  4.39s/it]
+ 37%|███▋      | 118/320 [05:59<08:29,  2.52s/it]
+ 38%|███▊      | 122/320 [06:17<11:14,  3.41s/it]
+ 38%|███▊      | 123/320 [06:21<11:17,  3.44s/it]
+ 39%|███▉      | 124/320 [06:25<11:44,  3.59s/it]
+ 39%|███▉      | 125/320 [06:29<11:50,  3.65s/it]
+ 39%|███▉      | 126/320 [06:33<12:05,  3.74s/it]
+ 40%|███▉      | 127/320 [06:37<12:01,  3.74s/it]
+ 40%|████      | 128/320 [06:41<12:19,  3.85s/it]
+ 40%|████      | 129/320 [06:47<13:43,  4.31s/it]
+ 42%|████▏     | 133/320 [06:54<08:55,  2.86s/it]
+ 42%|████▎     | 136/320 [07:02<08:14,  2.69s/it]
+ 43%|████▎     | 137/320 [07:10<10:48,  3.55s/it]
+ 43%|████▎     | 138/320 [07:14<10:49,  3.57s/it]
+ 44%|████▍     | 140/320 [07:22<11:10,  3.73s/it]
+ 44%|████▍     | 141/320 [07:26<11:15,  3.77s/it]
+ 44%|████▍     | 142/320 [07:29<11:14,  3.79s/it]
+ 45%|████▍     | 143/320 [07:33<11:10,  3.79s/it]
+ 45%|████▌     | 144/320 [07:37<11:15,  3.84s/it]
+ 45%|████▌     | 145/320 [07:43<12:32,  4.30s/it]
+ 46%|████▌     | 147/320 [07:50<11:30,  3.99s/it]
+ 48%|████▊     | 154/320 [08:03<07:06,  2.57s/it]
+ 49%|████▉     | 156/320 [08:11<07:53,  2.89s/it]
+ 49%|████▉     | 157/320 [08:16<08:22,  3.08s/it]
+ 49%|████▉     | 158/320 [08:19<08:38,  3.20s/it]
+ 50%|████▉     | 159/320 [08:24<09:03,  3.37s/it]
+ 50%|█████     | 160/320 [08:29<10:15,  3.85s/it]
+ 51%|█████     | 162/320 [08:37<09:55,  3.77s/it]
+ 53%|█████▎    | 169/320 [08:50<06:26,  2.56s/it]
+ 53%|█████▎    | 171/320 [08:58<07:06,  2.86s/it]
+ 54%|█████▍    | 172/320 [09:02<07:33,  3.07s/it]
+ 54%|█████▍    | 173/320 [09:07<08:00,  3.27s/it]
+ 54%|█████▍    | 174/320 [09:11<08:34,  3.53s/it]
+ 55%|█████▍    | 175/320 [09:16<08:55,  3.70s/it]
+ 55%|█████▌    | 177/320 [09:23<08:43,  3.66s/it]
+ 57%|█████▋    | 183/320 [09:38<06:51,  3.00s/it]
+ 58%|█████▊    | 185/320 [09:42<06:10,  2.74s/it]
+ 58%|█████▊    | 186/320 [09:50<07:35,  3.40s/it]
+ 58%|█████▊    | 187/320 [09:54<07:46,  3.50s/it]
+ 59%|█████▉    | 188/320 [09:58<08:05,  3.68s/it]
+ 59%|█████▉    | 189/320 [10:02<08:20,  3.82s/it]
+ 59%|█████▉    | 190/320 [10:07<08:50,  4.08s/it]
+ 60%|█████▉    | 191/320 [10:11<08:49,  4.10s/it]
+ 60%|██████    | 193/320 [10:19<08:17,  3.92s/it]
+ 62%|██████▏   | 198/320 [10:34<06:49,  3.36s/it]
+ 62%|██████▎   | 200/320 [10:41<06:53,  3.45s/it]
+ 63%|██████▎   | 201/320 [10:45<06:58,  3.52s/it]
+ 63%|██████▎   | 202/320 [10:49<07:04,  3.59s/it]
+ 63%|██████▎   | 203/320 [10:53<07:17,  3.74s/it]
+ 64%|██████▍   | 204/320 [10:58<07:30,  3.88s/it]
+ 64%|██████▍   | 205/320 [11:03<07:54,  4.12s/it]
+ 64%|██████▍   | 206/320 [11:07<07:52,  4.15s/it]
+ 65%|██████▍   | 207/320 [11:10<07:33,  4.01s/it]
+ 66%|██████▋   | 212/320 [11:22<05:10,  2.87s/it]
+ 67%|██████▋   | 213/320 [11:25<05:19,  2.98s/it]
+ 67%|██████▋   | 214/320 [11:33<06:38,  3.76s/it]
+ 67%|██████▋   | 215/320 [11:36<06:34,  3.76s/it]
+ 68%|██████▊   | 216/320 [11:40<06:34,  3.79s/it]
+ 68%|██████▊   | 217/320 [11:44<06:34,  3.83s/it]
+ 68%|██████▊   | 218/320 [11:49<06:46,  3.99s/it]
+ 68%|██████▊   | 219/320 [11:53<06:53,  4.09s/it]
+ 69%|██████▉   | 221/320 [12:02<06:52,  4.17s/it]
+ 69%|██████▉   | 222/320 [12:06<06:49,  4.18s/it]
+ 70%|██████▉   | 223/320 [12:09<06:34,  4.06s/it]
+ 71%|███████   | 227/320 [12:17<04:18,  2.78s/it]
+ 72%|███████▏  | 229/320 [12:28<05:25,  3.58s/it]
+ 72%|███████▏  | 231/320 [12:36<05:24,  3.64s/it]
+ 72%|███████▎  | 232/320 [12:40<05:26,  3.71s/it]
+ 73%|███████▎  | 233/320 [12:44<05:32,  3.82s/it]
+ 73%|███████▎  | 234/320 [12:48<05:39,  3.95s/it]
+ 74%|███████▍  | 236/320 [12:56<05:36,  4.01s/it]
+ 74%|███████▍  | 237/320 [13:01<05:38,  4.08s/it]
+ 76%|███████▌  | 242/320 [13:12<03:55,  3.02s/it]
+ 77%|███████▋  | 245/320 [13:24<04:04,  3.26s/it]
+ 77%|███████▋  | 247/320 [13:32<04:11,  3.44s/it]
+ 78%|███████▊  | 248/320 [13:36<04:15,  3.56s/it]
+ 78%|███████▊  | 249/320 [13:40<04:22,  3.70s/it]
+ 78%|███████▊  | 250/320 [13:45<04:28,  3.83s/it]
+ 78%|███████▊  | 251/320 [13:49<04:28,  3.90s/it]
+ 79%|███████▉  | 252/320 [13:53<04:32,  4.00s/it]
+ 80%|████████  | 257/320 [14:05<03:10,  3.03s/it]
+ 81%|████████▏ | 260/320 [14:13<02:54,  2.91s/it]
+ 82%|████████▏ | 263/320 [14:22<02:43,  2.87s/it]
+ 82%|████████▎ | 264/320 [14:26<02:51,  3.06s/it]
+ 83%|████████▎ | 265/320 [14:31<03:02,  3.32s/it]
+ 83%|████████▎ | 266/320 [14:35<03:06,  3.46s/it]
+ 83%|████████▎ | 267/320 [14:39<03:11,  3.61s/it]
+ 84%|████████▍ | 268/320 [14:43<03:16,  3.78s/it]
+ 85%|████████▌ | 272/320 [14:52<02:14,  2.81s/it]
+ 85%|████████▌ | 273/320 [14:55<02:18,  2.95s/it]
+ 86%|████████▌ | 275/320 [15:03<02:24,  3.21s/it]
+ 87%|████████▋ | 278/320 [15:06<01:40,  2.40s/it]
+ 87%|████████▋ | 279/320 [15:15<02:18,  3.37s/it]
+ 88%|████████▊ | 280/320 [15:19<02:20,  3.52s/it]
+ 88%|████████▊ | 281/320 [15:24<02:26,  3.76s/it]
+ 88%|████████▊ | 282/320 [15:28<02:25,  3.84s/it]
+ 88%|████████▊ | 283/320 [15:32<02:24,  3.90s/it]
+ 89%|████████▉ | 284/320 [15:36<02:24,  4.02s/it]
+ 90%|█████████ | 288/320 [15:44<01:31,  2.86s/it]
+ 91%|█████████ | 290/320 [15:52<01:34,  3.16s/it]
+ 91%|█████████▏| 292/320 [15:56<01:17,  2.77s/it]
+ 92%|█████████▏| 293/320 [16:04<01:38,  3.66s/it]
+ 92%|█████████▏| 294/320 [16:08<01:37,  3.76s/it]
+ 92%|█████████▏| 295/320 [16:12<01:36,  3.88s/it]
+ 92%|█████████▎| 296/320 [16:16<01:32,  3.85s/it]
+ 93%|█████████▎| 297/320 [16:20<01:31,  3.99s/it]
+ 93%|█████████▎| 298/320 [16:24<01:28,  4.02s/it]
+ 93%|█████████▎| 299/320 [16:29<01:25,  4.05s/it]
+ 94%|█████████▍| 300/320 [16:33<01:22,  4.14s/it]
+ 95%|█████████▌| 304/320 [16:41<00:44,  2.80s/it]
+ 96%|█████████▌| 306/320 [16:41<00:27,  1.99s/it]
+ 96%|█████████▋| 308/320 [16:45<00:23,  1.95s/it]
+ 97%|█████████▋| 309/320 [16:49<00:25,  2.30s/it]
+ 97%|█████████▋| 310/320 [16:49<00:18,  1.89s/it]
+ 97%|█████████▋| 311/320 [16:50<00:14,  1.62s/it]
+ 98%|█████████▊| 312/320 [16:50<00:10,  1.26s/it]
+ 98%|█████████▊| 313/320 [16:51<00:08,  1.17s/it]
+ 98%|█████████▊| 314/320 [16:51<00:06,  1.01s/it]
+ 98%|█████████▊| 315/320 [16:52<00:04,  1.15it/s]
+ 99%|█████████▉| 316/320 [16:52<00:03,  1.28it/s]
+100%|█████████▉| 319/320 [16:53<00:00,  2.32it/s]
+100%|██████████| 320/320 [16:53<00:00,  2.75it/s]
+100%|██████████| 320/320 [16:53<00:00,  3.17s/it]
+
+============ Serving Benchmark Result ============
+Backend:                                 sglang    
+Traffic request rate:                    inf       
+Max request concurrency:                 64        
+Successful requests:                     320       
+Benchmark duration (s):                  1013.44   
+Total input tokens:                      3276800   
+Total input text tokens:                 3276800   
+Total generated tokens:                  81920     
+Total generated tokens (retokenized):    81714     
+Request throughput (req/s):              0.32      
+Input token throughput (tok/s):          3233.35   
+Output token throughput (tok/s):         80.83     
+Peak output token throughput (tok/s):    858.00    
+Peak concurrent requests:                76        
+Total token throughput (tok/s):          3314.18   
+Concurrency:                             59.57     
+Accept length:                           3.87      
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   188645.87 
+Median E2E Latency (ms):                 207505.30 
+P90 E2E Latency (ms):                    237037.20 
+P99 E2E Latency (ms):                    263429.41 
+---------------Time to First Token----------------
+Mean TTFT (ms):                          145239.71 
+Median TTFT (ms):                        161034.99 
+P99 TTFT (ms):                           201384.39 
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          170.22    
+Median TPOT (ms):                        177.38    
+P99 TPOT (ms):                           333.18    
+---------------Inter-Token Latency----------------
+Mean ITL (ms):                           170.23    
+Median ITL (ms):                         18.96     
+P95 ITL (ms):                            919.57    
+P99 ITL (ms):                            2103.50   
+Max ITL (ms):                            18464.49  
+==================================================

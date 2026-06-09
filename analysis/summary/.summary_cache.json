@@ -1,0 +1,304 @@
+{
+  "rows": {
+    "test_01": {
+      "并发1": {
+        "NVIDIA_H100_MiniMax-M2.5": {
+          "请求吞吐量（Request throughput (req/s)）": "0.45",
+          "输入token吞吐量（Input token throughput (tok/s)）": "4629.83",
+          "输出token吞吐量（Output token throughput (tok/s)）": "115.31",
+          "总token吞吐量（Total token throughput (tok/s)）": "4745.14",
+          "首token延迟（P99 TTFT (ms)）": "286.01",
+          "每token生成时间（P99 TPOT (ms)）": "7.68",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-bf16": {
+          "请求吞吐量（Request throughput (req/s)）": "0.10",
+          "输入token吞吐量（Input token throughput (tok/s)）": "986.21",
+          "输出token吞吐量（Output token throughput (tok/s)）": "24.66",
+          "总token吞吐量（Total token throughput (tok/s)）": "1010.87",
+          "首token延迟（P99 TTFT (ms)）": "5130.17",
+          "每token生成时间（P99 TPOT (ms)）": "21.07",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.21",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2171.12",
+          "输出token吞吐量（Output token throughput (tok/s)）": "54.28",
+          "总token吞吐量（Total token throughput (tok/s)）": "2225.40",
+          "首token延迟（P99 TTFT (ms)）": "1168.49",
+          "每token生成时间（P99 TPOT (ms)）": "14.16",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.08",
+          "输入token吞吐量（Input token throughput (tok/s)）": "848.55",
+          "输出token吞吐量（Output token throughput (tok/s)）": "6.50",
+          "总token吞吐量（Total token throughput (tok/s)）": "855.05",
+          "首token延迟（P99 TTFT (ms)）": "5243.09",
+          "每token生成时间（P99 TPOT (ms)）": "124.08",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Kunlun_P800_MiniMax-M2.5-W8A8-INT8-Dynamic": {
+          "请求吞吐量（Request throughput (req/s)）": "0.15",
+          "输入token吞吐量（Input token throughput (tok/s)）": "1548.67",
+          "输出token吞吐量（Output token throughput (tok/s)）": "37.20",
+          "总token吞吐量（Total token throughput (tok/s)）": "1585.87",
+          "首token延迟（P99 TTFT (ms)）": "921.76",
+          "每token生成时间（P99 TPOT (ms)）": "23.38",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "inspur_MetaX_C550_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.27",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2770.22",
+          "输出token吞吐量（Output token throughput (tok/s)）": "69.26",
+          "总token吞吐量（Total token throughput (tok/s)）": "2839.48",
+          "首token延迟（P99 TTFT (ms)）": "596.38",
+          "每token生成时间（P99 TPOT (ms)）": "12.44",
+          "端到端延迟 （P99 E2E Latency (ms)）": "3762.23"
+        },
+        "inspur_MetaX_C550_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.14",
+          "输入token吞吐量（Input token throughput (tok/s)）": "1460.99",
+          "输出token吞吐量（Output token throughput (tok/s)）": "36.52",
+          "总token吞吐量（Total token throughput (tok/s)）": "1497.52",
+          "首token延迟（P99 TTFT (ms)）": "3929.91",
+          "每token生成时间（P99 TPOT (ms)）": "20.28",
+          "端到端延迟 （P99 E2E Latency (ms)）": "9562.98"
+        },
+        "inspur_MetaX_C550_Kimi-K2.5_int4_2": {
+          "请求吞吐量（Request throughput (req/s)）": "0.26",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2692.91",
+          "输出token吞吐量（Output token throughput (tok/s)）": "67.32",
+          "总token吞吐量（Total token throughput (tok/s)）": "2760.23",
+          "首token延迟（P99 TTFT (ms)）": "988.73",
+          "每token生成时间（P99 TPOT (ms)）": "14.65",
+          "端到端延迟 （P99 E2E Latency (ms)）": "4792.19"
+        }
+      },
+      "并发64": {
+        "NVIDIA_H100_MiniMax-M2.5": {
+          "请求吞吐量（Request throughput (req/s)）": "3.66",
+          "输入token吞吐量（Input token throughput (tok/s)）": "37629.29",
+          "输出token吞吐量（Output token throughput (tok/s)）": "937.16",
+          "总token吞吐量（Total token throughput (tok/s)）": "38566.45",
+          "首token延迟（P99 TTFT (ms)）": "12557.76",
+          "每token生成时间（P99 TPOT (ms)）": "66.03",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-bf16": {
+          "请求吞吐量（Request throughput (req/s)）": "0.16",
+          "输入token吞吐量（Input token throughput (tok/s)）": "1661.40",
+          "输出token吞吐量（Output token throughput (tok/s)）": "41.54",
+          "总token吞吐量（Total token throughput (tok/s)）": "1702.94",
+          "首token延迟（P99 TTFT (ms)）": "382166.79",
+          "每token生成时间（P99 TPOT (ms)）": "598.42",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.82",
+          "输入token吞吐量（Input token throughput (tok/s)）": "8410.05",
+          "输出token吞吐量（Output token throughput (tok/s)）": "210.25",
+          "总token吞吐量（Total token throughput (tok/s)）": "8620.30",
+          "首token延迟（P99 TTFT (ms)）": "63531.55",
+          "每token生成时间（P99 TPOT (ms)）": "300.74",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "N/A",
+          "输入token吞吐量（Input token throughput (tok/s)）": "N/A",
+          "输出token吞吐量（Output token throughput (tok/s)）": "N/A",
+          "总token吞吐量（Total token throughput (tok/s)）": "N/A",
+          "首token延迟（P99 TTFT (ms)）": "N/A",
+          "每token生成时间（P99 TPOT (ms)）": "N/A",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Kunlun_P800_MiniMax-M2.5-W8A8-INT8-Dynamic": {
+          "请求吞吐量（Request throughput (req/s)）": "1.02",
+          "输入token吞吐量（Input token throughput (tok/s)）": "10429.05",
+          "输出token吞吐量（Output token throughput (tok/s)）": "253.92",
+          "总token吞吐量（Total token throughput (tok/s)）": "10682.97",
+          "首token延迟（P99 TTFT (ms)）": "47912.19",
+          "每token生成时间（P99 TPOT (ms)）": "271.54",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "inspur_MetaX_C550_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "1.40",
+          "输入token吞吐量（Input token throughput (tok/s)）": "14384.76",
+          "输出token吞吐量（Output token throughput (tok/s)）": "359.62",
+          "总token吞吐量（Total token throughput (tok/s)）": "14744.38",
+          "首token延迟（P99 TTFT (ms)）": "31672.66",
+          "每token生成时间（P99 TPOT (ms)）": "174.61",
+          "端到端延迟 （P99 E2E Latency (ms)）": "45922.68"
+        },
+        "inspur_MetaX_C550_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.32",
+          "输入token吞吐量（Input token throughput (tok/s)）": "3233.35",
+          "输出token吞吐量（Output token throughput (tok/s)）": "80.83",
+          "总token吞吐量（Total token throughput (tok/s)）": "3314.18",
+          "首token延迟（P99 TTFT (ms)）": "201384.39",
+          "每token生成时间（P99 TPOT (ms)）": "333.18",
+          "端到端延迟 （P99 E2E Latency (ms)）": "263429.41"
+        },
+        "inspur_MetaX_C550_Kimi-K2.5_int4_2": {
+          "请求吞吐量（Request throughput (req/s)）": "0.80",
+          "输入token吞吐量（Input token throughput (tok/s)）": "8191.52",
+          "输出token吞吐量（Output token throughput (tok/s)）": "204.79",
+          "总token吞吐量（Total token throughput (tok/s)）": "8396.31",
+          "首token延迟（P99 TTFT (ms)）": "73549.17",
+          "每token生成时间（P99 TPOT (ms)）": "136.18",
+          "端到端延迟 （P99 E2E Latency (ms)）": "97818.99"
+        }
+      }
+    },
+    "test_02": {
+      "并发1": {
+        "NVIDIA_H100_MiniMax-M2.5": {
+          "请求吞吐量（Request throughput (req/s)）": "0.05",
+          "输入token吞吐量（Input token throughput (tok/s)）": "8874.70",
+          "输出token吞吐量（Output token throughput (tok/s)）": "46.70",
+          "总token吞吐量（Total token throughput (tok/s)）": "8921.40",
+          "首token延迟（P99 TTFT (ms)）": "10539.10",
+          "每token生成时间（P99 TPOT (ms)）": "11.39",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-bf16": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "1369.37",
+          "输出token吞吐量（Output token throughput (tok/s)）": "7.21",
+          "总token吞吐量（Total token throughput (tok/s)）": "1376.58",
+          "首token延迟（P99 TTFT (ms)）": "114142.41",
+          "每token生成时间（P99 TPOT (ms)）": "29.56",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2909.44",
+          "输出token吞吐量（Output token throughput (tok/s)）": "15.31",
+          "总token吞吐量（Total token throughput (tok/s)）": "2924.75",
+          "首token延迟（P99 TTFT (ms)）": "44121.71",
+          "每token生成时间（P99 TPOT (ms)）": "22.97",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "N/A",
+          "输入token吞吐量（Input token throughput (tok/s)）": "N/A",
+          "输出token吞吐量（Output token throughput (tok/s)）": "N/A",
+          "总token吞吐量（Total token throughput (tok/s)）": "N/A",
+          "首token延迟（P99 TTFT (ms)）": "N/A",
+          "每token生成时间（P99 TPOT (ms)）": "N/A",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Kunlun_P800_MiniMax-M2.5-W8A8-INT8-Dynamic": {
+          "请求吞吐量（Request throughput (req/s)）": "0.02",
+          "输入token吞吐量（Input token throughput (tok/s)）": "3568.14",
+          "输出token吞吐量（Output token throughput (tok/s)）": "2.92",
+          "总token吞吐量（Total token throughput (tok/s)）": "3571.06",
+          "首token延迟（P99 TTFT (ms)）": "40968.87",
+          "每token生成时间（P99 TPOT (ms)）": "89.90",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "inspur_MetaX_C550_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2411.45",
+          "输出token吞吐量（Output token throughput (tok/s)）": "12.69",
+          "总token吞吐量（Total token throughput (tok/s)）": "2424.14",
+          "首token延迟（P99 TTFT (ms)）": "63374.54",
+          "每token生成时间（P99 TPOT (ms)）": "20.33",
+          "端到端延迟 （P99 E2E Latency (ms)）": "84165.35"
+        },
+        "inspur_MetaX_C550_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "1.45",
+          "输入token吞吐量（Input token throughput (tok/s)）": "282396.27",
+          "输出token吞吐量（Output token throughput (tok/s)）": "46.00",
+          "总token吞吐量（Total token throughput (tok/s)）": "282442.27",
+          "首token延迟（P99 TTFT (ms)）": "787.19",
+          "每token生成时间（P99 TPOT (ms)）": "0.42",
+          "端到端延迟 （P99 E2E Latency (ms)）": "787.19"
+        },
+        "inspur_MetaX_C550_Kimi-K2.5_int4_2": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2821.09",
+          "输出token吞吐量（Output token throughput (tok/s)）": "14.55",
+          "总token吞吐量（Total token throughput (tok/s)）": "2835.64",
+          "首token延迟（P99 TTFT (ms)）": "42319.55",
+          "每token生成时间（P99 TPOT (ms)）": "34.98",
+          "端到端延迟 （P99 E2E Latency (ms)）": "77217.61"
+        }
+      },
+      "并发10": {
+        "NVIDIA_H100_MiniMax-M2.5": {
+          "请求吞吐量（Request throughput (req/s)）": "0.07",
+          "输入token吞吐量（Input token throughput (tok/s)）": "14323.04",
+          "输出token吞吐量（Output token throughput (tok/s)）": "75.37",
+          "总token吞吐量（Total token throughput (tok/s)）": "14398.41",
+          "首token延迟（P99 TTFT (ms)）": "108342.29",
+          "每token生成时间（P99 TPOT (ms)）": "69.61",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-bf16": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "1091.02",
+          "输出token吞吐量（Output token throughput (tok/s)）": "5.74",
+          "总token吞吐量（Total token throughput (tok/s)）": "1096.76",
+          "首token延迟（P99 TTFT (ms)）": "1781035.71",
+          "每token生成时间（P99 TPOT (ms)）": "45.57",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2850.09",
+          "输出token吞吐量（Output token throughput (tok/s)）": "15.00",
+          "总token吞吐量（Total token throughput (tok/s)）": "2865.09",
+          "首token延迟（P99 TTFT (ms)）": "474297.92",
+          "每token生成时间（P99 TPOT (ms)）": "279.90",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Hygon_BW1000_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "N/A",
+          "输入token吞吐量（Input token throughput (tok/s)）": "N/A",
+          "输出token吞吐量（Output token throughput (tok/s)）": "N/A",
+          "总token吞吐量（Total token throughput (tok/s)）": "N/A",
+          "首token延迟（P99 TTFT (ms)）": "N/A",
+          "每token生成时间（P99 TPOT (ms)）": "N/A",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "Kunlun_P800_MiniMax-M2.5-W8A8-INT8-Dynamic": {
+          "请求吞吐量（Request throughput (req/s)）": "0.02",
+          "输入token吞吐量（Input token throughput (tok/s)）": "4695.90",
+          "输出token吞吐量（Output token throughput (tok/s)）": "3.70",
+          "总token吞吐量（Total token throughput (tok/s)）": "4699.60",
+          "首token延迟（P99 TTFT (ms)）": "337270.92",
+          "每token生成时间（P99 TPOT (ms)）": "1792.32",
+          "端到端延迟 （P99 E2E Latency (ms)）": "N/A"
+        },
+        "inspur_MetaX_C550_MiniMax-M2.5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2725.25",
+          "输出token吞吐量（Output token throughput (tok/s)）": "14.34",
+          "总token吞吐量（Total token throughput (tok/s)）": "2739.59",
+          "首token延迟（P99 TTFT (ms)）": "721962.01",
+          "每token生成时间（P99 TPOT (ms)）": "229.15",
+          "端到端延迟 （P99 E2E Latency (ms)）": "892917.91"
+        },
+        "inspur_MetaX_C550_GLM-5-W8A8": {
+          "请求吞吐量（Request throughput (req/s)）": "2.83",
+          "输入token吞吐量（Input token throughput (tok/s)）": "550223.88",
+          "输出token吞吐量（Output token throughput (tok/s)）": "89.62",
+          "总token吞吐量（Total token throughput (tok/s)）": "550313.50",
+          "首token延迟（P99 TTFT (ms)）": "5711.66",
+          "每token生成时间（P99 TPOT (ms)）": "1.03",
+          "端到端延迟 （P99 E2E Latency (ms)）": "5711.68"
+        },
+        "inspur_MetaX_C550_Kimi-K2.5_int4_2": {
+          "请求吞吐量（Request throughput (req/s)）": "0.01",
+          "输入token吞吐量（Input token throughput (tok/s)）": "2833.65",
+          "输出token吞吐量（Output token throughput (tok/s)）": "14.62",
+          "总token吞吐量（Total token throughput (tok/s)）": "2848.26",
+          "首token延迟（P99 TTFT (ms)）": "679117.63",
+          "每token生成时间（P99 TPOT (ms)）": "35.42",
+          "端到端延迟 （P99 E2E Latency (ms)）": "708999.73"
+        }
+      }
+    }
+  }
+}
