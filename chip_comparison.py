@@ -1380,13 +1380,16 @@ def generate_markdown_report(
     chip_info_map = {}
     vllm_info_map = {}
 
+    chips_raw_ci = {k.lower(): v for k, v in chips_raw.items()}
+    vllm_configs_ci = {k.lower(): v for k, v in vllm_configs.items()}
+
     if chip_configs:
         for i, cfg in enumerate(chip_configs):
             chip_name = cfg["name"]
             model_name = cfg["model"]
             chip_display = chip_names[i] if i < len(chip_names) else chip_name
 
-            chip_configs_list = chips_raw.get(chip_name, [])
+            chip_configs_list = chips_raw_ci.get(chip_name.lower(), [])
             if isinstance(chip_configs_list, list):
                 found = False
                 for c in chip_configs_list:
@@ -1401,7 +1404,7 @@ def generate_markdown_report(
             elif isinstance(chip_configs_list, dict):
                 chip_info_map[chip_display] = chip_configs_list
 
-            vllm_configs_list = vllm_configs.get(chip_name, [])
+            vllm_configs_list = vllm_configs_ci.get(chip_name.lower(), [])
             if isinstance(vllm_configs_list, list):
                 found = False
                 for c in vllm_configs_list:
