@@ -1,0 +1,21 @@
+Requesting API: 100%|██████████| 416/416 [3:15:43<00:00, 28.23s/it]
+2026-07-10:23:32:42 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': '/work/models/ssd4/models/MiniMax-M2.5-int8', 'base_url': 'http://127.0.0.1:30000/v1/completions', 'max_length': 192512, 'tokenizer': '/data1/dingjs/work/models/ssd4/models/MiniMax-M2.5-int8', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: 32.0, num_fewshot: None, batch_size: auto
+|      Tasks       |Version|Filter|n-shot|Metric|   |Value |   |Stderr|
+|------------------|------:|------|-----:|-----:|---|-----:|---|------|
+| - niah_multikey_1|      1|none  |     0|131072|↑  |0.9688|±  |   N/A|
+| - niah_multikey_2|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multikey_3|      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_multiquery|      1|none  |     0|131072|↑  |0.9844|±  |   N/A|
+| - niah_multivalue|      1|none  |     0|131072|↑  |0.9453|±  |   N/A|
+| - niah_single_1  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_single_2  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - niah_single_3  |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+| - ruler_cwe      |      1|none  |     0|131072|↑  |0.4625|±  |   N/A|
+| - ruler_fwe      |      1|none  |     0|131072|↑  |0.8021|±  |   N/A|
+| - ruler_qa_hotpot|      1|none  |     0|131072|↑  |0.7188|±  |   N/A|
+| - ruler_qa_squad |      1|none  |     0|131072|↑  |0.7214|±  |   N/A|
+| - ruler_vt       |      1|none  |     0|131072|↑  |1.0000|±  |   N/A|
+
+|Groups|Version|Filter|n-shot|Metric|   |Value|   |Stderr|
+|------|-------|------|------|------|---|-----|---|------|

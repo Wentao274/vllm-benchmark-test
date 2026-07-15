@@ -1,0 +1,6 @@
+2026-07-10:19:24:58 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': '/work/models/ssd4/models/MiniMax-M2.5-int8', 'base_url': 'http://127.0.0.1:30000/v1/completions', 'max_length': 131072, 'tokenizer': '/data1/dingjs/work/models/ssd4/models/MiniMax-M2.5-int8', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+| Tasks  |Version|     Filter     |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|----------------|-----:|-----------|---|-----:|---|-----:|
+|gsm_plus|      1|flexible-extract|     5|exact_match|↑  |0.7328|±  |0.0043|
+|        |       |strict-match    |     5|exact_match|↑  |0.7010|±  |0.0045|

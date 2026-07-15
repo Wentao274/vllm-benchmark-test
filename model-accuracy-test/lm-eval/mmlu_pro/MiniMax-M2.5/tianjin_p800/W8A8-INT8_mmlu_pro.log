@@ -1,0 +1,23 @@
+2026-07-10:17:47:40 INFO     [loggers.evaluation_tracker:247] Saving results aggregated
+local-completions ({'model': '/work/models/ssd4/models/MiniMax-M2.5-int8', 'base_url': 'http://127.0.0.1:30000/v1/completions', 'max_length': 131072, 'tokenizer': '/data1/dingjs/work/models/ssd4/models/MiniMax-M2.5-int8', 'num_concurrent': 10, 'max_retries': 3, 'timeout': 12000, 'tokenized_requests': False, 'headers': {'Authorization': 'Bearer abc123'}}), gen_kwargs: ({'max_gen_toks': 8192, 'do_sample': False, 'temperature': 0.0, 'top_p': 0.95, 'top_k': 40}), limit: None, num_fewshot: None, batch_size: auto
+|       Tasks       |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|-------------------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro           |    2.0|custom-extract|     5|exact_match|↑  |0.6366|±  |0.0043|
+| - biology         |    3.1|custom-extract|     5|exact_match|↑  |0.7922|±  |0.0152|
+| - business        |    3.1|custom-extract|     5|exact_match|↑  |0.7845|±  |0.0146|
+| - chemistry       |    3.1|custom-extract|     5|exact_match|↑  |0.5504|±  |0.0148|
+| - computer_science|    3.1|custom-extract|     5|exact_match|↑  |0.7146|±  |0.0223|
+| - economics       |    3.1|custom-extract|     5|exact_match|↑  |0.7026|±  |0.0157|
+| - engineering     |    3.1|custom-extract|     5|exact_match|↑  |0.5542|±  |0.0160|
+| - health          |    3.1|custom-extract|     5|exact_match|↑  |0.6650|±  |0.0165|
+| - history         |    3.1|custom-extract|     5|exact_match|↑  |0.5591|±  |0.0255|
+| - law             |    3.1|custom-extract|     5|exact_match|↑  |0.4623|±  |0.0150|
+| - math            |    3.1|custom-extract|     5|exact_match|↑  |0.6151|±  |0.0132|
+| - other           |    3.1|custom-extract|     5|exact_match|↑  |0.6212|±  |0.0160|
+| - philosophy      |    3.1|custom-extract|     5|exact_match|↑  |0.5792|±  |0.0221|
+| - physics         |    3.1|custom-extract|     5|exact_match|↑  |0.7113|±  |0.0126|
+| - psychology      |    3.1|custom-extract|     5|exact_match|↑  |0.6792|±  |0.0165|
+
+| Groups |Version|    Filter    |n-shot|  Metric   |   |Value |   |Stderr|
+|--------|------:|--------------|-----:|-----------|---|-----:|---|-----:|
+|mmlu_pro|      2|custom-extract|     5|exact_match|↑  |0.6366|±  |0.0043|

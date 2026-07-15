@@ -71,3 +71,57 @@ vllm_configs:
       tool-call-parser: minimax_m2
       reasoning-parser: minimax_m2
       remarks: 英伟达H100标准配置
+
+  ppu_810:
+    - model_name: GLM-5.1-W4A8
+      attention-backend: nsa
+      quantization: mixed_precision_w4
+      tp_size: 8
+      dp_size: 1
+      pp_size: 1
+      context-length: 202752
+      cuda-graph-max-bs: 64
+      max-running-requests: 64
+      max-queued-requests: None
+      chunked-prefill-size: 8192
+      disable-radix-cache: True
+      tool-call-parser: glm47
+      reasoning-parser: glm45
+      mem-fraction-static: 0.89
+      remarks: 浪潮MetaX_C550 SGLang启动配置
+
+  tianjin_P800:
+    - model_name: MiniMax-M2.5-int8
+      attention-backend: kunlun
+      tp_size: 8
+      dp_size: 1
+      pp_size: 1
+      ep_size: 8
+      context-length: 196608
+      cuda-graph-max-bs: 128
+      max-running-requests: 64
+      chunked-prefill-size: 8192
+      dtype: bfloat16
+      disable-radix-cache: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: minimax
+      mem-fraction-static: 0.85
+      remarks: tianjin_P800启动配置
+
+  hanggang_P800:
+    - model_name: MiniMax-M2.5-int8
+      attention-backend: kunlun
+      tp_size: 8
+      dp_size: 1
+      pp_size: 1
+      ep_size: 8
+      context-length: 196608
+      cuda-graph-max-bs: 128
+      max-running-requests: 64
+      chunked-prefill-size: 8192
+      dtype: bfloat16
+      disable-radix-cache: True
+      tool-call-parser: minimax_m2
+      reasoning-parser: minimax
+      mem-fraction-static: 0.85
+      remarks: hanggang_P800启动配置

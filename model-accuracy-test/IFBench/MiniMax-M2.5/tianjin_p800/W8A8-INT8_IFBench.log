@@ -1,0 +1,472 @@
+nohup: ignoring input
+/data1/dingjs/work/test/IFBench
+Uninstalled 1 package in 11ms
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance.
+         If the cache and target directories are on different filesystems, hardlinking may not be supported.
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 49ms
+Loaded 300 prompts from data/IFBench_test.jsonl
+Model: MiniMax-M2.5-int8
+API: http://127.0.0.1:30000/v1
+TOP_P: 0.95
+TOP_K: 40
+TEAMPERATURE: 1.0
+MAX_TOKENS: 16384
+WORKERS: 8
+Generating responses for 300 prompts...
+
+Generating:   0%|          | 0/300 [00:00<?, ?it/s]
+Generating:   0%|          | 1/300 [00:23<1:57:28, 23.57s/it]
+Generating:   1%|          | 2/300 [00:33<1:16:33, 15.42s/it]
+Generating:   1%|          | 3/300 [00:37<50:16, 10.16s/it]
+Generating:   1%|▏         | 4/300 [00:45<47:02,  9.54s/it]
+Generating:   2%|▏         | 5/300 [00:57<51:12, 10.42s/it]
+Generating:   2%|▏         | 6/300 [00:59<36:16,  7.40s/it]
+Generating:   2%|▏         | 7/300 [01:03<31:45,  6.50s/it]
+Generating:   3%|▎         | 8/300 [01:35<1:11:01, 14.59s/it]
+Generating:   3%|▎         | 9/300 [01:36<49:44, 10.26s/it]
+Generating:   3%|▎         | 10/300 [01:38<37:17,  7.72s/it]
+Generating:   4%|▎         | 11/300 [01:51<44:45,  9.29s/it]
+Generating:   4%|▍         | 12/300 [01:58<40:59,  8.54s/it]
+Generating:   4%|▍         | 13/300 [01:58<29:27,  6.16s/it]
+Generating:   5%|▍         | 14/300 [02:03<27:15,  5.72s/it]
+Generating:   5%|▌         | 15/300 [02:11<29:32,  6.22s/it]
+Generating:   5%|▌         | 16/300 [02:16<28:12,  5.96s/it]
+Generating:   6%|▌         | 17/300 [02:16<20:09,  4.27s/it]
+Generating:   6%|▌         | 18/300 [02:22<22:20,  4.75s/it]
+Generating:   6%|▋         | 19/300 [02:39<39:28,  8.43s/it]
+Generating:   7%|▋         | 20/300 [02:40<28:04,  6.02s/it]
+Generating:   7%|▋         | 21/300 [02:49<33:20,  7.17s/it]
+Generating:   7%|▋         | 22/300 [02:50<24:13,  5.23s/it]
+Generating:   8%|▊         | 23/300 [02:58<28:21,  6.14s/it]
+Generating:   8%|▊         | 24/300 [03:03<26:46,  5.82s/it]
+Generating:   8%|▊         | 25/300 [03:07<23:43,  5.18s/it]
+Generating:   9%|▊         | 26/300 [03:10<20:07,  4.41s/it]
+Generating:   9%|▉         | 27/300 [03:17<23:55,  5.26s/it]
+Generating:   9%|▉         | 28/300 [03:20<20:50,  4.60s/it]
+Generating:  10%|▉         | 29/300 [03:26<23:02,  5.10s/it]
+Generating:  10%|█         | 30/300 [03:33<24:55,  5.54s/it]
+Generating:  10%|█         | 31/300 [03:46<35:37,  7.95s/it]
+Generating:  11%|█         | 32/300 [03:48<26:32,  5.94s/it]
+Generating:  11%|█         | 33/300 [03:50<21:58,  4.94s/it]
+Generating:  11%|█▏        | 34/300 [04:03<32:03,  7.23s/it]
+Generating:  12%|█▏        | 35/300 [04:17<41:11,  9.33s/it]
+Generating:  12%|█▏        | 36/300 [04:18<29:42,  6.75s/it]
+Generating:  12%|█▏        | 37/300 [04:20<23:00,  5.25s/it]
+Generating:  13%|█▎        | 38/300 [04:21<17:26,  3.99s/it]
+Generating:  13%|█▎        | 39/300 [04:35<30:20,  6.98s/it]
+Generating:  13%|█▎        | 40/300 [04:41<29:30,  6.81s/it]
+Generating:  14%|█▎        | 41/300 [04:45<25:11,  5.84s/it]
+Generating:  14%|█▍        | 42/300 [04:49<23:43,  5.52s/it]
+Generating:  14%|█▍        | 43/300 [04:51<19:06,  4.46s/it]
+Generating:  15%|█▍        | 44/300 [04:52<13:35,  3.19s/it]
+Generating:  15%|█▌        | 45/300 [04:56<14:57,  3.52s/it]
+Generating:  15%|█▌        | 46/300 [05:26<48:19, 11.42s/it]
+Generating:  16%|█▌        | 47/300 [05:48<1:01:31, 14.59s/it]
+Generating:  16%|█▌        | 48/300 [05:51<46:57, 11.18s/it]
+Generating:  16%|█▋        | 49/300 [05:51<33:13,  7.94s/it]
+Generating:  17%|█▋        | 50/300 [06:23<1:02:49, 15.08s/it]
+Generating:  17%|█▋        | 51/300 [06:31<54:03, 13.03s/it]
+Generating:  17%|█▋        | 52/300 [06:39<47:51, 11.58s/it]
+Generating:  18%|█▊        | 53/300 [06:40<34:22,  8.35s/it]
+Generating:  18%|█▊        | 54/300 [06:44<28:05,  6.85s/it]
+Generating:  18%|█▊        | 55/300 [06:45<21:27,  5.26s/it]
+Generating:  19%|█▊        | 56/300 [06:57<29:35,  7.27s/it]
+Generating:  19%|█▉        | 57/300 [07:00<24:34,  6.07s/it]
+Generating:  19%|█▉        | 58/300 [07:02<18:50,  4.67s/it]
+Generating:  20%|██        | 60/300 [07:13<20:50,  5.21s/it]
+Generating:  20%|██        | 61/300 [07:14<16:23,  4.11s/it]
+Generating:  21%|██        | 62/300 [07:15<13:10,  3.32s/it]
+Generating:  21%|██        | 63/300 [07:20<14:25,  3.65s/it]
+Generating:  21%|██▏       | 64/300 [07:43<35:22,  8.99s/it]
+Generating:  22%|██▏       | 65/300 [07:44<26:57,  6.88s/it]
+Generating:  22%|██▏       | 66/300 [07:47<22:29,  5.77s/it]
+Generating:  22%|██▏       | 67/300 [07:48<16:37,  4.28s/it]
+Generating:  23%|██▎       | 68/300 [07:57<22:18,  5.77s/it]
+Generating:  23%|██▎       | 69/300 [08:11<31:06,  8.08s/it]
+Generating:  23%|██▎       | 70/300 [08:11<22:02,  5.75s/it]
+Generating:  24%|██▎       | 71/300 [08:11<15:42,  4.11s/it]
+Generating:  24%|██▍       | 72/300 [08:13<12:35,  3.32s/it]
+Generating:  24%|██▍       | 73/300 [08:14<09:39,  2.55s/it]
+Generating:  25%|██▍       | 74/300 [08:17<10:56,  2.90s/it]
+Generating:  25%|██▌       | 75/300 [08:20<10:44,  2.86s/it]
+Generating:  25%|██▌       | 76/300 [08:21<08:44,  2.34s/it]
+Generating:  26%|██▌       | 77/300 [08:38<24:19,  6.54s/it]
+Generating:  26%|██▌       | 78/300 [08:38<17:42,  4.79s/it]
+Generating:  26%|██▋       | 79/300 [08:39<13:40,  3.71s/it]
+Generating:  27%|██▋       | 80/300 [08:50<20:38,  5.63s/it]
+Generating:  27%|██▋       | 81/300 [08:54<18:45,  5.14s/it]
+Generating:  27%|██▋       | 82/300 [09:00<20:37,  5.68s/it]
+Generating:  28%|██▊       | 84/300 [09:11<19:37,  5.45s/it]
+Generating:  28%|██▊       | 85/300 [09:24<26:38,  7.44s/it]
+Generating:  29%|██▊       | 86/300 [09:42<36:06, 10.12s/it]
+Generating:  29%|██▉       | 87/300 [09:47<31:03,  8.75s/it]
+Generating:  29%|██▉       | 88/300 [09:51<25:46,  7.30s/it]
+Generating:  30%|██▉       | 89/300 [09:59<26:16,  7.47s/it]
+Generating:  30%|███       | 90/300 [10:25<45:53, 13.11s/it]
+Generating:  30%|███       | 91/300 [10:26<32:55,  9.45s/it]
+Generating:  31%|███       | 92/300 [10:33<30:41,  8.85s/it]
+Generating:  31%|███       | 93/300 [10:40<28:38,  8.30s/it]
+Generating:  31%|███▏      | 94/300 [10:43<22:21,  6.51s/it]
+Generating:  32%|███▏      | 95/300 [10:43<16:02,  4.70s/it]
+Generating:  32%|███▏      | 96/300 [10:45<13:21,  3.93s/it]
+Generating:  32%|███▏      | 97/300 [10:48<11:55,  3.53s/it]
+Generating:  33%|███▎      | 98/300 [10:49<09:13,  2.74s/it]
+Generating:  33%|███▎      | 99/300 [10:50<07:54,  2.36s/it]
+Generating:  33%|███▎      | 100/300 [10:52<06:53,  2.07s/it]
+Generating:  34%|███▎      | 101/300 [10:56<09:08,  2.76s/it]
+Generating:  34%|███▍      | 102/300 [10:57<07:32,  2.28s/it]
+Generating:  34%|███▍      | 103/300 [11:06<14:01,  4.27s/it]
+Generating:  35%|███▍      | 104/300 [11:18<21:05,  6.46s/it]
+Generating:  35%|███▌      | 105/300 [11:28<25:05,  7.72s/it]
+Generating:  35%|███▌      | 106/300 [11:33<22:16,  6.89s/it]
+Generating:  36%|███▌      | 107/300 [11:34<16:31,  5.14s/it]
+Generating:  36%|███▌      | 108/300 [11:35<11:42,  3.66s/it]
+Generating:  36%|███▋      | 109/300 [11:35<08:50,  2.78s/it]
+Generating:  37%|███▋      | 110/300 [11:40<10:17,  3.25s/it]
+Generating:  37%|███▋      | 111/300 [11:41<08:02,  2.56s/it]
+Generating:  37%|███▋      | 112/300 [11:44<09:07,  2.91s/it]
+Generating:  38%|███▊      | 113/300 [11:46<08:05,  2.60s/it]
+Generating:  38%|███▊      | 114/300 [11:57<15:44,  5.08s/it]
+Generating:  38%|███▊      | 115/300 [12:00<13:36,  4.41s/it]
+Generating:  39%|███▊      | 116/300 [12:07<16:07,  5.26s/it]
+Generating:  39%|███▉      | 117/300 [12:19<21:53,  7.18s/it]
+Generating:  39%|███▉      | 118/300 [12:21<17:16,  5.69s/it]
+Generating:  40%|███▉      | 119/300 [12:31<20:46,  6.89s/it]
+Generating:  40%|████      | 120/300 [12:36<19:28,  6.49s/it]
+Generating:  40%|████      | 121/300 [12:47<23:33,  7.89s/it]
+Generating:  41%|████      | 122/300 [12:49<17:37,  5.94s/it]
+Generating:  41%|████      | 123/300 [12:50<13:39,  4.63s/it]
+Generating:  41%|████▏     | 124/300 [12:52<10:42,  3.65s/it]
+Generating:  42%|████▏     | 125/300 [13:00<14:39,  5.02s/it]
+Generating:  42%|████▏     | 126/300 [13:05<14:12,  4.90s/it]
+Generating:  42%|████▏     | 127/300 [13:07<11:59,  4.16s/it]
+Generating:  43%|████▎     | 128/300 [13:10<11:16,  3.93s/it]
+Generating:  43%|████▎     | 129/300 [13:12<09:05,  3.19s/it]
+Generating:  43%|████▎     | 130/300 [13:13<07:01,  2.48s/it]
+Generating:  44%|████▎     | 131/300 [13:21<12:02,  4.27s/it]
+Generating:  44%|████▍     | 132/300 [13:29<14:51,  5.31s/it]
+Generating:  44%|████▍     | 133/300 [13:44<22:41,  8.15s/it]
+Generating:  45%|████▍     | 134/300 [14:06<33:58, 12.28s/it]
+Generating:  45%|████▌     | 135/300 [14:06<23:56,  8.71s/it]
+Generating:  45%|████▌     | 136/300 [14:12<21:35,  7.90s/it]
+Generating:  46%|████▌     | 137/300 [14:13<15:43,  5.79s/it]
+Generating:  46%|████▌     | 138/300 [14:23<18:55,  7.01s/it]
+Generating:  46%|████▋     | 139/300 [14:25<15:10,  5.65s/it]
+Generating:  47%|████▋     | 140/300 [14:42<24:21,  9.14s/it]
+Generating:  47%|████▋     | 141/300 [14:51<23:29,  8.86s/it]
+Generating:  47%|████▋     | 142/300 [14:52<17:40,  6.71s/it]
+Generating:  48%|████▊     | 143/300 [15:04<21:20,  8.16s/it]
+Generating:  48%|████▊     | 144/300 [15:07<17:35,  6.77s/it]
+Generating:  48%|████▊     | 145/300 [15:08<12:55,  5.01s/it]
+Generating:  49%|████▊     | 146/300 [15:09<09:10,  3.58s/it]
+Generating:  49%|████▉     | 147/300 [15:10<07:52,  3.09s/it]
+Generating:  49%|████▉     | 148/300 [15:21<13:48,  5.45s/it]
+Generating:  50%|████▉     | 149/300 [15:23<10:43,  4.26s/it]
+Generating:  50%|█████     | 150/300 [15:24<08:18,  3.32s/it]
+Generating:  50%|█████     | 151/300 [15:39<17:08,  6.90s/it]
+Generating:  51%|█████     | 152/300 [15:40<12:24,  5.03s/it]
+Generating:  51%|█████     | 153/300 [15:44<11:24,  4.66s/it]
+Generating:  51%|█████▏    | 154/300 [16:12<28:31, 11.72s/it]
+Generating:  52%|█████▏    | 155/300 [16:23<27:39, 11.44s/it]
+Generating:  52%|█████▏    | 156/300 [16:37<29:07, 12.14s/it]
+Generating:  52%|█████▏    | 157/300 [16:39<22:18,  9.36s/it]
+Generating:  53%|█████▎    | 158/300 [16:49<21:58,  9.29s/it]
+Generating:  53%|█████▎    | 159/300 [16:58<21:37,  9.20s/it]
+Generating:  53%|█████▎    | 160/300 [17:24<33:13, 14.24s/it]
+Generating:  54%|█████▎    | 161/300 [17:34<30:19, 13.09s/it]
+Generating:  54%|█████▍    | 162/300 [17:42<26:18, 11.44s/it]
+Generating:  54%|█████▍    | 163/300 [17:53<25:54, 11.34s/it]
+Generating:  55%|█████▍    | 164/300 [18:44<53:05, 23.42s/it]
+Generating:  55%|█████▌    | 165/300 [19:00<47:49, 21.26s/it]
+Generating:  55%|█████▌    | 166/300 [19:47<1:04:20, 28.81s/it]
+Generating:  56%|█████▌    | 167/300 [19:56<50:50, 22.94s/it]
+Generating:  56%|█████▌    | 168/300 [20:01<38:34, 17.54s/it]
+Generating:  56%|█████▋    | 169/300 [20:15<35:41, 16.35s/it]
+Generating:  57%|█████▋    | 170/300 [20:39<40:32, 18.71s/it]
+Generating:  57%|█████▋    | 171/300 [20:43<30:48, 14.33s/it]
+Generating:  57%|█████▋    | 172/300 [20:58<30:44, 14.41s/it]
+Generating:  58%|█████▊    | 173/300 [21:15<32:35, 15.40s/it]
+Generating:  58%|█████▊    | 174/300 [21:32<33:02, 15.73s/it]
+Generating:  58%|█████▊    | 175/300 [21:39<27:27, 13.18s/it]
+Generating:  59%|█████▊    | 176/300 [22:00<32:01, 15.49s/it]
+Generating:  59%|█████▉    | 177/300 [22:02<23:41, 11.55s/it]
+Generating:  59%|█████▉    | 178/300 [22:17<25:43, 12.65s/it]
+Generating:  60%|█████▉    | 179/300 [22:20<19:05,  9.47s/it]
+Generating:  60%|██████    | 180/300 [22:21<14:19,  7.16s/it]
+Generating:  60%|██████    | 181/300 [22:23<10:55,  5.50s/it]
+Generating:  61%|██████    | 182/300 [22:39<17:00,  8.64s/it]
+Generating:  61%|██████    | 183/300 [22:40<12:39,  6.49s/it]
+Generating:  61%|██████▏   | 184/300 [22:52<15:25,  7.98s/it]
+Generating:  62%|██████▏   | 185/300 [22:54<12:03,  6.29s/it]
+Generating:  62%|██████▏   | 186/300 [23:05<14:32,  7.65s/it]
+Generating:  62%|██████▏   | 187/300 [23:17<16:47,  8.92s/it]
+Generating:  63%|██████▎   | 188/300 [23:26<16:39,  8.92s/it]
+Generating:  63%|██████▎   | 189/300 [23:32<14:53,  8.05s/it]
+Generating:  63%|██████▎   | 190/300 [23:38<13:46,  7.51s/it]
+Generating:  64%|██████▎   | 191/300 [23:46<13:47,  7.59s/it]
+Generating:  64%|██████▍   | 192/300 [23:57<15:25,  8.57s/it]
+Generating:  64%|██████▍   | 193/300 [23:59<11:56,  6.70s/it]
+Generating:  65%|██████▍   | 194/300 [24:13<15:52,  8.99s/it]
+Generating:  65%|██████▌   | 195/300 [24:15<11:59,  6.86s/it]
+Generating:  65%|██████▌   | 196/300 [24:17<09:07,  5.27s/it]
+Generating:  66%|██████▌   | 197/300 [24:21<08:28,  4.94s/it]
+Generating:  66%|██████▌   | 198/300 [25:37<44:39, 26.27s/it]
+Generating:  66%|██████▋   | 199/300 [25:39<31:50, 18.91s/it]
+Generating:  67%|██████▋   | 200/300 [25:52<28:26, 17.07s/it]
+Generating:  67%|██████▋   | 201/300 [26:03<25:09, 15.25s/it]
+Generating:  67%|██████▋   | 202/300 [26:44<37:57, 23.24s/it]
+Generating:  68%|██████▊   | 203/300 [27:16<41:43, 25.81s/it]
+Generating:  68%|██████▊   | 204/300 [27:50<45:04, 28.18s/it]
+Generating:  68%|██████▊   | 205/300 [28:10<40:49, 25.79s/it]
+Generating:  69%|██████▊   | 206/300 [28:35<39:53, 25.46s/it]
+Generating:  69%|██████▉   | 208/300 [28:38<21:59, 14.34s/it]
+Generating:  70%|██████▉   | 209/300 [29:31<36:26, 24.03s/it]
+Generating:  70%|███████   | 210/300 [30:15<43:57, 29.31s/it]
+Generating:  70%|███████   | 211/300 [30:20<33:39, 22.69s/it]
+Generating:  71%|███████   | 212/300 [30:58<39:20, 26.83s/it]
+Generating:  71%|███████   | 213/300 [31:18<36:23, 25.09s/it]
+Generating:  71%|███████▏  | 214/300 [31:35<32:26, 22.63s/it]
+Generating:  72%|███████▏  | 215/300 [31:51<29:07, 20.56s/it]
+Generating:  72%|███████▏  | 216/300 [32:00<24:17, 17.35s/it]
+Generating:  72%|███████▏  | 217/300 [32:11<21:21, 15.44s/it]
+Generating:  73%|███████▎  | 218/300 [32:22<19:03, 13.95s/it]
+Generating:  73%|███████▎  | 219/300 [32:39<20:03, 14.86s/it]
+Generating:  73%|███████▎  | 220/300 [33:03<23:30, 17.63s/it]
+Generating:  74%|███████▎  | 221/300 [33:09<18:49, 14.30s/it]
+Generating:  74%|███████▍  | 222/300 [33:13<14:39, 11.28s/it]
+Generating:  74%|███████▍  | 223/300 [33:57<27:02, 21.07s/it]
+Generating:  75%|███████▍  | 224/300 [34:07<22:22, 17.67s/it]
+Generating:  75%|███████▌  | 225/300 [34:30<23:59, 19.19s/it]
+Generating:  75%|███████▌  | 226/300 [34:41<20:38, 16.73s/it]
+Generating:  76%|███████▌  | 227/300 [35:25<30:30, 25.08s/it]
+Generating:  76%|███████▌  | 228/300 [35:28<22:08, 18.45s/it]
+Generating:  76%|███████▋  | 229/300 [35:32<16:32, 13.97s/it]
+Generating:  77%|███████▋  | 230/300 [35:41<14:42, 12.60s/it]
+Generating:  77%|███████▋  | 231/300 [35:46<11:39, 10.14s/it]
+Generating:  77%|███████▋  | 232/300 [36:03<13:51, 12.22s/it]
+Generating:  78%|███████▊  | 233/300 [36:07<11:04,  9.91s/it]
+Generating:  78%|███████▊  | 234/300 [36:27<14:05, 12.81s/it]
+Generating:  78%|███████▊  | 235/300 [36:28<09:59,  9.23s/it]
+Generating:  79%|███████▊  | 236/300 [36:42<11:35, 10.87s/it]
+Generating:  79%|███████▉  | 237/300 [36:45<08:55,  8.49s/it]
+Generating:  79%|███████▉  | 238/300 [36:47<06:32,  6.34s/it]
+Generating:  80%|███████▉  | 239/300 [36:49<05:11,  5.11s/it]
+Generating:  80%|████████  | 240/300 [37:03<07:43,  7.72s/it]
+Generating:  80%|████████  | 241/300 [37:22<11:01, 11.21s/it]
+Generating:  81%|████████  | 242/300 [37:29<09:36,  9.93s/it]
+Generating:  81%|████████  | 243/300 [37:33<07:44,  8.16s/it]
+Generating:  81%|████████▏ | 244/300 [37:49<09:45, 10.45s/it]
+Generating:  82%|████████▏ | 245/300 [37:53<07:46,  8.48s/it]
+Generating:  82%|████████▏ | 246/300 [37:53<05:29,  6.10s/it]
+Generating:  82%|████████▏ | 247/300 [37:57<04:51,  5.50s/it]
+Generating:  83%|████████▎ | 248/300 [38:09<06:15,  7.22s/it]
+Generating:  83%|████████▎ | 249/300 [38:21<07:30,  8.83s/it]
+Generating:  83%|████████▎ | 250/300 [38:36<08:50, 10.62s/it]
+Generating:  84%|████████▎ | 251/300 [38:41<07:20,  9.00s/it]
+Generating:  84%|████████▍ | 252/300 [38:44<05:47,  7.24s/it]
+Generating:  84%|████████▍ | 253/300 [39:22<12:51, 16.42s/it]
+Generating:  85%|████████▍ | 254/300 [39:27<10:00, 13.05s/it]
+Generating:  85%|████████▌ | 255/300 [39:35<08:34, 11.44s/it]
+Generating:  85%|████████▌ | 256/300 [39:36<06:03,  8.26s/it]
+Generating:  86%|████████▌ | 257/300 [39:51<07:29, 10.46s/it]
+Generating:  86%|████████▌ | 258/300 [39:58<06:24,  9.15s/it]
+Generating:  86%|████████▋ | 259/300 [40:04<05:36,  8.20s/it]
+Generating:  87%|████████▋ | 260/300 [40:09<05:00,  7.51s/it]
+Generating:  87%|████████▋ | 261/300 [40:24<06:18,  9.71s/it]
+Generating:  87%|████████▋ | 262/300 [40:49<08:54, 14.08s/it]
+Generating:  88%|████████▊ | 263/300 [40:50<06:25, 10.41s/it]
+Generating:  88%|████████▊ | 264/300 [41:13<08:30, 14.17s/it]
+Generating:  88%|████████▊ | 265/300 [41:22<07:13, 12.40s/it]
+Generating:  89%|████████▊ | 266/300 [41:30<06:20, 11.20s/it]
+Generating:  89%|████████▉ | 267/300 [41:37<05:30, 10.03s/it]
+Generating:  89%|████████▉ | 268/300 [41:43<04:41,  8.81s/it]
+Generating:  90%|████████▉ | 269/300 [41:51<04:21,  8.45s/it]
+Generating:  90%|█████████ | 270/300 [41:53<03:17,  6.59s/it]
+Generating:  90%|█████████ | 271/300 [42:05<03:54,  8.09s/it]
+Generating:  91%|█████████ | 272/300 [42:31<06:16, 13.45s/it]
+Generating:  91%|█████████ | 273/300 [43:02<08:29, 18.88s/it]
+Generating:  91%|█████████▏| 274/300 [43:05<06:07, 14.13s/it]
+Generating:  92%|█████████▏| 275/300 [43:06<04:15, 10.23s/it]
+Generating:  92%|█████████▏| 276/300 [43:19<04:23, 10.98s/it]
+Generating:  92%|█████████▏| 277/300 [43:32<04:22, 11.41s/it]
+Generating:  93%|█████████▎| 278/300 [43:41<04:01, 10.96s/it]
+Generating:  93%|█████████▎| 279/300 [43:43<02:53,  8.27s/it]
+Generating:  93%|█████████▎| 280/300 [43:56<03:12,  9.61s/it]
+Generating:  94%|█████████▎| 281/300 [44:13<03:42, 11.69s/it]
+Generating:  94%|█████████▍| 282/300 [44:16<02:43,  9.08s/it]
+Generating:  94%|█████████▍| 283/300 [44:26<02:40,  9.46s/it]
+Generating:  95%|█████████▍| 284/300 [44:29<02:01,  7.59s/it]
+Generating:  95%|█████████▌| 285/300 [44:47<02:39, 10.63s/it]
+Generating:  95%|█████████▌| 286/300 [44:59<02:35, 11.09s/it]
+Generating:  96%|█████████▌| 287/300 [45:02<01:53,  8.75s/it]
+Generating:  96%|█████████▌| 288/300 [45:13<01:52,  9.38s/it]
+Generating:  96%|█████████▋| 289/300 [45:29<02:03, 11.26s/it]
+Generating:  97%|█████████▋| 290/300 [45:33<01:30,  9.05s/it]
+Generating:  97%|█████████▋| 291/300 [45:34<00:59,  6.59s/it]
+Generating:  97%|█████████▋| 292/300 [45:38<00:47,  5.92s/it]
+Generating:  98%|█████████▊| 293/300 [45:45<00:44,  6.30s/it]
+Generating:  98%|█████████▊| 294/300 [45:47<00:29,  4.94s/it]
+Generating:  98%|█████████▊| 295/300 [45:47<00:17,  3.57s/it]
+Generating:  99%|█████████▊| 296/300 [45:49<00:11,  2.89s/it]
+Generating:  99%|█████████▉| 297/300 [45:56<00:12,  4.28s/it]
+Generating:  99%|█████████▉| 298/300 [46:02<00:09,  4.69s/it]
+Generating: 100%|█████████▉| 299/300 [46:15<00:07,  7.20s/it]
+Generating: 100%|██████████| 300/300 [46:47<00:00, 14.55s/it]
+Generating: 100%|██████████| 300/300 [46:47<00:00,  9.36s/it]
+
+Saved 300 responses to data/MiniMax-M2.5-int8-responses.jsonl
+
+Run evaluation with:
+  uv run python3 -m run_eval --input_data=data/IFBench_test.jsonl --input_response_data=data/MiniMax-M2.5-int8-responses.jsonl --output_dir=eval
+Processed 300 responses
+Changed 0 responses (0.0%)
+Output: data/MiniMax-M2.5-int8-clean.jsonl
+I0710 11:56:55.139163 140184128946624 run_eval.py:56] Generating eval_results_strict...
+I0710 11:56:55.505048 140184128946624 run_eval.py:62] Accuracy: 0.696667
+I0710 11:56:55.510504 140184128946624 run_eval.py:76] Generated: eval/MiniMax-M2.5-int8-clean-eval_results_strict.jsonl
+I0710 11:56:55.510962 140184128946624 run_eval.py:56] Generating eval_results_loose...
+I0710 11:56:56.231361 140184128946624 run_eval.py:62] Accuracy: 0.740000
+I0710 11:56:56.236776 140184128946624 run_eval.py:76] Generated: eval/MiniMax-M2.5-int8-clean-eval_results_loose.jsonl
+================================================================
+eval/MiniMax-M2.5-int8-clean-eval_results_strict.jsonl Accuracy Scores:
+prompt-level: 0.6966666666666667
+instruction-level: 0.7209302325581395
+
+count 0.9230769230769231
+custom 0.5454545454545454
+format 0.8061224489795918
+ratio 0.6818181818181818
+repeat 0.3333333333333333
+sentence 0.5714285714285714
+words 0.6067415730337079
+
+count:conjunctions 1.0
+count:keywords_multiple 0.8
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 1.0
+count:punctuation 0.8333333333333334
+count:unique_word_count 1.0
+count:word_count_range 0.7272727272727273
+count:words_japanese 1.0
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 0.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 0.0
+custom:multiples 0.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.7777777777777778
+format:line_indent 0.7777777777777778
+format:list 0.8888888888888888
+format:newline 1.0
+format:no_bullets_bullets 0.6
+format:no_whitespace 1.0
+format:options 0.6666666666666666
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 1.0
+format:quotes 0.625
+format:sub-bullets 0.6666666666666666
+format:thesis 1.0
+format:title_case 0.25
+ratio:overlap 0.0
+ratio:sentence_balance 1.0
+ratio:sentence_type 1.0
+ratio:sentence_words 0.7142857142857143
+ratio:stop_words 1.0
+repeat:repeat_change 0.6666666666666666
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.4
+sentence:increment 0.5
+sentence:keyword 0.6666666666666666
+words:alphabet 0.5
+words:consonants 0.4666666666666667
+words:keywords_specific_position 0.75
+words:last_first 0.4
+words:no_consecutive 0.875
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 0.8333333333333334
+words:prime_lengths 0.6
+words:repeats 1.0
+words:start_verb 0.6666666666666666
+words:vowel 0.5
+words:words_position 1.0
+================================================================
+eval/MiniMax-M2.5-int8-clean-eval_results_loose.jsonl Accuracy Scores:
+prompt-level: 0.74
+instruction-level: 0.7587209302325582
+
+count 0.9230769230769231
+custom 0.6363636363636364
+format 0.8775510204081632
+ratio 0.6818181818181818
+repeat 0.3333333333333333
+sentence 0.6071428571428571
+words 0.651685393258427
+
+count:conjunctions 1.0
+count:keywords_multiple 0.8
+count:numbers 1.0
+count:person_names 1.0
+count:pronouns 1.0
+count:punctuation 0.8333333333333334
+count:unique_word_count 1.0
+count:word_count_range 0.7272727272727273
+count:words_japanese 1.0
+custom:character_reverse 1.0
+custom:csv_city 1.0
+custom:csv_quotes 1.0
+custom:csv_special_character 0.0
+custom:date_format_list 1.0
+custom:european_capitals_sort 0.0
+custom:mcq_count_length 0.0
+custom:multiples 1.0
+custom:reverse_newline 0.0
+custom:sentence_alphabet 1.0
+custom:word_reverse 1.0
+format:emoji 0.8888888888888888
+format:line_indent 0.8888888888888888
+format:list 0.8888888888888888
+format:newline 1.0
+format:no_bullets_bullets 0.6
+format:no_whitespace 1.0
+format:options 0.6666666666666666
+format:output_template 1.0
+format:parentheses 1.0
+format:quote_unquote 1.0
+format:quotes 0.625
+format:sub-bullets 1.0
+format:thesis 1.0
+format:title_case 0.5
+ratio:overlap 0.0
+ratio:sentence_balance 1.0
+ratio:sentence_type 1.0
+ratio:sentence_words 0.7142857142857143
+ratio:stop_words 1.0
+repeat:repeat_change 0.6666666666666666
+repeat:repeat_simple 0.5
+repeat:repeat_span 0.0
+sentence:alliteration_increment 0.6
+sentence:increment 0.5
+sentence:keyword 0.6666666666666666
+words:alphabet 0.5
+words:consonants 0.6666666666666666
+words:keywords_specific_position 0.75
+words:last_first 0.4
+words:no_consecutive 0.875
+words:odd_even_syllables 0.0
+words:palindrome 1.0
+words:paragraph_last_first 0.8333333333333334
+words:prime_lengths 0.6
+words:repeats 1.0
+words:start_verb 0.6666666666666666
+words:vowel 0.6
+words:words_position 1.0
