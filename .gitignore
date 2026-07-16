@@ -212,3 +212,6 @@ analysis/
 monitor/
 reports/
 nul
+
+# claude cache
+.claude/
