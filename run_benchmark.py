@@ -13,13 +13,15 @@ TEST_SUITES = ["test_01"]
 
 RUN_ID = "01"
 
-try:
-    from gpu_monitor import GPUMonitor, generate_gpu_charts
-
-    HAS_GPU_MONITOR = True
-except ImportError:
-    HAS_GPU_MONITOR = False
-    print("Warning: GPU monitor module not available")
+# GPU monitor disabled to avoid performance impact during benchmarking
+# try:
+#     from gpu_monitor import GPUMonitor, generate_gpu_charts
+#
+#     HAS_GPU_MONITOR = True
+# except ImportError:
+#     HAS_GPU_MONITOR = False
+#     print("Warning: GPU monitor module not available")
+HAS_GPU_MONITOR = False
 
 
 def get_model_info_from_api(base_url, api_key):
@@ -89,7 +91,8 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
 
         print(f"\n=== Running test suite: {test_suite} ===")
 
-        gpu_monitor = GPUMonitor(interval=10) if HAS_GPU_MONITOR else None
+        # GPU monitor disabled to avoid performance impact during benchmarking
+        gpu_monitor = None  # GPUMonitor(interval=10) if HAS_GPU_MONITOR else None
 
         for nc, np, io_len in product(
             max_concurrency, num_prompts, random_input_output_len
@@ -104,11 +107,12 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
                 output_dir, f"bench-{test_suite}-{nc}-{np}-i{ni}-o{no}.log"
             )
 
-            if gpu_monitor:
-                monitor_param_dir = f"{test_suite}/{run_id}/{nc}-{np}-i{ni}-o{no}"
-                gpu_monitor.start_monitoring(
-                    "monitor", chip_name, model_name_yaml, monitor_param_dir
-                )
+            # GPU monitor disabled to avoid performance impact during benchmarking
+            # if gpu_monitor:
+            #     monitor_param_dir = f"{test_suite}/{run_id}/{nc}-{np}-i{ni}-o{no}"
+            #     gpu_monitor.start_monitoring(
+            #         "monitor", chip_name, model_name_yaml, monitor_param_dir
+            #     )
 
             cmd = [
                 "vllm",
@@ -160,11 +164,12 @@ def run_benchmark(chip_name, base_config, model_config, test_suites, run_id):
             process.wait()
             log_f.close()
 
-            if gpu_monitor:
-                gpu_log = gpu_monitor.stop_monitoring()
-                if gpu_log:
-                    gpu_log_dir = os.path.dirname(gpu_log)
-                    generate_gpu_charts(gpu_log, gpu_log_dir)
+            # GPU monitor disabled to avoid performance impact during benchmarking
+            # if gpu_monitor:
+            #     gpu_log = gpu_monitor.stop_monitoring()
+            #     if gpu_log:
+            #         gpu_log_dir = os.path.dirname(gpu_log)
+            #         generate_gpu_charts(gpu_log, gpu_log_dir)
 
             print(f"Completed: {log_file}")
             time.sleep(30)
